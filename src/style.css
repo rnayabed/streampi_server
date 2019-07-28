@@ -1,0 +1,34 @@
+.basePane {
+    -fx-background-color : black;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: black;
+}
+
+.card {
+    -fx-background-color: #1b1b1b;
+    -fx-background-insets: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, #1b1b1b, 10, 0, 0, 0);
+}
+
+.action_box {
+    /*-fx-effect: dropshadow(three-pass-box, red, 5, 0, 0, 0);*/
+    -fx-border-color : gray;
+    -fx-border-width : 1;
+    -fx-border-radius : 10;
+    -fx-background-color:black;
+}
+
+.accordion .titled-pane .title {
+    -fx-background-color: #000000 ;
+}
+
+.accordion .titled-pane > *.content{
+    -fx-background-color: #484848 ;
+}
+
+.accordion .content {
+    -fx-border-width: 0;
+}
