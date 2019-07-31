@@ -1,9 +1,8 @@
-import animatefx.animation.FadeIn;
-import animatefx.animation.FadeInUp;
-import animatefx.animation.FadeOutUp;
-import animatefx.animation.Swing;
+import animatefx.animation.*;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
+import com.jfoenix.controls.*;
+import com.jfoenix.controls.events.JFXDialogEvent;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
@@ -16,11 +15,10 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TouchEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 import javafx.util.Duration;
 
 import javax.imageio.ImageIO;
@@ -48,11 +46,19 @@ public class dashboardController implements Initializable {
     public VBox controlVBox;
     @FXML
     public VBox notConnectedPane;
+    @FXML
+    public Label addNewButtonHintLabel;
+    @FXML
+    public JFXButton cancelNewActionButton;
+    @FXML
+    public StackPane popupStackPane;
+    @FXML
+    public HBox newActionHintHBox;
 
     HashMap<String, String> config = new HashMap<>();
     boolean isServerStarted = false;
     boolean isConnectedToClient = false;
-
+    JFXDialog d;
     boolean firstRun = true;
 
     @Override
@@ -71,6 +77,25 @@ public class dashboardController implements Initializable {
             startServer();
         }
 
+        JFXDialogLayout newShortcutActionDialogLayout = new JFXDialogLayout();
+        newShortcutActionDialogLayout.getStyleClass().add("dialog_style");
+        newShortcutActionDialogLayout.setHeading(new Label("New Shortcut Action"));
+        JFXTextField casualNameField = new JFXTextField();
+        casualNameField.setUnFocusColor(Paint.valueOf("#ffffff"));
+        JFXTextField iconPath = new JFXTextField();
+        iconPath.setUnFocusColor(Paint.valueOf("#ffffff"));
+        VBox v = new VBox(casualNameField,iconPath);
+        v.setSpacing(10);
+
+        newShortcutActionDialogLayout.setBody(v);
+
+        d = new JFXDialog(popupStackPane, newShortcutActionDialogLayout, JFXDialog.DialogTransition.CENTER);
+        d.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
+            @Override
+            public void handle(JFXDialogEvent event) {
+                popupStackPane.toBack();
+            }
+        });
 
         Thread t = new Thread(serverCommTask);
         t.setDaemon(true);
@@ -313,7 +338,7 @@ public class dashboardController implements Initializable {
                     {
                         System.out.println("XDA@@!@");
                         int noOfActions = Integer.parseInt(msgArr[1]);
-                        actions = new String[noOfActions][7];
+                        actions = new String[noOfActions][6];
                         int index = 2;
                         for(int i = 0; i<noOfActions;i++)
                         {
@@ -323,9 +348,9 @@ public class dashboardController implements Initializable {
                             actions[i][2] = actionChunk[2]; //Hot Key OR MACROSCODE
                             //actions[i][3] = actionChunk[3]; //Picture in base 64
                             actions[i][3] = actionChunk[3]; //Picture file name
-                            actions[i][4] = actionChunk[4]; //Ambient Colour
-                            actions[i][5] = actionChunk[5]; //Row No
-                            actions[i][6] = actionChunk[6]; //Col No
+                            //actions[i][4] = actionChunk[4]; //Ambient Colour
+                            actions[i][4] = actionChunk[4]; //Row No
+                            actions[i][5] = actionChunk[5]; //Col No
                             index++;
                         }
                         System.out.println("XDAasdsd@@!@");
@@ -386,6 +411,23 @@ public class dashboardController implements Initializable {
                                 {
                                     actionPane[k] = new Pane();
                                     actionPane[k].setPrefSize(90,90);
+                                    actionPane[k].setId("freeAction");
+                                    actionPane[k].setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                        @Override
+                                        public void handle(MouseEvent event) {
+                                            Pane n = (Pane) event.getSource();
+
+                                            if(currentSelectionMode == 0)
+                                            {
+                                                System.out.println("now is normal");
+                                            }
+                                            else if(currentSelectionMode == 1)
+                                            {
+                                                showPopup();
+                                                System.out.println("now is shortcut");
+                                            }
+                                        }
+                                    });
                                     actionPane[k].getStyleClass().add("action_box");
                                 }
 
@@ -413,7 +455,7 @@ public class dashboardController implements Initializable {
                                     }
                                 });
 
-                                rows[Integer.parseInt(actions[i][5])].getChildren().set(Integer.parseInt(actions[i][6]), actionPane);
+                                rows[Integer.parseInt(actions[i][4])].getChildren().set(Integer.parseInt(actions[i][5]), actionPane);
                             }
 
                             Platform.runLater(new Runnable() {
@@ -468,4 +510,65 @@ public class dashboardController implements Initializable {
         String[] configArray = io.readFileArranged("config","::");
         config.put("server_port",configArray[0]);
     }
+
+    @FXML
+    public void newShortcutAction()
+    {
+        currentSelectionMode = 1;
+        showNewActionHint("Shortcut");
+    }
+
+    public void showNewActionHint(String actionName)
+    {
+        for(Node eachRowN : controlVBox.getChildren())
+        {
+            HBox eachRow = (HBox) eachRowN;
+            for(Node eachActionN : eachRow.getChildren())
+            {
+                Pane eachAction = (Pane) eachActionN;
+                if(eachAction.getId().equals("freeAction"))
+                {
+                    eachAction.getStyleClass().add("action_box_highlight");
+                }
+            }
+        }
+
+        addNewButtonHintLabel.setText("To add a new "+actionName+", click on the desired green Action Box");
+        new FadeInUp(newActionHintHBox).play();
+        cancelNewActionButton.setDisable(false);
+    }
+
+    @FXML
+    public void hideNewActionHint()
+    {
+        for(Node eachRowN : controlVBox.getChildren())
+        {
+            HBox eachRow = (HBox) eachRowN;
+            for(Node eachActionN : eachRow.getChildren())
+            {
+                Pane eachAction = (Pane) eachActionN;
+                if(eachAction.getId().equals("freeAction"))
+                {
+                    eachAction.getStyleClass().remove("action_box_highlight");
+                }
+            }
+        }
+        currentSelectionMode = 0;
+        cancelNewActionButton.setDisable(true);
+        new FadeOutDown(newActionHintHBox).play();
+    }
+
+
+    public void showPopup()
+    {
+        popupStackPane.toFront();
+        d.show();
+    }
+
+    int currentSelectionMode = 0;
+    /*
+    Selection Modes:
+    0 - Nothing (Normal)
+    1 - Shortcut
+     */
 }
