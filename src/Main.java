@@ -17,6 +17,8 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    public static dashboardController dc;
+
 
     public static void main(String[] args) {
         launch(args);

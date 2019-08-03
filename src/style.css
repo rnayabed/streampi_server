@@ -3,8 +3,7 @@
 }
 
 .dialog_style {
-    -fx-background-color : black;
-    -fx-text-fill : white;
+    -fx-background-color : #212121;
 }
 
 .scroll-pane .viewport {

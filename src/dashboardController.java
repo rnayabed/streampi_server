@@ -9,6 +9,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -19,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import javax.imageio.ImageIO;
@@ -53,13 +55,16 @@ public class dashboardController implements Initializable {
     @FXML
     public StackPane popupStackPane;
     @FXML
+    public JFXDialog shortcutDialogTest;
+    @FXML
     public HBox newActionHintHBox;
 
     HashMap<String, String> config = new HashMap<>();
     boolean isServerStarted = false;
     boolean isConnectedToClient = false;
-    JFXDialog d;
     boolean firstRun = true;
+    final Paint WHITE_PAINT = Paint.valueOf("#ffffff");
+    Image close_icon = new Image(getClass().getResourceAsStream("icons/icon_preview.png"));
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -77,29 +82,13 @@ public class dashboardController implements Initializable {
             startServer();
         }
 
-        JFXDialogLayout newShortcutActionDialogLayout = new JFXDialogLayout();
-        newShortcutActionDialogLayout.getStyleClass().add("dialog_style");
-        newShortcutActionDialogLayout.setHeading(new Label("New Shortcut Action"));
-        JFXTextField casualNameField = new JFXTextField();
-        casualNameField.setUnFocusColor(Paint.valueOf("#ffffff"));
-        JFXTextField iconPath = new JFXTextField();
-        iconPath.setUnFocusColor(Paint.valueOf("#ffffff"));
-        VBox v = new VBox(casualNameField,iconPath);
-        v.setSpacing(10);
 
-        newShortcutActionDialogLayout.setBody(v);
-
-        d = new JFXDialog(popupStackPane, newShortcutActionDialogLayout, JFXDialog.DialogTransition.CENTER);
-        d.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
-            @Override
-            public void handle(JFXDialogEvent event) {
-                popupStackPane.toBack();
-            }
-        });
 
         Thread t = new Thread(serverCommTask);
         t.setDaemon(true);
         t.start();
+
+        Main.dc = this;
     }
 
     @FXML
@@ -423,7 +412,31 @@ public class dashboardController implements Initializable {
                                             }
                                             else if(currentSelectionMode == 1)
                                             {
-                                                showPopup();
+                                                popupStackPane.toFront();
+
+
+                                                try
+                                                {
+                                                    JFXDialogLayout newShortcutActionDialogLayout = new JFXDialogLayout();
+                                                    newShortcutActionDialogLayout.getStyleClass().add("dialog_style");
+                                                    VBox newShortcut = FXMLLoader.load(getClass().getResource("newShortcutPopup.fxml"));
+                                                    newShortcutActionDialogLayout.setBody(newShortcut);
+                                                    d = new JFXDialog(popupStackPane, newShortcutActionDialogLayout, JFXDialog.DialogTransition.CENTER);
+                                                    d.setOverlayClose(false);
+                                                    d.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
+                                                        @Override
+                                                        public void handle(JFXDialogEvent event) {
+                                                            popupStackPane.toBack();
+                                                        }
+                                                    });
+                                                    d.show();
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    e.printStackTrace();
+                                                }
+
+
                                                 System.out.println("now is shortcut");
                                             }
                                         }
@@ -495,7 +508,7 @@ public class dashboardController implements Initializable {
             }
         }
     };
-
+    JFXDialog d;
     String streamPIIP;
     String streamPINickName;
     int streamPIWidth;
@@ -556,13 +569,6 @@ public class dashboardController implements Initializable {
         currentSelectionMode = 0;
         cancelNewActionButton.setDisable(true);
         new FadeOutDown(newActionHintHBox).play();
-    }
-
-
-    public void showPopup()
-    {
-        popupStackPane.toFront();
-        d.show();
     }
 
     int currentSelectionMode = 0;
