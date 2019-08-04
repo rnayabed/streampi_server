@@ -49,7 +49,7 @@
                      <content>
                         <VBox prefHeight="200.0" prefWidth="100.0">
                            <children>
-                              <JFXButton alignment="TOP_LEFT" onAction="#newShortcutAction" prefHeight="25.0" prefWidth="268.0" text="Shortcut" textFill="WHITE">
+                              <JFXButton alignment="TOP_LEFT" onAction="#newHotkeyAction" prefHeight="25.0" prefWidth="268.0" text="Hotkey" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
@@ -77,5 +77,7 @@
                </children>
             </HBox>
          </children></AnchorPane>
+      <StackPane fx:id="alertStackPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <StackPane fx:id="progressStackPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
    </children>
 </AnchorPane>

@@ -15,9 +15,11 @@ public class Main extends Application {
         primaryStage.setTitle("StreamPi Server");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+        ps = primaryStage;
     }
 
     public static dashboardController dc;
+    public static Stage ps;
 
 
     public static void main(String[] args) {

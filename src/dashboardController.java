@@ -14,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -24,6 +25,9 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Inet4Address;
@@ -55,9 +59,18 @@ public class dashboardController implements Initializable {
     @FXML
     public StackPane popupStackPane;
     @FXML
-    public JFXDialog shortcutDialogTest;
-    @FXML
     public HBox newActionHintHBox;
+    @FXML
+    public StackPane alertStackPane;
+    @FXML
+    private StackPane progressStackPane;
+
+    int currentSelectionMode = 0;
+    /*
+    Selection Modes:
+    0 - Nothing (Normal)
+    1 - Hotkey
+     */
 
     HashMap<String, String> config = new HashMap<>();
     boolean isServerStarted = false;
@@ -105,6 +118,8 @@ public class dashboardController implements Initializable {
                 else
                 {
                     new FadeInUp(notConnectedPane).play();
+                    if(newActionHintHBox.getOpacity()==1)
+                        hideNewActionHint();
                     notConnectedPane.toFront();
                 }
             }
@@ -204,12 +219,6 @@ public class dashboardController implements Initializable {
         return finalResult;
     }
 
-
-    public void retrieveActions()
-    {
-
-    }
-
     ServerSocket server;
     Socket socket;
     DataInputStream is;
@@ -291,7 +300,8 @@ public class dashboardController implements Initializable {
         t1.start();
     }
 
-
+    int selectedRow;
+    int selectedCol;
 
     HashMap<String, Image> icons = new HashMap<>();
     String[][] actions;
@@ -327,19 +337,20 @@ public class dashboardController implements Initializable {
                     {
                         System.out.println("XDA@@!@");
                         int noOfActions = Integer.parseInt(msgArr[1]);
-                        actions = new String[noOfActions][6];
+                        actions = new String[noOfActions][7];
                         int index = 2;
                         for(int i = 0; i<noOfActions;i++)
                         {
                             String[] actionChunk = msgArr[index].split("__");
                             actions[i][0] = actionChunk[0]; //Unique ID
                             actions[i][1] = actionChunk[1]; //Casual Name
-                            actions[i][2] = actionChunk[2]; //Hot Key OR MACROSCODE
+                            actions[i][2] = actionChunk[2]; //Action Type
+                            actions[i][3] = actionChunk[3]; //Action Content
                             //actions[i][3] = actionChunk[3]; //Picture in base 64
-                            actions[i][3] = actionChunk[3]; //Picture file name
+                            actions[i][4] = actionChunk[4]; //Picture file name
                             //actions[i][4] = actionChunk[4]; //Ambient Colour
-                            actions[i][4] = actionChunk[4]; //Row No
-                            actions[i][5] = actionChunk[5]; //Col No
+                            actions[i][5] = actionChunk[5]; //Row No
+                            actions[i][6] = actionChunk[6]; //Col No
                             index++;
                         }
                         System.out.println("XDAasdsd@@!@");
@@ -376,9 +387,9 @@ public class dashboardController implements Initializable {
                         boolean isPresent = true;
                         for(String[] eachAction : actions)
                         {
-                            if(!icons.containsKey(eachAction[3]))
+                            if(!icons.containsKey(eachAction[4]))
                             {
-                                System.out.println(eachAction[3]+"XXS");
+                                System.out.println(eachAction[4]+"XXS");
                                 isPresent = false;
                                 break;
                             }
@@ -400,11 +411,16 @@ public class dashboardController implements Initializable {
                                 {
                                     actionPane[k] = new Pane();
                                     actionPane[k].setPrefSize(90,90);
-                                    actionPane[k].setId("freeAction");
+                                    actionPane[k].setId("freeAction_"+i+"_"+k);
                                     actionPane[k].setOnMouseClicked(new EventHandler<MouseEvent>() {
                                         @Override
                                         public void handle(MouseEvent event) {
                                             Pane n = (Pane) event.getSource();
+
+                                            String[] ar = n.getId().split("_");
+
+                                            selectedRow = Integer.parseInt(ar[1]);
+                                            selectedCol = Integer.parseInt(ar[2]);
 
                                             if(currentSelectionMode == 0)
                                             {
@@ -414,22 +430,21 @@ public class dashboardController implements Initializable {
                                             {
                                                 popupStackPane.toFront();
 
-
                                                 try
                                                 {
-                                                    JFXDialogLayout newShortcutActionDialogLayout = new JFXDialogLayout();
-                                                    newShortcutActionDialogLayout.getStyleClass().add("dialog_style");
-                                                    VBox newShortcut = FXMLLoader.load(getClass().getResource("newShortcutPopup.fxml"));
-                                                    newShortcutActionDialogLayout.setBody(newShortcut);
-                                                    d = new JFXDialog(popupStackPane, newShortcutActionDialogLayout, JFXDialog.DialogTransition.CENTER);
-                                                    d.setOverlayClose(false);
-                                                    d.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
+                                                    JFXDialogLayout newHotkeyActionDialogLayout = new JFXDialogLayout();
+                                                    newHotkeyActionDialogLayout.getStyleClass().add("dialog_style");
+                                                    VBox newHotkey = FXMLLoader.load(getClass().getResource("newHotkeyPopup.fxml"));
+                                                    newHotkeyActionDialogLayout.setBody(newHotkey);
+                                                    newActionConfigDialog = new JFXDialog(popupStackPane, newHotkeyActionDialogLayout, JFXDialog.DialogTransition.CENTER);
+                                                    newActionConfigDialog.setOverlayClose(false);
+                                                    newActionConfigDialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
                                                         @Override
                                                         public void handle(JFXDialogEvent event) {
                                                             popupStackPane.toBack();
                                                         }
                                                     });
-                                                    d.show();
+                                                    newActionConfigDialog.show();
                                                 }
                                                 catch (Exception e)
                                                 {
@@ -437,7 +452,7 @@ public class dashboardController implements Initializable {
                                                 }
 
 
-                                                System.out.println("now is shortcut");
+                                                System.out.println("now is hotkey");
                                             }
                                         }
                                     });
@@ -452,14 +467,14 @@ public class dashboardController implements Initializable {
                                 System.out.println("XDA121d@@!@");
                                 System.out.println("actions[i]XX : "+actions[i][3]);
                                 ImageView icon = new ImageView();
-                                icon.setImage(icons.get(actions[i][3]));
+                                icon.setImage(icons.get(actions[i][4]));
                                 icon.setFitHeight(90);
                                 icon.setFitWidth(90);
 
                                 Pane actionPane = new Pane(icon);
                                 actionPane.setPrefSize(90,90);
                                 //actionPane.setStyle("-fx-effect: dropshadow(three-pass-box, "+actions[i][4]+", 5, 0, 0, 0);-fx-background-color:#212121");
-                                actionPane.setId(actions[i][2]);
+                                actionPane.setId(actions[i][0]);
                                 actionPane.setOnTouchPressed(new EventHandler<TouchEvent>() {
                                     @Override
                                     public void handle(TouchEvent event) {
@@ -468,7 +483,7 @@ public class dashboardController implements Initializable {
                                     }
                                 });
 
-                                rows[Integer.parseInt(actions[i][4])].getChildren().set(Integer.parseInt(actions[i][5]), actionPane);
+                                rows[Integer.parseInt(actions[i][5])].getChildren().set(Integer.parseInt(actions[i][6]), actionPane);
                             }
 
                             Platform.runLater(new Runnable() {
@@ -492,6 +507,35 @@ public class dashboardController implements Initializable {
                             System.out.println("SORRY MADARCHOD!");
                         }
                     }
+                    else if(msgHeader.equals("hotkey"))
+                    {
+                        String keysRaw[] = msgArr[1].split("<>");
+                        int[] keys = new int[keysRaw.length];
+
+                        for(int i = 0;i<keysRaw.length; i++)
+                        {
+                            if(keysRaw[i].equals("WIN"))
+                            {
+                                keys[i] = KeyEvent.VK_WINDOWS;
+                            }
+                            else if(keysRaw[i].equals("R"))
+                            {
+                                keys[i] = KeyEvent.VK_R;
+                            }
+                        }
+
+                        Robot robot = new Robot();
+
+                        for(int eachKey : keys)
+                        {
+                            robot.keyPress(eachKey);
+                        }
+                        Thread.sleep(50);
+                        for(int eachKey : keys)
+                        {
+                            robot.keyRelease(eachKey);
+                        }
+                    }
                     else
                     {
                         System.out.println("'"+message+"'");
@@ -508,7 +552,7 @@ public class dashboardController implements Initializable {
             }
         }
     };
-    JFXDialog d;
+    JFXDialog newActionConfigDialog;
     String streamPIIP;
     String streamPINickName;
     int streamPIWidth;
@@ -525,10 +569,10 @@ public class dashboardController implements Initializable {
     }
 
     @FXML
-    public void newShortcutAction()
+    public void newHotkeyAction()
     {
         currentSelectionMode = 1;
-        showNewActionHint("Shortcut");
+        showNewActionHint("Hotkey");
     }
 
     public void showNewActionHint(String actionName)
@@ -539,7 +583,7 @@ public class dashboardController implements Initializable {
             for(Node eachActionN : eachRow.getChildren())
             {
                 Pane eachAction = (Pane) eachActionN;
-                if(eachAction.getId().equals("freeAction"))
+                if(eachAction.getId().contains("freeAction"))
                 {
                     eachAction.getStyleClass().add("action_box_highlight");
                 }
@@ -560,7 +604,7 @@ public class dashboardController implements Initializable {
             for(Node eachActionN : eachRow.getChildren())
             {
                 Pane eachAction = (Pane) eachActionN;
-                if(eachAction.getId().equals("freeAction"))
+                if(eachAction.getId().contains("freeAction"))
                 {
                     eachAction.getStyleClass().remove("action_box_highlight");
                 }
@@ -571,10 +615,92 @@ public class dashboardController implements Initializable {
         new FadeOutDown(newActionHintHBox).play();
     }
 
-    int currentSelectionMode = 0;
-    /*
-    Selection Modes:
-    0 - Nothing (Normal)
-    1 - Shortcut
-     */
+    //TODO : Call System.gc() every 30 secs to clear memory.
+
+    public void showErrorAlert(String heading, String content)
+    {
+        JFXDialogLayout l = new JFXDialogLayout();
+        l.getStyleClass().add("dialog_style");
+        Label headingLabel = new Label(heading);
+        headingLabel.setTextFill(WHITE_PAINT);
+        headingLabel.setFont(Font.font("Roboto Regular",25));
+        l.setHeading(headingLabel);
+        Label contentLabel = new Label(content);
+        contentLabel.setFont(Font.font("Roboto Regular",15));
+        contentLabel.setTextFill(WHITE_PAINT);
+        contentLabel.setWrapText(true);
+        l.setBody(contentLabel);
+        JFXButton okButton = new JFXButton("OK");
+        okButton.setTextFill(WHITE_PAINT);
+        l.setActions(okButton);
+
+        JFXDialog alertDialog = new JFXDialog(alertStackPane,l, JFXDialog.DialogTransition.CENTER);
+        alertDialog.setOverlayClose(false);
+        alertDialog.getStyleClass().add("dialog_box");
+        okButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                alertDialog.close();
+                alertDialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
+                    @Override
+                    public void handle(JFXDialogEvent event) {
+                        alertStackPane.toBack();
+                    }
+                });
+            }
+        });
+
+        alertStackPane.toFront();
+        alertDialog.show();
+    }
+
+    public void showProgress(String heading, String text)
+    {
+        JFXDialogLayout l = new JFXDialogLayout();
+        l.getStyleClass().add("dialog_style");
+        Label headingLabel = new Label(heading);
+        headingLabel.setTextFill(WHITE_PAINT);
+        headingLabel.setFont(Font.font("Roboto Regular",25));
+        l.setHeading(headingLabel);
+        Label textLabel = new Label(text);
+        textLabel.setFont(Font.font("Roboto Regular",15));
+        textLabel.setTextFill(WHITE_PAINT);
+        textLabel.setWrapText(true);
+
+        //TODO : Add Transparent Indeterminate Progress loading gif
+
+        HBox content = new HBox(textLabel);
+        l.setBody(content);
+
+        progressDialog = new JFXDialog(progressStackPane,l, JFXDialog.DialogTransition.CENTER);
+        progressDialog.setOverlayClose(false);
+        progressDialog.getStyleClass().add("dialog_box");
+
+        progressStackPane.toFront();
+        progressDialog.show();
+    }
+
+    JFXDialog progressDialog;
+
+    public void hideProgress()
+    {
+        progressDialog.close();
+        progressDialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
+            @Override
+            public void handle(JFXDialogEvent event) {
+                progressStackPane.toBack();
+            }
+        });
+    }
+
+    public void hideNewActionConfigDialog()
+    {
+        newActionConfigDialog.close();
+        newActionConfigDialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
+            @Override
+            public void handle(JFXDialogEvent event) {
+                popupStackPane.toBack();
+            }
+        });
+    }
 }
