@@ -6,6 +6,19 @@
     -fx-background-color : #212121;
 }
 
+.jfx-chip-view > .scroll-pane,
+.jfx-chip-view > .scroll-pane > .viewport {
+    -fx-background-color: #212121;
+}
+
+.jfx-chip-view .chips-pane > .text-area,
+.jfx-chip-view .chips-pane > .text-area .scroll-pane,
+.jfx-chip-view .chips-pane > .text-area .scroll-pane > .viewport,
+.jfx-chip-view .chips-pane > .text-area:focused,
+.jfx-chip-view .chips-pane > .text-area:focused .scroll-pane {
+    -fx-background-color: #212121, #212121, #212121, #212121;
+}
+
 .scroll-pane .viewport {
     -fx-background-color: black;
 }

@@ -1,3 +1,4 @@
+import com.jfoenix.controls.JFXDecorator;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,13 +14,18 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("dashboard.fxml"));
         primaryStage.setTitle("StreamPi Server");
-        primaryStage.setScene(new Scene(root));
+        JFXDecorator decorator = new JFXDecorator(primaryStage, root);
+        decorator.setCustomMaximize(true);
+        Scene x = new Scene(decorator);
+        primaryStage.setScene(x);
         primaryStage.show();
         ps = primaryStage;
+        xs = x;
     }
 
     public static dashboardController dc;
     public static Stage ps;
+    public static Scene xs;
 
 
     public static void main(String[] args) {

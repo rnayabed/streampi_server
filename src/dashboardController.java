@@ -5,7 +5,6 @@ import com.jfoenix.controls.*;
 import com.jfoenix.controls.events.JFXDialogEvent;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -13,30 +12,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
+import javafx.scene.robot.Robot;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
-import java.nio.Buffer;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -141,6 +133,9 @@ public class dashboardController implements Initializable {
     }
 
     @FXML
+    private Accordion actionsAccordion;
+
+    @FXML
     public void showDeviceConfigPane()
     {
         //retrieve actions...
@@ -149,7 +144,7 @@ public class dashboardController implements Initializable {
             protected Void call() {
                 try
                 {
-                    Thread.sleep(3000);
+                    //Thread.sleep(3000);
                     System.out.println("xc");
                     if(isConnectedToClient)
                     {
@@ -300,11 +295,12 @@ public class dashboardController implements Initializable {
         t1.start();
     }
 
-    int selectedRow;
-    int selectedCol;
+    static int selectedRow;
+    static int selectedCol;
+    static String selectedActionUniqueID;
 
-    HashMap<String, Image> icons = new HashMap<>();
-    String[][] actions;
+    static HashMap<String, Image> icons = new HashMap<>();
+    static String[][] actions;
     Task<Void> serverCommTask = new Task<Void>() {
         @Override
         protected Void call() {
@@ -318,229 +314,279 @@ public class dashboardController implements Initializable {
                 }
                 is = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
                 os = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+                if (currentlyReading)
+                {
+                    Thread.sleep(500);
+                    continue;
+                }
+                System.out.println("sdsdasdasdasdasd");
+                String message = readFromIS();
+                System.out.println(message);
 
+                String[] msgArr = message.split("::");
+                String msgHeader = msgArr[0];
 
-                    if (currentlyReading)
+                System.out.println("'"+msgHeader+"'");
+                if(msgHeader.equals("client_actions"))
+                {
+                    System.out.println("XDA@@!@");
+                    int noOfActions = Integer.parseInt(msgArr[1]);
+                    actions = new String[noOfActions][7];
+                    int index = 2;
+                    for(int i = 0; i<noOfActions;i++)
                     {
-                        Thread.sleep(500);
-                        continue;
+                        String[] actionChunk = msgArr[index].split("__");
+                        actions[i][0] = actionChunk[0]; //Unique ID
+                        actions[i][1] = actionChunk[1]; //Casual Name
+                        actions[i][2] = actionChunk[2]; //Action Type
+                        actions[i][3] = actionChunk[3]; //Action Content
+                        //actions[i][3] = actionChunk[3]; //Picture in base 64
+                        actions[i][4] = actionChunk[4]; //Picture file name
+                        //actions[i][4] = actionChunk[4]; //Ambient Colour
+                        actions[i][5] = actionChunk[5]; //Row No
+                        actions[i][6] = actionChunk[6]; //Col No
+                        index++;
                     }
-                    System.out.println("sdsdasdasdasdasd");
-                    String message = readFromIS();
-                    System.out.println(message);
-
-                    String[] msgArr = message.split("::");
-                    String msgHeader = msgArr[0];
-
-                    System.out.println("'"+msgHeader+"'");
-                    if(msgHeader.equals("client_actions"))
+                    if(noOfActions == 0)
                     {
-                        System.out.println("XDA@@!@");
-                        int noOfActions = Integer.parseInt(msgArr[1]);
-                        actions = new String[noOfActions][7];
-                        int index = 2;
-                        for(int i = 0; i<noOfActions;i++)
+                        HBox[] rows = new HBox[streamPIMaxNoOfRows];
+                        for(int i = 0;i<streamPIMaxNoOfRows;i++)
                         {
-                            String[] actionChunk = msgArr[index].split("__");
-                            actions[i][0] = actionChunk[0]; //Unique ID
-                            actions[i][1] = actionChunk[1]; //Casual Name
-                            actions[i][2] = actionChunk[2]; //Action Type
-                            actions[i][3] = actionChunk[3]; //Action Content
-                            //actions[i][3] = actionChunk[3]; //Picture in base 64
-                            actions[i][4] = actionChunk[4]; //Picture file name
-                            //actions[i][4] = actionChunk[4]; //Ambient Colour
-                            actions[i][5] = actionChunk[5]; //Row No
-                            actions[i][6] = actionChunk[6]; //Col No
-                            index++;
+                            rows[i] = new HBox();
+                            rows[i].setSpacing(20);
+                            rows[i].setAlignment(Pos.CENTER);
+
+                            Pane[] actionPane = new Pane[streamPIMaxActionsPerRow];
+                            for(int k = 0;k<streamPIMaxActionsPerRow;k++)
+                            {
+                                actionPane[k] = new Pane();
+                                actionPane[k].setPrefSize(90,90);
+                                actionPane[k].setId("freeAction_"+i+"_"+k);
+                                actionPane[k].setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                    @Override
+                                    public void handle(MouseEvent event) {
+                                        Pane n = (Pane) event.getSource();
+
+                                        String[] ar = n.getId().split("_");
+
+                                        selectedRow = Integer.parseInt(ar[1]);
+                                        selectedCol = Integer.parseInt(ar[2]);
+
+                                        if(ar[0].equals("allocatedaction"))
+                                        {
+                                            if(currentSelectionMode == 0)
+                                            {
+                                                System.out.println("GAY");
+                                                selectedActionUniqueID = ar[3]+"_"+ar[4];
+                                                loadPopupFXML("hotkeyConfig.fxml",2);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if(currentSelectionMode == 1)
+                                            {
+                                                loadPopupFXML("hotkeyConfig.fxml",1);
+                                            }
+                                        }
+                                    }
+                                });
+                                actionPane[k].getStyleClass().add("action_box");
+                            }
+
+                            rows[i].getChildren().addAll(actionPane);
                         }
+
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                controlVBox.getChildren().clear();
+                                controlVBox.getChildren().addAll(rows);
+                                hideNotConnectedPane();
+                                new FadeInUp(deviceConfigPane).play();
+                                deviceConfigPane.toFront();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        controlVBox.setAlignment(Pos.TOP_CENTER);
                         System.out.println("XDAasdsd@@!@");
                         Thread.sleep(1500);
                         writeToOS("client_actions_icons_get::");
                     }
-                    else if(msgHeader.equals("client_details"))
+                }
+                else if(msgHeader.equals("client_details"))
+                {
+                    streamPIIP = msgArr[1];
+                    streamPINickName = msgArr[2];
+                    streamPIWidth = Integer.parseInt(msgArr[3]);
+                    streamPIHeight = Integer.parseInt(msgArr[4]);
+                    streamPIMaxActionsPerRow = Integer.parseInt(msgArr[5]);
+                    streamPIMaxNoOfRows = Integer.parseInt(msgArr[6]);
+                    System.out.println("NIGGER REGISTERED!");
+                }
+                else if(msgHeader.equals("action_icon"))
+                {
+                    String iconName = msgArr[1];
+                    System.out.println("ICON NAME : "+iconName);
+                    //byte[] imageIcon = Base64.getDecoder().decode(msgArr[2]);
+                    //Image newImage = new Image(new ByteArrayInputStream(imageIcon));
+                    System.out.println("msg arr : "+msgArr[2]);
+
+                    byte[] img_byte;
+                    img_byte = Base64.getDecoder().decode(msgArr[2]);
+                    //BufferedImage img = ImageIO.read(new ByteArrayInputStream(img_byte));
+                    Image img = new Image(new ByteArrayInputStream(img_byte));
+                    if(!icons.containsKey(msgArr[2]))
+                        icons.put(iconName, img);
+
+
+                    //check all icons present or not
+                    boolean isPresent = true;
+                    for(String[] eachAction : actions)
                     {
-                        streamPIIP = msgArr[1];
-                        streamPINickName = msgArr[2];
-                        streamPIWidth = Integer.parseInt(msgArr[3]);
-                        streamPIHeight = Integer.parseInt(msgArr[4]);
-                        streamPIMaxActionsPerRow = Integer.parseInt(msgArr[5]);
-                        streamPIMaxNoOfRows = Integer.parseInt(msgArr[6]);
-                        System.out.println("NIGGER REGISTERED!");
-                    }
-                    else if(msgHeader.equals("action_icon"))
-                    {
-                        String iconName = msgArr[1];
-                        System.out.println("ICON NAME : "+iconName);
-                        //byte[] imageIcon = Base64.getDecoder().decode(msgArr[2]);
-                        //Image newImage = new Image(new ByteArrayInputStream(imageIcon));
-                        System.out.println("msg arr : "+msgArr[2]);
-
-                        byte[] img_byte;
-                        img_byte = Base64.getDecoder().decode(msgArr[2]);
-                        //BufferedImage img = ImageIO.read(new ByteArrayInputStream(img_byte));
-                        Image img = new Image(new ByteArrayInputStream(img_byte));
-                        if(!icons.containsKey(msgArr[2]))
-                            icons.put(iconName, img);
-
-
-                        //check all icons present or not
-                        boolean isPresent = true;
-                        for(String[] eachAction : actions)
+                        if(!icons.containsKey(eachAction[4]))
                         {
-                            if(!icons.containsKey(eachAction[4]))
-                            {
-                                System.out.println(eachAction[4]+"XXS");
-                                isPresent = false;
-                                break;
-                            }
+                            System.out.println(eachAction[4]+"XXS");
+                            isPresent = false;
+                            break;
                         }
+                    }
 
-                        if(isPresent && !isDrawn)
+                    if(isPresent && !isDrawn)
+                    {
+                        isDrawn = true;
+                        System.out.println("PRESENT!!!");
+                        HBox[] rows = new HBox[streamPIMaxNoOfRows];
+                        for(int i = 0;i<streamPIMaxNoOfRows;i++)
                         {
-                            isDrawn = true;
-                            System.out.println("PRESENT!!!");
-                            HBox[] rows = new HBox[streamPIMaxNoOfRows];
-                            for(int i = 0;i<streamPIMaxNoOfRows;i++)
+                            rows[i] = new HBox();
+                            rows[i].setSpacing(20);
+                            rows[i].setAlignment(Pos.CENTER);
+
+                            Pane[] actionPane = new Pane[streamPIMaxActionsPerRow];
+                            for(int k = 0;k<streamPIMaxActionsPerRow;k++)
                             {
-                                rows[i] = new HBox();
-                                rows[i].setSpacing(20);
-                                rows[i].setAlignment(Pos.CENTER);
+                                actionPane[k] = new Pane();
+                                actionPane[k].setPrefSize(90,90);
+                                actionPane[k].setId("freeAction_"+i+"_"+k);
+                                actionPane[k].setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                    @Override
+                                    public void handle(MouseEvent event) {
+                                        Pane n = (Pane) event.getSource();
 
-                                Pane[] actionPane = new Pane[streamPIMaxActionsPerRow];
-                                for(int k = 0;k<streamPIMaxActionsPerRow;k++)
-                                {
-                                    actionPane[k] = new Pane();
-                                    actionPane[k].setPrefSize(90,90);
-                                    actionPane[k].setId("freeAction_"+i+"_"+k);
-                                    actionPane[k].setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                        @Override
-                                        public void handle(MouseEvent event) {
-                                            Pane n = (Pane) event.getSource();
+                                        String[] ar = n.getId().split("_");
 
-                                            String[] ar = n.getId().split("_");
+                                        selectedRow = Integer.parseInt(ar[1]);
+                                        selectedCol = Integer.parseInt(ar[2]);
 
-                                            selectedRow = Integer.parseInt(ar[1]);
-                                            selectedCol = Integer.parseInt(ar[2]);
-
+                                        if(ar[0].equals("allocatedaction"))
+                                        {
                                             if(currentSelectionMode == 0)
                                             {
-                                                System.out.println("now is normal");
-                                            }
-                                            else if(currentSelectionMode == 1)
-                                            {
-                                                popupStackPane.toFront();
+                                                System.out.println("GAY");
+                                                System.out.println("SETTING");
+                                                selectedActionUniqueID = ar[3]+"_"+ar[4];
 
-                                                try
-                                                {
-                                                    JFXDialogLayout newHotkeyActionDialogLayout = new JFXDialogLayout();
-                                                    newHotkeyActionDialogLayout.getStyleClass().add("dialog_style");
-                                                    VBox newHotkey = FXMLLoader.load(getClass().getResource("newHotkeyPopup.fxml"));
-                                                    newHotkeyActionDialogLayout.setBody(newHotkey);
-                                                    newActionConfigDialog = new JFXDialog(popupStackPane, newHotkeyActionDialogLayout, JFXDialog.DialogTransition.CENTER);
-                                                    newActionConfigDialog.setOverlayClose(false);
-                                                    newActionConfigDialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
-                                                        @Override
-                                                        public void handle(JFXDialogEvent event) {
-                                                            popupStackPane.toBack();
-                                                        }
-                                                    });
-                                                    newActionConfigDialog.show();
+                                                for (String[] eachAction : actions) {
+                                                    if (eachAction[2].equals("hotkey")) {
+                                                        loadPopupFXML("hotkeyConfig.fxml", 2);
+                                                        break;
+                                                    }
                                                 }
-                                                catch (Exception e)
-                                                {
-                                                    e.printStackTrace();
-                                                }
-
-
-                                                System.out.println("now is hotkey");
                                             }
                                         }
-                                    });
-                                    actionPane[k].getStyleClass().add("action_box");
-                                }
-
-                                rows[i].getChildren().addAll(actionPane);
-                            }
-
-                            for(int i = 0;i<actions.length; i++)
-                            {
-                                System.out.println("XDA121d@@!@");
-                                System.out.println("actions[i]XX : "+actions[i][3]);
-                                ImageView icon = new ImageView();
-                                icon.setImage(icons.get(actions[i][4]));
-                                icon.setFitHeight(90);
-                                icon.setFitWidth(90);
-
-                                Pane actionPane = new Pane(icon);
-                                actionPane.setPrefSize(90,90);
-                                //actionPane.setStyle("-fx-effect: dropshadow(three-pass-box, "+actions[i][4]+", 5, 0, 0, 0);-fx-background-color:#212121");
-                                actionPane.setId(actions[i][0]);
-                                actionPane.setOnTouchPressed(new EventHandler<TouchEvent>() {
-                                    @Override
-                                    public void handle(TouchEvent event) {
-                                        Node n = (Node) event.getSource();
-                                        System.out.println(n.getId());
+                                        else
+                                        {
+                                            if(currentSelectionMode == 1)
+                                            {
+                                                loadPopupFXML("hotkeyConfig.fxml",1);
+                                            }
+                                        }
                                     }
                                 });
-
-                                rows[Integer.parseInt(actions[i][5])].getChildren().set(Integer.parseInt(actions[i][6]), actionPane);
+                                actionPane[k].getStyleClass().add("action_box");
                             }
 
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    controlVBox.getChildren().clear();
-                                    controlVBox.getChildren().addAll(rows);
-                                    Platform.runLater(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            hideNotConnectedPane();
-                                            new FadeInUp(deviceConfigPane).play();
-                                            deviceConfigPane.toFront();
-                                        }
-                                    });
-                                }
-                            });
+                            rows[i].getChildren().addAll(actionPane);
                         }
-                        else
-                        {
-                            System.out.println("SORRY MADARCHOD!");
-                        }
-                    }
-                    else if(msgHeader.equals("hotkey"))
-                    {
-                        String keysRaw[] = msgArr[1].split("<>");
-                        int[] keys = new int[keysRaw.length];
 
-                        for(int i = 0;i<keysRaw.length; i++)
+                        for(int i = 0;i<actions.length; i++)
                         {
-                            if(keysRaw[i].equals("WIN"))
-                            {
-                                keys[i] = KeyEvent.VK_WINDOWS;
+
+                            System.out.println("XDA121d@@!@");
+                            System.out.println("actions[i]XX : "+actions[i][3]);
+                            ImageView icon = new ImageView();
+                            icon.setImage(icons.get(actions[i][4]));
+                            icon.setFitHeight(90);
+                            icon.setFitWidth(90);
+
+                            Pane aPane = (Pane) rows[Integer.parseInt(actions[i][5])].getChildren().get(Integer.parseInt(actions[i][6]));
+                            aPane.getChildren().add(icon);
+                            //Pane actionPane = new Pane(icon);
+                            aPane.setPrefSize(90,90);
+                            //actionPane.setStyle("-fx-effect: dropshadow(three-pass-box, "+actions[i][4]+", 5, 0, 0, 0);-fx-background-color:#212121");
+                            aPane.setId("allocatedaction_"+actions[i][5]+"_"+actions[i][6]+"_"+actions[i][0]);
+
+                            //rows[Integer.parseInt(actions[i][5])].getChildren().set(Integer.parseInt(actions[i][6]), actionPane);
+                        }
+
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                controlVBox.getChildren().clear();
+                                controlVBox.getChildren().addAll(rows);
+                                hideNotConnectedPane();
+                                new FadeInUp(deviceConfigPane).play();
+                                deviceConfigPane.toFront();
                             }
-                            else if(keysRaw[i].equals("R"))
-                            {
-                                keys[i] = KeyEvent.VK_R;
-                            }
-                        }
-
-                        Robot robot = new Robot();
-
-                        for(int eachKey : keys)
-                        {
-                            robot.keyPress(eachKey);
-                        }
-                        Thread.sleep(50);
-                        for(int eachKey : keys)
-                        {
-                            robot.keyRelease(eachKey);
-                        }
+                        });
                     }
                     else
                     {
-                        System.out.println("'"+message+"'");
+                        System.out.println("SORRY MADARCHOD!");
                     }
                 }
+                else if(msgHeader.equals("hotkey"))
+                {
+                    String keysRaw[] = msgArr[1].split("<>");
+                    /*int[] keys = new int[keysRaw.length];
+
+                    for(int i = 0;i<keysRaw.length; i++)
+                    {
+                        keys[i] = Integer.parseInt(keysRaw[i]);
+                        System.out.println("SAXX : "+keys[i]);
+                    }*/
+
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Robot robot = new Robot();
+
+                                for(String eachKey : keysRaw)
+                                {
+                                    System.out.println(eachKey);
+                                    robot.keyPress(KeyCode.valueOf(eachKey));
+                                }
+                                Thread.sleep(50);
+                                for(String eachKey : keysRaw)
+                                {
+                                    robot.keyRelease(KeyCode.valueOf(eachKey));
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    System.out.println("'"+message+"'");
+                }
+            }
             catch (Exception e)
             {
 
@@ -561,6 +607,37 @@ public class dashboardController implements Initializable {
     int streamPIMaxNoOfRows;
     boolean isDrawn = false;
 
+    static int actionConfigType;
+    /*
+    1 = New
+    2 = Edit
+     */
+
+    public void loadPopupFXML(String fxmlFileName, int actionConfigTypeHere)
+    {
+        actionConfigType = actionConfigTypeHere;
+        popupStackPane.toFront();
+        try
+        {
+            JFXDialogLayout newHotkeyActionDialogLayout = new JFXDialogLayout();
+            newHotkeyActionDialogLayout.getStyleClass().add("dialog_style");
+            VBox actionConfig = FXMLLoader.load(getClass().getResource(fxmlFileName));
+            newHotkeyActionDialogLayout.setBody(actionConfig);
+            newActionConfigDialog = new JFXDialog(popupStackPane, newHotkeyActionDialogLayout, JFXDialog.DialogTransition.CENTER);
+            newActionConfigDialog.setOverlayClose(false);
+            newActionConfigDialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
+                @Override
+                public void handle(JFXDialogEvent event) {
+                    popupStackPane.toBack();
+                }
+            });
+            newActionConfigDialog.show();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     public void readConfig()
     {
@@ -577,6 +654,7 @@ public class dashboardController implements Initializable {
 
     public void showNewActionHint(String actionName)
     {
+        actionsAccordion.setDisable(true);
         for(Node eachRowN : controlVBox.getChildren())
         {
             HBox eachRow = (HBox) eachRowN;
@@ -598,6 +676,7 @@ public class dashboardController implements Initializable {
     @FXML
     public void hideNewActionHint()
     {
+        actionsAccordion.setDisable(false);
         for(Node eachRowN : controlVBox.getChildren())
         {
             HBox eachRow = (HBox) eachRowN;
