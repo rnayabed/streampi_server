@@ -101,7 +101,25 @@ public class hotkeyConfig implements Initializable {
                     {
                         txt = "Control";
                     }
-                    if (!getHotkeysEntered().contains(txt))
+                    else if(txt.equals("Esc"))
+                    {
+                        txt = "Escape";
+                    }
+                    else if(txt.equals("Backspace"))
+                    {
+                        txt = "Back_Space";
+                    }
+
+                    boolean isFound = false;
+                    for(String eachHotkey : getHotkeysEntered())
+                    {
+                        if(eachHotkey.equals(txt))
+                        {
+                            isFound = true;
+                            break;
+                        }
+                    }
+                    if (!isFound)
                     {
                         System.out.println("asdkjahdjsahdj");
                         System.out.println(event.getText());
@@ -111,6 +129,10 @@ public class hotkeyConfig implements Initializable {
                                 hotkeyCodeChipView.getChips().add(txt);
                             }
                         });
+                    }
+                    else
+                    {
+                        System.out.println("BHAKK");
                     }
                 }
             }
@@ -222,7 +244,7 @@ public class hotkeyConfig implements Initializable {
     public void addButtonClicked()
     {
         String actionCasualName = actionCasualNameField.getText();
-        String hotkeyCode = getHotkeysEntered();
+        String[] hotkeyCode = getHotkeysEntered();
         String iconPath = iconPathField.getText();
 
         StringBuilder errors = new StringBuilder("Please correct and resolve the following errors :\n");
@@ -234,7 +256,7 @@ public class hotkeyConfig implements Initializable {
             isError = true;
         }
 
-        if(hotkeyCode.length() == 0)
+        if(hotkeyCode.length == 1)
         {
             errors.append("Invalid HotKey Entered\n");
             isError = true;
@@ -291,7 +313,12 @@ public class hotkeyConfig implements Initializable {
                         oldActions[i][0] = generateRandomID();
                         oldActions[i][1] = actionCasualName;
                         oldActions[i][2] = "hotkey";
-                        oldActions[i][3] = getHotkeysEntered();
+                        String toWrite = "";
+                        for(String eachString : getHotkeysEntered())
+                        {
+                            toWrite+=eachString+"<>";
+                        }
+                        oldActions[i][3] = toWrite;
                         //oldActions[i][4] = selectedIconFile.getName();
                         oldActions[i][4] = newFileName;
                         oldActions[i][5] = Main.dc.selectedRow+"";
@@ -350,7 +377,12 @@ public class hotkeyConfig implements Initializable {
                                 oldActions[i][0] = generateRandomID();
                                 oldActions[i][1] = actionCasualName;
                                 oldActions[i][2] = "hotkey";
-                                oldActions[i][3] = getHotkeysEntered();
+                                String toWrite = "";
+                                for(String eachString : getHotkeysEntered())
+                                {
+                                    toWrite+=eachString+"<>";
+                                }
+                                oldActions[i][3] = toWrite;
                                 //oldActions[i][4] = selectedIconFile.getName();
                                 if(iconPathField.getText().length()>0)
                                 {
@@ -393,6 +425,8 @@ public class hotkeyConfig implements Initializable {
 
                     }
 
+                    Thread.sleep(1000);
+
                     String towrite = "actions_update::"+dashboardController.actions.length+"::";
 
                     for(String[] eachAction : dashboardController.actions)
@@ -407,7 +441,7 @@ public class hotkeyConfig implements Initializable {
                     System.out.println(towrite);
                     Main.dc.writeToOS(towrite);
 
-                    Thread.sleep(50);
+
 
                     Platform.runLater(new Runnable() {
                         @Override
@@ -431,7 +465,7 @@ public class hotkeyConfig implements Initializable {
     File selectedIconFile;
     Image previewIcon;
 
-    public String getHotkeysEntered()
+    public String[] getHotkeysEntered()
     {
         String hotkeyz = "";
         for(Object eachKey : hotkeyCodeChipView.getChips())
@@ -440,7 +474,7 @@ public class hotkeyConfig implements Initializable {
             hotkeyz+=s.toUpperCase()+"<>";
         }
         System.out.println(hotkeyz);
-        return hotkeyz;
+        return hotkeyz.split("<>");
     }
 
     @FXML
