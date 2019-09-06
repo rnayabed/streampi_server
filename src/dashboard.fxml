@@ -1,25 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="877.0" prefWidth="1411.0" styleClass="basePane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dashboardController">
    <children>
+      <VBox fx:id="connectionErrorPane" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label text="Unable To Start Server" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="30.0" />
+               </font>
+            </Label>
+            <Label text="Check your network settings and try again" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER" spacing="50.0">
+               <children>
+                  <JFXButton onAction="#showSettingsPane" style="-fx-background-color: #484848;" text="Open Settings" textFill="WHITE" />
+                  <JFXButton fx:id="retryButton" onAction="#retryButtonClicked" style="-fx-background-color: #484848;" text="Retry" textFill="WHITE" />
+                  <JFXButton onAction="#showStackTraceOfConnectionError" style="-fx-background-color: #484848;" text="Show StackTrace" textFill="WHITE" />
+               </children>
+            </HBox>
+            <Label text="This is a terrible way of showing connection error. Will get a facelift in the future." />
+         </children>
+      </VBox>
+      <VBox fx:id="settingsPane" spacing="25.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox>
+               <children>
+                  <Label text="Settings" textFill="WHITE">
+                     <font>
+                        <Font name="Roboto Regular" size="30.0" />
+                     </font>
+                  </Label>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <JFXButton onAction="#hideSettingsPane" text=" ">
+                     <graphic>
+                        <ImageView fitHeight="48.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@icons/cancel.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </HBox>
+            <HBox spacing="50.0">
+               <children>
+                  <Label prefWidth="60.0" text="Server IP" textFill="WHITE">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField fx:id="serverIPField" disable="true" style="-fx-text-inner-color: white;" unFocusColor="WHITE">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </JFXTextField>
+               </children>
+            </HBox>
+            <HBox spacing="50.0">
+               <children>
+                  <Label prefHeight="19.0" prefWidth="61.0" text="Port" textFill="WHITE">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField fx:id="serverPortField" style="-fx-text-inner-color: white;">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </JFXTextField>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" spacing="50.0">
+               <children>
+                  <JFXButton fx:id="applyButton" onAction="#applySettings" style="-fx-background-color: #484848;" text="Apply" textFill="WHITE" />
+                  <JFXButton onAction="#aboutStreamPiButtonClicked" style="-fx-background-color: #484848;" text="About StreamPi" textFill="WHITE" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+         </padding>
+      </VBox>
       <StackPane fx:id="alertStackPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <StackPane fx:id="progressStackPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <StackPane fx:id="popupStackPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <VBox fx:id="notConnectedPane" alignment="CENTER" spacing="30.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox fx:id="notConnectedPane" alignment="CENTER" cache="true" cacheHint="SPEED" spacing="30.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="statusLabelNotConnectedPane" textFill="WHITE">
+            <Label fx:id="statusLabelNotConnectedPane" text="Setting Up..." textFill="WHITE">
                <font>
                   <Font name="Roboto Regular" size="25.0" />
                </font>
@@ -78,6 +164,15 @@
                   </JFXButton>
                </children>
             </HBox>
+            <JFXButton contentDisplay="CENTER" layoutX="1350.0" layoutY="824.0" onAction="#showSettingsPane" style="-fx-background-color: #484848;" text=" " textFill="WHITE" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0">
+               <graphic>
+                  <ImageView fitHeight="31.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/baseline_settings_white_18dp.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
          </children></AnchorPane>
    </children>
 </AnchorPane>

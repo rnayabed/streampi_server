@@ -7,40 +7,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/StreamPi_Server_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/StreamPi_Server_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/com_google_guava_guava_28_0_jre.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreamPi_Server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/StreamPi_Server.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/StreamPi_Server_jar/StreamPi_Server.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/StreamPi_Server_jar/StreamPi_Server.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboard.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$3.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4$3$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4$3$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4$3$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4$3$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4$3$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4$3$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4$3.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5$5.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$5.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$6.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$7$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$7$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$7$1.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$7.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$8.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController$9.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/dashboardController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$1$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$3$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$3$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$3$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$3$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$3$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$3$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$4$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$4$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$4$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$4$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$4$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$4$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$4$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$4$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/StreamPi_Server/hotkeyConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/StreamPi_Server/icons/putty-64bit-0.71-installer.msi" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/dashboard.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/dashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/dashboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/hotkeyConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/hotkeyConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/icons/putty-64bit-0.71-installer.msi" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -137,7 +134,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="dynamic.classpath" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Java Library Jars/system-hook-3.5.jar!/" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="recentsLimit" value="5" />

@@ -1,9 +1,8 @@
 import animatefx.animation.*;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.events.JFXDialogEvent;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -55,6 +54,16 @@ public class dashboardController implements Initializable {
     @FXML
     public StackPane alertStackPane;
     @FXML
+    public JFXTextField serverIPField;
+    @FXML
+    public JFXTextField serverPortField;
+    @FXML
+    public VBox connectionErrorPane;
+    @FXML
+    public JFXButton retryButton;
+    @FXML
+    public VBox settingsPane;
+    @FXML
     private StackPane progressStackPane;
 
     int currentSelectionMode = 0;
@@ -73,19 +82,30 @@ public class dashboardController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        readConfig();
+
+
         try {
-            readConfig();
             serverIP = Inet4Address.getLocalHost().getHostAddress();
             server = new ServerSocket(Integer.parseInt(config.get("server_port")));
+            server.setReuseAddress(true);
             server.setReceiveBufferSize(950000000);
             server.setSoTimeout(0);
             server.setReceiveBufferSize(370923);
-        } catch (Exception e) {
+
+            if (!isServerStarted) {
+                startServer();
+            }
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
-        if (!isServerStarted) {
-            startServer();
-        }
+
+
+
+        serverIPField.setText(serverIP);
+        serverPortField.setText(config.get("server_port"));
 
 
 
@@ -94,6 +114,157 @@ public class dashboardController implements Initializable {
         t.start();
 
         Main.dc = this;
+    }
+
+    @FXML
+    public void showConnectionErrorPane()
+    {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                retryButton.setDisable(false);
+                connectionErrorPane.toFront();
+                ZoomIn x = new ZoomIn(connectionErrorPane);
+                x.setSpeed(3.0);
+                x.play();
+                System.out.println("XDC");
+            }
+        });
+    }
+
+    @FXML
+    public void aboutStreamPiButtonClicked()
+    {
+        showErrorAlert("About Us","Created By Debayan\nOrginally Thought of by CorporalSaturn\nBETA");
+    }
+
+    @FXML
+    public void hideConnectionErrorPane()
+    {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if(connectionErrorPane.getOpacity()>0)
+                {
+                    System.out.println("FADING");
+                    ZoomOut x = new ZoomOut(connectionErrorPane);
+                    x.setOnFinished(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            connectionErrorPane.toBack();
+                        }
+                    });
+                    x.setSpeed(3);
+                    x.play();
+                }
+            }
+        });
+    }
+
+    @FXML
+    public void showSettingsPane()
+    {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                retryButton.setDisable(false);
+                settingsPane.toFront();
+                ZoomIn x = new ZoomIn(settingsPane);
+                x.setSpeed(3.0);
+                x.play();
+                System.out.println("XDC");
+            }
+        });
+    }
+
+    @FXML
+    public void hideSettingsPane()
+    {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if(settingsPane.getOpacity()>0)
+                {
+                    System.out.println("FADING");
+                    ZoomOut x = new ZoomOut(settingsPane);
+                    x.setOnFinished(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            settingsPane.toBack();
+                        }
+                    });
+                    x.setSpeed(2);
+                    x.play();
+                }
+            }
+        });
+    }
+
+    @FXML
+    public void retryButtonClicked()
+    {
+        /*if(serverPortField.getText().length()==0)
+        {
+            showErrorAlert("Invalid Server Port Value","It cannot be left empty!");
+        }
+        else
+        {
+            try
+            {
+                Integer.parseInt(serverPortField.getText());
+
+                retryButton.setDisable(true);
+                updateConfig("server_port",serverPortField.getText());
+                startServer();
+            }
+            catch (Exception e2)
+            {
+                showErrorAlert("Invalid Server Port Value","It must be a numeric value.");
+            }
+        }*/
+
+        retryButton.setDisable(true);
+        hideConnectionErrorPane();
+        startServer();
+        retryButton.setDisable(false);
+    }
+
+    @FXML
+    public JFXButton applyButton;
+
+    @FXML
+    public void applySettings()
+    {
+        if(serverPortField.getText().length()==0)
+        {
+            showErrorAlert("Invalid Server Port Value","It cannot be left empty!");
+        }
+        else
+        {
+            try
+            {
+                Integer.parseInt(serverPortField.getText());
+                if(config.get("server_port").equals(serverPortField.getText()))
+                {
+                    updateConfig("server_port",serverPortField.getText());
+                }
+                else
+                {
+                    updateConfig("server_port",serverPortField.getText());
+                    showErrorAlert("Done","Restart this app to see changes!");
+                }
+            }
+            catch (Exception e2)
+            {
+                showErrorAlert("Invalid Server Port Value","It must be a numeric value.");
+            }
+        }
+    }
+
+    public void updateConfig(String keyName, String newValue)
+    {
+        config.put(keyName,newValue);
+        io.writeToFile(config.get("server_port")+"::","config");
     }
 
     @FXML
@@ -109,7 +280,7 @@ public class dashboardController implements Initializable {
                 }
                 else
                 {
-                    new FadeInUp(notConnectedPane).play();
+                    new ZoomIn(notConnectedPane).play();
                     if(newActionHintHBox.getOpacity()==1)
                         hideNewActionHint();
                     notConnectedPane.toFront();
@@ -125,7 +296,7 @@ public class dashboardController implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                new FadeOutUp(notConnectedPane).play();
+                new ZoomOut(notConnectedPane).play();
                 notConnectedPane.toBack();
             }
         });
@@ -144,6 +315,7 @@ public class dashboardController implements Initializable {
             protected Void call() {
                 try
                 {
+                    hideConnectionErrorPane();
                     //Thread.sleep(3000);
                     System.out.println("xc");
                     if(isConnectedToClient)
@@ -234,6 +406,14 @@ public class dashboardController implements Initializable {
             protected Void call(){
                 try
                 {
+                    if(isConnectedToClient)
+                    {
+                        isConnectedToClient = false;
+                        writeToOS("client_quit::");
+                        Thread.sleep(400);
+                        socket.close();
+                    }
+
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
@@ -244,6 +424,7 @@ public class dashboardController implements Initializable {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
+                            System.out.println("xcasd");
                             statusLabelNotConnectedPane.setText("Listening for StreamPi");
                             serverStatsLabel.setText("Server Running on "+serverIP+", Port "+config.get("server_port"));
                         }
@@ -277,7 +458,6 @@ public class dashboardController implements Initializable {
                                     try
                                     {
                                         showDeviceConfigPane();
-
                                     }
                                     catch (Exception e)
                                     {
@@ -290,7 +470,17 @@ public class dashboardController implements Initializable {
                 }
                 catch (Exception e)
                 {
-                    e.printStackTrace();
+                    //Start Server Issues
+                    try {
+                        Thread.sleep(2500);
+                    }
+                    catch (Exception ex)
+                    {}
+                    showConnectionErrorPane();
+                    StringWriter sw = new StringWriter();
+                    PrintWriter pw = new PrintWriter(sw);
+                    e.printStackTrace(pw);
+                    stackTrace1 = sw.toString();
                 }
                 return null;
             }
@@ -298,6 +488,14 @@ public class dashboardController implements Initializable {
         t1.setDaemon(true);
         t1.start();
     }
+
+    @FXML
+    public void showStackTraceOfConnectionError()
+    {
+        showErrorAlert("Stack Trace",stackTrace1);
+    }
+
+    String stackTrace1 = "";
 
     static int selectedRow;
     static int selectedCol;
@@ -405,8 +603,10 @@ public class dashboardController implements Initializable {
                             public void run() {
                                 controlVBox.getChildren().clear();
                                 controlVBox.getChildren().addAll(rows);
-                                hideNotConnectedPane();
-                                new FadeInUp(deviceConfigPane).play();
+                                //hideNotConnectedPane();
+                                ZoomIn x = new ZoomIn(deviceConfigPane);
+                                x.setSpeed(3.0);
+                                x.play();
                                 deviceConfigPane.toFront();
                             }
                         });
@@ -418,6 +618,12 @@ public class dashboardController implements Initializable {
                         Thread.sleep(1500);
                         writeToOS("client_actions_icons_get::");
                     }
+                }
+                else if(msgHeader.equals("client_quit"))
+                {
+                    isConnectedToClient = false;
+                    socket.close();
+                    startServer();
                 }
                 else if(msgHeader.equals("client_details"))
                 {
@@ -540,8 +746,10 @@ public class dashboardController implements Initializable {
                             public void run() {
                                 controlVBox.getChildren().clear();
                                 controlVBox.getChildren().addAll(rows);
-                                hideNotConnectedPane();
-                                new FadeInUp(deviceConfigPane).play();
+                                //hideNotConnectedPane();
+                                ZoomIn x = new ZoomIn(deviceConfigPane);
+                                x.setSpeed(3.0);
+                                x.play();
                                 deviceConfigPane.toFront();
                             }
                         });
@@ -702,6 +910,7 @@ public class dashboardController implements Initializable {
 
     public void showErrorAlert(String heading, String content)
     {
+        System.out.println("XD");
         JFXDialogLayout l = new JFXDialogLayout();
         l.getStyleClass().add("dialog_style");
         Label headingLabel = new Label(heading);
