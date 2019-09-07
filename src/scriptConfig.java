@@ -1,18 +1,12 @@
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXChipView;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -23,46 +17,52 @@ import java.io.FileInputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.Base64;
-import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.KeyCode;
-public class hotkeyConfig implements Initializable {
-    @FXML
-    private JFXTextField actionCasualNameField;
 
+public class scriptConfig implements Initializable {
     @FXML
-    private JFXChipView hotkeyCodeChipView;
-
-    @FXML
-    private JFXTextField iconPathField;
-
-    @FXML
-    private JFXButton browseButton;
-
-    @FXML
-    private ImageView iconPreviewImg;
-
-    @FXML
-    private JFXButton addButton;
-
-    @FXML
-    private JFXButton deleteButton;
-
-    @FXML
-    private JFXButton cancelButton;
+    private VBox mode_new;
 
     @FXML
     private Label headingLabel;
 
     @FXML
-    private JFXButton recordKeyboardOnOffButton;
+    private JFXTextField actionCasualNameField;
 
-    boolean isRecording = false;
+    @FXML
+    private JFXTextField scriptRunnerField;
 
+    @FXML
+    private JFXButton scriptRunnerBrowseButton;
+
+    @FXML
+    private JFXTextField scriptPathField;
+
+    @FXML
+    private JFXButton scriptPathFieldBrowseButton;
+
+    @FXML
+    private JFXTextField iconPathField;
+
+    @FXML
+    private JFXButton iconBrowseButton;
+
+    @FXML
+    private ImageView iconPreviewImg;
+
+    @FXML
+    private JFXButton deleteButton;
+
+    @FXML
+    private JFXButton addButton;
+
+    @FXML
+    private JFXButton cancelButton;
+
+    boolean isImageFileOK = false;
     Image previewImageDefault = new Image(getClass().getResourceAsStream("icons/icon_preview.png"));
-    String txt;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if(dashboardController.actionConfigType == 2)
@@ -71,7 +71,7 @@ public class hotkeyConfig implements Initializable {
             deleteButton.setVisible(true);
             isImageFileOK = true;
             addButton.setText("Apply Changes");
-            headingLabel.setText("Modify Hotkey");
+            headingLabel.setText("Modify Script Action");
             for(int i = 0;i<dashboardController.actions.length;i++)
             {
                 String eachAction[] = dashboardController.actions[i];
@@ -79,84 +79,16 @@ public class hotkeyConfig implements Initializable {
                 if(eachAction[0].equals(dashboardController.selectedActionUniqueID))
                 {
                     actionCasualNameField.setText(eachAction[1]);
-                    String hotkeys[] = eachAction[3].split("<>");
-                    hotkeyCodeChipView.getChips().addAll(hotkeys);
+                    String fullScriptInfo[] = eachAction[3].split("<>");
+                    scriptRunnerField.setText(fullScriptInfo[0]);
+                    scriptPathField.setText(fullScriptInfo[1]);
                     Image icon = dashboardController.icons.get(eachAction[4]);
                     iconPreviewImg.setImage(icon);
                     break;
                 }
             }
         }
-
-        Main.xs.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if(isRecording)
-                {
-                    System.out.println("eventasdkjasdj");
-                    System.out.println("XD : "+event.getCode().getCode());
-                    System.out.println("XDx : "+event.getCode().getName());
-                    txt = event.getCode().getName();
-                    if(txt.equals("Ctrl"))
-                    {
-                        txt = "Control";
-                    }
-                    else if(txt.equals("Esc"))
-                    {
-                        txt = "Escape";
-                    }
-                    else if(txt.equals("Backspace"))
-                    {
-                        txt = "Back_Space";
-                    }
-
-                    boolean isFound = false;
-                    for(String eachHotkey : getHotkeysEntered())
-                    {
-                        if(eachHotkey.equals(txt))
-                        {
-                            isFound = true;
-                            break;
-                        }
-                    }
-                    if (!isFound)
-                    {
-                        System.out.println("asdkjahdjsahdj");
-                        System.out.println(event.getText());
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                hotkeyCodeChipView.getChips().add(txt);
-                            }
-                        });
-                    }
-                    else
-                    {
-                        System.out.println("BHAKK");
-                    }
-                }
-            }
-        });
-
-
-        recordKeyboardOnOffButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if(!isRecording)
-                {
-                    isRecording = true;
-                    recordKeyboardOnOffButton.setText("Stop Recording");
-                }
-                else
-                {
-                    isRecording = false;
-                    recordKeyboardOnOffButton.setText("Record Keyboard");
-                }
-            }
-        });
     }
-
-    Random r = new Random();
 
     @FXML
     public void deleteButtonClicked()
@@ -240,12 +172,19 @@ public class hotkeyConfig implements Initializable {
         Main.dc.newActionConfigDialog.close();
     }
 
+    Random r = new Random();
     int i;
+
+    public String generateRandomID() {
+        return "action_"+r.nextInt((15000 - 1) + 1) + 1;
+    }
+
     @FXML
     public void addButtonClicked()
     {
         String actionCasualName = actionCasualNameField.getText();
-        String[] hotkeyCode = getHotkeysEntered();
+        String scriptRunnerPath = scriptRunnerField.getText();
+        String scriptPath = scriptPathField.getText();
         String iconPath = iconPathField.getText();
 
         StringBuilder errors = new StringBuilder("Please correct and resolve the following errors :\n");
@@ -257,9 +196,15 @@ public class hotkeyConfig implements Initializable {
             isError = true;
         }
 
-        if(hotkeyCode.length == 1)
+        if(scriptRunnerPath.length() == 0)
         {
-            errors.append("Invalid HotKey Entered\n");
+            errors.append("Invalid Script Runner Path Entered\n");
+            isError = true;
+        }
+
+        if(scriptPath.length() == 0)
+        {
+            errors.append("Invalid Script Path Entered\n");
             isError = true;
         }
 
@@ -313,12 +258,8 @@ public class hotkeyConfig implements Initializable {
 
                         oldActions[i][0] = generateRandomID();
                         oldActions[i][1] = actionCasualName;
-                        oldActions[i][2] = "hotkey";
-                        String toWrite = "";
-                        for(String eachString : getHotkeysEntered())
-                        {
-                            toWrite+=eachString+"<>";
-                        }
+                        oldActions[i][2] = "script";
+                        String toWrite = scriptRunnerPath+"<>"+scriptPath+"<>";
                         oldActions[i][3] = toWrite;
                         //oldActions[i][4] = selectedIconFile.getName();
                         oldActions[i][4] = newFileName;
@@ -377,12 +318,9 @@ public class hotkeyConfig implements Initializable {
                             {
                                 oldActions[i][0] = generateRandomID();
                                 oldActions[i][1] = actionCasualName;
-                                oldActions[i][2] = "hotkey";
+                                oldActions[i][2] = "script";
                                 String toWrite = "";
-                                for(String eachString : getHotkeysEntered())
-                                {
-                                    toWrite+=eachString+"<>";
-                                }
+                                toWrite+=scriptRunnerPath+"<>"+scriptPath+"<>";
                                 oldActions[i][3] = toWrite;
                                 //oldActions[i][4] = selectedIconFile.getName();
                                 if(iconPathField.getText().length()>0)
@@ -462,24 +400,8 @@ public class hotkeyConfig implements Initializable {
 
     }
 
-    boolean isImageFileOK = false;
-    File selectedIconFile;
-    Image previewIcon;
-
-    public String[] getHotkeysEntered()
-    {
-        String hotkeyz = "";
-        for(Object eachKey : hotkeyCodeChipView.getChips())
-        {
-            String s = (String) eachKey;
-            hotkeyz+=s.toUpperCase()+"<>";
-        }
-        System.out.println(hotkeyz);
-        return hotkeyz.split("<>");
-    }
-
     @FXML
-    public void browseButtonClicked()
+    public void iconPathBrowseButtonClicked()
     {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG","*.png"));
@@ -521,8 +443,37 @@ public class hotkeyConfig implements Initializable {
     }
 
 
-    public String generateRandomID() {
-        Random r = new Random();
-        return "action_"+r.nextInt((15000 - 1) + 1) + 1;
+    File selectedIconFile;
+    Image previewIcon;
+
+    @FXML
+    public void scriptRunnerPathBrowseButtonClicked()
+    {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("EXE","*.exe"));
+        File scriptRunnerPathEXE = fileChooser.showOpenDialog(Main.ps);
+        try
+        {
+            scriptRunnerField.setText(scriptRunnerPathEXE.getAbsolutePath());
+        }
+        catch (Exception e)
+        {
+            System.out.println("DXX");
+        }
+    }
+
+    @FXML
+    public void scriptPathBrowseButtonClicked()
+    {
+        FileChooser fileChooser = new FileChooser();
+        File scriptPathEXE = fileChooser.showOpenDialog(Main.ps);
+        try
+        {
+            scriptPathField.setText(scriptPathEXE.getAbsolutePath());
+        }
+        catch (Exception e)
+        {
+            System.out.println("XXD");
+        }
     }
 }

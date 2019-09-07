@@ -119,7 +119,7 @@
       </VBox>
       <AnchorPane fx:id="deviceConfigPane" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Accordion fx:id="actionsAccordion" layoutX="1098.0" layoutY="20.0" prefHeight="835.0" prefWidth="289.0" AnchorPane.bottomAnchor="22.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="20.0">
+            <Accordion fx:id="actionsAccordion" layoutX="1098.0" layoutY="20.0" prefHeight="795.0" prefWidth="289.0" AnchorPane.bottomAnchor="62.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="20.0">
               <panes>
                 <TitledPane animated="false" text="System " textFill="WHITE">
                      <content>
@@ -130,12 +130,15 @@
                                     <Font size="15.0" />
                                  </font>
                               </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newScriptAction" prefHeight="25.0" prefWidth="268.0" text="Script" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
                            </children>
                         </VBox>
                      </content>
                 </TitledPane>
-                <TitledPane animated="false" text="untitled 2" textFill="WHITE" />
-                <TitledPane animated="false" text="untitled 3" textFill="WHITE" />
               </panes>
             </Accordion>
             <ScrollPane layoutX="43.0" layoutY="105.0" prefHeight="683.0" prefWidth="1040.0" style="-fx-background-color: black;" styleClass="edge-to-edge" AnchorPane.leftAnchor="43.0" AnchorPane.topAnchor="105.0">

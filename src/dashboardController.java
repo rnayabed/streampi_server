@@ -71,6 +71,7 @@ public class dashboardController implements Initializable {
     Selection Modes:
     0 - Nothing (Normal)
     1 - Hotkey
+    2 - Script
      */
 
     HashMap<String, String> config = new HashMap<>();
@@ -551,6 +552,7 @@ public class dashboardController implements Initializable {
                     }
                     if(noOfActions == 0)
                     {
+                        //TODO : To be updated...
                         HBox[] rows = new HBox[streamPIMaxNoOfRows];
                         for(int i = 0;i<streamPIMaxNoOfRows;i++)
                         {
@@ -579,8 +581,23 @@ public class dashboardController implements Initializable {
                                             if(currentSelectionMode == 0)
                                             {
                                                 System.out.println("GAY");
+                                                System.out.println("SETTING");
                                                 selectedActionUniqueID = ar[3]+"_"+ar[4];
-                                                loadPopupFXML("hotkeyConfig.fxml",2);
+
+                                                for (String[] eachAction : actions) {
+                                                    if(eachAction[0].equals(selectedActionUniqueID))
+                                                    {
+                                                        if(eachAction[2].equals("hotkey"))
+                                                        {
+                                                            loadPopupFXML("hotkeyConfig.fxml", 2);
+                                                        }
+                                                        else if(eachAction[2].equals("script"))
+                                                        {
+                                                            loadPopupFXML("scriptConfig.fxml",2);
+                                                        }
+                                                        break;
+                                                    }
+                                                }
                                             }
                                         }
                                         else
@@ -588,6 +605,10 @@ public class dashboardController implements Initializable {
                                             if(currentSelectionMode == 1)
                                             {
                                                 loadPopupFXML("hotkeyConfig.fxml",1);
+                                            }
+                                            else if(currentSelectionMode == 2)
+                                            {
+                                                loadPopupFXML("scriptConfig.fxml",1);
                                             }
                                         }
                                     }
@@ -699,8 +720,16 @@ public class dashboardController implements Initializable {
                                                 selectedActionUniqueID = ar[3]+"_"+ar[4];
 
                                                 for (String[] eachAction : actions) {
-                                                    if (eachAction[2].equals("hotkey")) {
-                                                        loadPopupFXML("hotkeyConfig.fxml", 2);
+                                                    if(eachAction[0].equals(selectedActionUniqueID))
+                                                    {
+                                                        if(eachAction[2].equals("hotkey"))
+                                                        {
+                                                            loadPopupFXML("hotkeyConfig.fxml", 2);
+                                                        }
+                                                        else if(eachAction[2].equals("script"))
+                                                        {
+                                                            loadPopupFXML("scriptConfig.fxml",2);
+                                                        }
                                                         break;
                                                     }
                                                 }
@@ -711,6 +740,10 @@ public class dashboardController implements Initializable {
                                             if(currentSelectionMode == 1)
                                             {
                                                 loadPopupFXML("hotkeyConfig.fxml",1);
+                                            }
+                                            else if(currentSelectionMode == 2)
+                                            {
+                                                loadPopupFXML("scriptConfig.fxml",1);
                                             }
                                         }
                                     }
@@ -794,6 +827,13 @@ public class dashboardController implements Initializable {
                         }
                     });
                 }
+                else if(msgHeader.equals("script"))
+                {
+                    String scriptRunn[] = msgArr[1].split("<>");
+                    Runtime r = Runtime.getRuntime();
+                    System.out.println("Running \""+scriptRunn[0]+"\" \""+scriptRunn[1]+"\"");
+                    r.exec("\""+scriptRunn[0]+"\" \""+scriptRunn[1]+"\"");
+                }
                 else
                 {
                     System.out.println("'"+message+"'");
@@ -831,11 +871,11 @@ public class dashboardController implements Initializable {
         popupStackPane.toFront();
         try
         {
-            JFXDialogLayout newHotkeyActionDialogLayout = new JFXDialogLayout();
-            newHotkeyActionDialogLayout.getStyleClass().add("dialog_style");
+            JFXDialogLayout newActionDialogLayout = new JFXDialogLayout();
+            newActionDialogLayout.getStyleClass().add("dialog_style");
             VBox actionConfig = FXMLLoader.load(getClass().getResource(fxmlFileName));
-            newHotkeyActionDialogLayout.setBody(actionConfig);
-            newActionConfigDialog = new JFXDialog(popupStackPane, newHotkeyActionDialogLayout, JFXDialog.DialogTransition.CENTER);
+            newActionDialogLayout.setBody(actionConfig);
+            newActionConfigDialog = new JFXDialog(popupStackPane, newActionDialogLayout, JFXDialog.DialogTransition.CENTER);
             newActionConfigDialog.setOverlayClose(false);
             newActionConfigDialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
                 @Override
@@ -862,6 +902,13 @@ public class dashboardController implements Initializable {
     {
         currentSelectionMode = 1;
         showNewActionHint("Hotkey");
+    }
+
+    @FXML
+    public void newScriptAction()
+    {
+        currentSelectionMode = 2;
+        showNewActionHint("Script");
     }
 
     public void showNewActionHint(String actionName)
