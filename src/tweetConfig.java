@@ -20,9 +20,9 @@ import java.util.Base64;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-public class scriptConfig implements Initializable {
+public class tweetConfig implements Initializable {
     @FXML
-    private VBox mode_new;
+    private VBox mode_1;
 
     @FXML
     private Label headingLabel;
@@ -31,16 +31,7 @@ public class scriptConfig implements Initializable {
     private JFXTextField actionCasualNameField;
 
     @FXML
-    private JFXTextField scriptRunnerField;
-
-    @FXML
-    private JFXButton scriptRunnerBrowseButton;
-
-    @FXML
-    private JFXTextField scriptPathField;
-
-    @FXML
-    private JFXButton scriptPathFieldBrowseButton;
+    private JFXTextField tweetMsgField;
 
     @FXML
     private JFXTextField iconPathField;
@@ -55,23 +46,34 @@ public class scriptConfig implements Initializable {
     private JFXButton deleteButton;
 
     @FXML
-    private JFXButton addButton;
-
-    @FXML
     private JFXButton cancelButton;
 
+    @FXML
+    private VBox mode_2;
+
+    @FXML
+    private JFXButton addButton;
+
     boolean isImageFileOK = false;
+
     Image previewImageDefault = new Image(getClass().getResourceAsStream("icons/icon_preview.png"));
+    File selectedIconFile;
+    Image previewIcon;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if(!dashboardController.isTwitterSetup)
+            mode_2.toFront();
+        else
+            mode_1.toFront();
+
         if(dashboardController.actionConfigType == 2)
         {
             deleteButton.setDisable(false);
             deleteButton.setVisible(true);
             isImageFileOK = true;
             addButton.setText("Apply Changes");
-            headingLabel.setText("Modify Script");
+            headingLabel.setText("Modify Tweet");
             for(int i = 0;i<dashboardController.actions.length;i++)
             {
                 String eachAction[] = dashboardController.actions[i];
@@ -79,9 +81,8 @@ public class scriptConfig implements Initializable {
                 if(eachAction[0].equals(dashboardController.selectedActionUniqueID))
                 {
                     actionCasualNameField.setText(eachAction[1]);
-                    String fullScriptInfo[] = eachAction[3].split("<>");
-                    scriptRunnerField.setText(fullScriptInfo[0]);
-                    scriptPathField.setText(fullScriptInfo[1]);
+                    String tweetDetails[] = eachAction[3].split("<>");
+                    tweetMsgField.setText(tweetDetails[0]);
                     Image icon = dashboardController.icons.get(eachAction[4]);
                     iconPreviewImg.setImage(icon);
                     break;
@@ -183,8 +184,7 @@ public class scriptConfig implements Initializable {
     public void addButtonClicked()
     {
         String actionCasualName = actionCasualNameField.getText();
-        String scriptRunnerPath = scriptRunnerField.getText();
-        String scriptPath = scriptPathField.getText();
+        String tweetMsg = tweetMsgField.getText();
         String iconPath = iconPathField.getText();
 
         StringBuilder errors = new StringBuilder("Please correct and resolve the following errors :\n");
@@ -196,15 +196,9 @@ public class scriptConfig implements Initializable {
             isError = true;
         }
 
-        if(scriptRunnerPath.length() == 0)
+        if(tweetMsg.length() == 0)
         {
-            errors.append("Invalid Script Runner Path Entered\n");
-            isError = true;
-        }
-
-        if(scriptPath.length() == 0)
-        {
-            errors.append("Invalid Script Path Entered\n");
+            errors.append("Invalid Tweet Message Entered\n");
             isError = true;
         }
 
@@ -258,8 +252,8 @@ public class scriptConfig implements Initializable {
 
                         oldActions[i][0] = generateRandomID();
                         oldActions[i][1] = actionCasualName;
-                        oldActions[i][2] = "script";
-                        String toWrite = scriptRunnerPath+"<>"+scriptPath+"<>";
+                        oldActions[i][2] = "tweet";
+                        String toWrite = tweetMsg+"<>";
                         oldActions[i][3] = toWrite;
                         //oldActions[i][4] = selectedIconFile.getName();
                         oldActions[i][4] = newFileName;
@@ -318,9 +312,9 @@ public class scriptConfig implements Initializable {
                             {
                                 oldActions[i][0] = generateRandomID();
                                 oldActions[i][1] = actionCasualName;
-                                oldActions[i][2] = "script";
+                                oldActions[i][2] = "tweet";
                                 String toWrite = "";
-                                toWrite+=scriptRunnerPath+"<>"+scriptPath+"<>";
+                                toWrite+=tweetMsg+"<>";
                                 oldActions[i][3] = toWrite;
                                 //oldActions[i][4] = selectedIconFile.getName();
                                 if(iconPathField.getText().length()>0)
@@ -397,7 +391,6 @@ public class scriptConfig implements Initializable {
                 return null;
             }
         }).start();
-
     }
 
     @FXML
@@ -439,41 +432,6 @@ public class scriptConfig implements Initializable {
             Main.dc.showErrorAlert("Uh Oh!","It seems that the Icon you selected is invalid!");
             iconPreviewImg.setImage(previewImageDefault);
             iconPathField.setText("");
-        }
-    }
-
-
-    File selectedIconFile;
-    Image previewIcon;
-
-    @FXML
-    public void scriptRunnerPathBrowseButtonClicked()
-    {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("EXE","*.exe"));
-        File scriptRunnerPathEXE = fileChooser.showOpenDialog(Main.ps);
-        try
-        {
-            scriptRunnerField.setText(scriptRunnerPathEXE.getAbsolutePath());
-        }
-        catch (Exception e)
-        {
-            System.out.println("DXX");
-        }
-    }
-
-    @FXML
-    public void scriptPathBrowseButtonClicked()
-    {
-        FileChooser fileChooser = new FileChooser();
-        File scriptPathEXE = fileChooser.showOpenDialog(Main.ps);
-        try
-        {
-            scriptPathField.setText(scriptPathEXE.getAbsolutePath());
-        }
-        catch (Exception e)
-        {
-            System.out.println("XXD");
         }
     }
 }

@@ -139,6 +139,19 @@
                         </VBox>
                      </content>
                 </TitledPane>
+                  <TitledPane animated="false" text="Social Media" textFill="WHITE">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newTweetAction" prefHeight="25.0" prefWidth="268.0" text="Twitter" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                           </children>
+                        </VBox>
+                     </content>
+                  </TitledPane>
               </panes>
             </Accordion>
             <ScrollPane layoutX="43.0" layoutY="105.0" prefHeight="683.0" prefWidth="1040.0" style="-fx-background-color: black;" styleClass="edge-to-edge" AnchorPane.leftAnchor="43.0" AnchorPane.topAnchor="105.0">

@@ -22,6 +22,9 @@ import javafx.scene.paint.Paint;
 import javafx.scene.robot.Robot;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.*;
 import java.net.Inet4Address;
@@ -72,7 +75,9 @@ public class dashboardController implements Initializable {
     0 - Nothing (Normal)
     1 - Hotkey
     2 - Script
+    3 - Tweet
      */
+    static boolean isTwitterSetup = true;
 
     HashMap<String, String> config = new HashMap<>();
     boolean isServerStarted = false;
@@ -84,7 +89,7 @@ public class dashboardController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         readConfig();
-
+        twitterSetup();
 
         try {
             serverIP = Inet4Address.getLocalHost().getHostAddress();
@@ -115,6 +120,48 @@ public class dashboardController implements Initializable {
         t.start();
 
         Main.dc = this;
+    }
+
+    Twitter twitter;
+
+    public void twitterSetup()
+    {
+        new Thread(new Task<Void>() {
+            @Override
+            protected Void call() {
+                try
+                {
+                    ConfigurationBuilder cb = new ConfigurationBuilder();
+                    cb.setDebugEnabled(true)
+		                .setOAuthConsumerKey(config.get("twitter_oauth_consumer_key"))
+		                .setOAuthConsumerSecret(config.get("twitter_oauth_consumer_secret"))
+		                .setOAuthAccessToken(config.get("twitter_oauth_access_token"))
+                        .setOAuthAccessTokenSecret(config.get("twitter_oauth_access_token_secret"));
+
+		            TwitterFactory tf = new TwitterFactory(cb.build());
+		            twitter = tf.getSingleton();
+		            isTwitterSetup = true;
+                }
+                catch (Exception e)
+                {
+                    isTwitterSetup = false;
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }).start();
+    }
+
+    public void createNewTweet(String txtMsg)
+    {
+        try
+        {
+            twitter.updateStatus(txtMsg);
+        }
+        catch (Exception e)
+        {
+            showErrorAlert("Error!","Something went wrong. Check Stacktrace for more info.");
+        }
     }
 
     @FXML
@@ -588,13 +635,11 @@ public class dashboardController implements Initializable {
                                                     if(eachAction[0].equals(selectedActionUniqueID))
                                                     {
                                                         if(eachAction[2].equals("hotkey"))
-                                                        {
                                                             loadPopupFXML("hotkeyConfig.fxml", 2);
-                                                        }
                                                         else if(eachAction[2].equals("script"))
-                                                        {
                                                             loadPopupFXML("scriptConfig.fxml",2);
-                                                        }
+                                                        else if(eachAction[2].equals("tweet"))
+                                                            loadPopupFXML("tweetConfig.fxml",2);
                                                         break;
                                                     }
                                                 }
@@ -603,13 +648,11 @@ public class dashboardController implements Initializable {
                                         else
                                         {
                                             if(currentSelectionMode == 1)
-                                            {
                                                 loadPopupFXML("hotkeyConfig.fxml",1);
-                                            }
                                             else if(currentSelectionMode == 2)
-                                            {
                                                 loadPopupFXML("scriptConfig.fxml",1);
-                                            }
+                                            else if(currentSelectionMode == 3)
+                                                loadPopupFXML("tweetConfig.fxml",1);
                                         }
                                     }
                                 });
@@ -723,13 +766,11 @@ public class dashboardController implements Initializable {
                                                     if(eachAction[0].equals(selectedActionUniqueID))
                                                     {
                                                         if(eachAction[2].equals("hotkey"))
-                                                        {
                                                             loadPopupFXML("hotkeyConfig.fxml", 2);
-                                                        }
                                                         else if(eachAction[2].equals("script"))
-                                                        {
                                                             loadPopupFXML("scriptConfig.fxml",2);
-                                                        }
+                                                        else if(eachAction[2].equals("tweet"))
+                                                            loadPopupFXML("tweetConfig.fxml",2);
                                                         break;
                                                     }
                                                 }
@@ -738,13 +779,11 @@ public class dashboardController implements Initializable {
                                         else
                                         {
                                             if(currentSelectionMode == 1)
-                                            {
                                                 loadPopupFXML("hotkeyConfig.fxml",1);
-                                            }
                                             else if(currentSelectionMode == 2)
-                                            {
                                                 loadPopupFXML("scriptConfig.fxml",1);
-                                            }
+                                            else if(currentSelectionMode == 3)
+                                                loadPopupFXML("tweetConfig.fxml",1);
                                         }
                                     }
                                 });
@@ -834,6 +873,14 @@ public class dashboardController implements Initializable {
                     System.out.println("Running \""+scriptRunn[0]+"\" \""+scriptRunn[1]+"\"");
                     r.exec("\""+scriptRunn[0]+"\" \""+scriptRunn[1]+"\"");
                 }
+                else if(msgHeader.equals("tweet"))
+                {
+                    String data[] = msgArr[1].split("<>");
+                    if(isTwitterSetup)
+                        createNewTweet(data[0]);
+                    else
+                        showErrorAlert("Uh Oh!","It looks like Twitter is not setup on this computer. Go to settings to add youa account.");
+                }
                 else
                 {
                     System.out.println("'"+message+"'");
@@ -873,7 +920,7 @@ public class dashboardController implements Initializable {
         {
             JFXDialogLayout newActionDialogLayout = new JFXDialogLayout();
             newActionDialogLayout.getStyleClass().add("dialog_style");
-            VBox actionConfig = FXMLLoader.load(getClass().getResource(fxmlFileName));
+            Node actionConfig = FXMLLoader.load(getClass().getResource(fxmlFileName));
             newActionDialogLayout.setBody(actionConfig);
             newActionConfigDialog = new JFXDialog(popupStackPane, newActionDialogLayout, JFXDialog.DialogTransition.CENTER);
             newActionConfigDialog.setOverlayClose(false);
@@ -895,24 +942,39 @@ public class dashboardController implements Initializable {
     {
         String[] configArray = io.readFileArranged("config","::");
         config.put("server_port",configArray[0]);
+        config.put("twitter_oauth_consumer_key",configArray[1]);
+        config.put("twitter_oauth_consumer_secret",configArray[2]);
+        config.put("twitter_oauth_access_token",configArray[3]);
+        config.put("twitter_oauth_access_token_secret",configArray[4]);
     }
 
     @FXML
     public void newHotkeyAction()
     {
-        currentSelectionMode = 1;
         showNewActionHint("Hotkey");
     }
 
     @FXML
     public void newScriptAction()
     {
-        currentSelectionMode = 2;
         showNewActionHint("Script");
+    }
+
+    @FXML
+    public void newTweetAction()
+    {
+        showNewActionHint("Tweet");
     }
 
     public void showNewActionHint(String actionName)
     {
+        if(actionName.equals("Hotkey"))
+            currentSelectionMode = 1;
+        else if(actionName.equals("Script"))
+            currentSelectionMode = 2;
+        else if(actionName.equals("Tweet"))
+            currentSelectionMode = 3;
+
         actionsAccordion.setDisable(true);
         for(Node eachRowN : controlVBox.getChildren())
         {
