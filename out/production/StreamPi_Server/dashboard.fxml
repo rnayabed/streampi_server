@@ -18,6 +18,7 @@
 
 <AnchorPane prefHeight="877.0" prefWidth="1411.0" styleClass="basePane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dashboardController">
    <children>
+      <StackPane fx:id="loginTwitterStackPane" layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="0.0" />
       <VBox fx:id="connectionErrorPane" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label text="Unable To Start Server" textFill="WHITE">
@@ -39,66 +40,6 @@
             </HBox>
             <Label text="This is a terrible way of showing connection error. Will get a facelift in the future." />
          </children>
-      </VBox>
-      <VBox fx:id="settingsPane" spacing="25.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <HBox>
-               <children>
-                  <Label text="Settings" textFill="WHITE">
-                     <font>
-                        <Font name="Roboto Regular" size="30.0" />
-                     </font>
-                  </Label>
-                  <Region HBox.hgrow="ALWAYS" />
-                  <JFXButton onAction="#hideSettingsPane" text=" ">
-                     <graphic>
-                        <ImageView fitHeight="48.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@icons/cancel.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </JFXButton>
-               </children>
-            </HBox>
-            <HBox spacing="50.0">
-               <children>
-                  <Label prefWidth="60.0" text="Server IP" textFill="WHITE">
-                     <font>
-                        <Font name="Roboto Regular" size="15.0" />
-                     </font>
-                  </Label>
-                  <JFXTextField fx:id="serverIPField" disable="true" style="-fx-text-inner-color: white;" unFocusColor="WHITE">
-                     <font>
-                        <Font name="Roboto Regular" size="15.0" />
-                     </font>
-                  </JFXTextField>
-               </children>
-            </HBox>
-            <HBox spacing="50.0">
-               <children>
-                  <Label prefHeight="19.0" prefWidth="61.0" text="Port" textFill="WHITE">
-                     <font>
-                        <Font name="Roboto Regular" size="15.0" />
-                     </font>
-                  </Label>
-                  <JFXTextField fx:id="serverPortField" style="-fx-text-inner-color: white;">
-                     <font>
-                        <Font name="Roboto Regular" size="15.0" />
-                     </font>
-                  </JFXTextField>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" spacing="50.0">
-               <children>
-                  <JFXButton fx:id="applyButton" onAction="#applySettings" style="-fx-background-color: #484848;" text="Apply" textFill="WHITE" />
-                  <JFXButton onAction="#aboutStreamPiButtonClicked" style="-fx-background-color: #484848;" text="About StreamPi" textFill="WHITE" />
-               </children>
-            </HBox>
-         </children>
-         <padding>
-            <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
-         </padding>
       </VBox>
       <StackPane fx:id="alertStackPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <StackPane fx:id="progressStackPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
@@ -190,5 +131,112 @@
                </graphic>
             </JFXButton>
          </children></AnchorPane>
+      <VBox fx:id="settingsPane" spacing="15.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox>
+               <children>
+                  <Label text="Settings" textFill="WHITE">
+                     <font>
+                        <Font name="Roboto Regular" size="38.0" />
+                     </font>
+                  </Label>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <JFXButton onAction="#hideSettingsPane" text=" ">
+                     <graphic>
+                        <ImageView fitHeight="48.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@icons/cancel.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+               <padding>
+                  <Insets bottom="15.0" />
+               </padding>
+            </HBox>
+            <Label text="Server" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="24.0" />
+               </font>
+            </Label>
+            <HBox spacing="50.0">
+               <children>
+                  <Label prefWidth="60.0" text="Server IP" textFill="WHITE">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField fx:id="serverIPField" disable="true" style="-fx-text-inner-color: white;" unFocusColor="WHITE">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </JFXTextField>
+               </children>
+            </HBox>
+            <HBox spacing="50.0">
+               <children>
+                  <Label prefHeight="19.0" prefWidth="61.0" text="Port" textFill="WHITE">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField fx:id="serverPortField" style="-fx-text-inner-color: white;">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </JFXTextField>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT">
+               <children>
+                  <Label text="Twitter" textFill="WHITE">
+                     <font>
+                        <Font name="Roboto Regular" size="24.0" />
+                     </font>
+                  </Label>
+                  <Region prefHeight="29.0" prefWidth="72.0" />
+                  <JFXButton fx:id="loginButtonTwitter" buttonType="RAISED" onAction="#loginButtonTwitterClicked" style="-fx-background-color: #484848;" text="Login" textFill="WHITE" />
+               </children>
+            </HBox>
+            <HBox spacing="50.0">
+               <children>
+                  <Label prefHeight="19.0" prefWidth="211.0" text="OAuth Consumer Key" textFill="WHITE">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField fx:id="twitterConsumerKeyField" prefHeight="29.0" prefWidth="365.0" style="-fx-text-inner-color: white;">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </JFXTextField>
+               </children>
+            </HBox>
+            <HBox spacing="50.0">
+               <children>
+                  <Label prefHeight="19.0" prefWidth="211.0" text="OAuth Consumer Secret" textFill="WHITE">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField fx:id="twitterConsumerSecretField" prefHeight="29.0" prefWidth="361.0" style="-fx-text-inner-color: white;">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </JFXTextField>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" spacing="50.0">
+               <children>
+                  <JFXButton fx:id="applyButton" onAction="#applySettings" style="-fx-background-color: #484848;" text="Apply" textFill="WHITE" />
+                  <JFXButton onAction="#aboutStreamPiButtonClicked" style="-fx-background-color: #484848;" text="About StreamPi" textFill="WHITE" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+         </padding>
+      </VBox>
    </children>
 </AnchorPane>

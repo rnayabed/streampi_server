@@ -23,7 +23,10 @@ import javafx.scene.robot.Robot;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
+import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.*;
@@ -33,6 +36,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 public class dashboardController implements Initializable {
@@ -66,6 +70,14 @@ public class dashboardController implements Initializable {
     public JFXButton retryButton;
     @FXML
     public VBox settingsPane;
+    @FXML
+    public JFXButton loginButtonTwitter;
+    @FXML
+    public StackPane loginTwitterStackPane;
+    @FXML
+    public JFXTextField twitterConsumerSecretField;
+    @FXML
+    public JFXTextField twitterConsumerKeyField;
     @FXML
     private StackPane progressStackPane;
 
@@ -112,7 +124,8 @@ public class dashboardController implements Initializable {
 
         serverIPField.setText(serverIP);
         serverPortField.setText(config.get("server_port"));
-
+        twitterConsumerSecretField.setText(config.get("twitter_oauth_consumer_secret"));
+        twitterConsumerKeyField.setText(config.get("twitter_oauth_consumer_key"));
 
 
         Thread t = new Thread(serverCommTask);
@@ -131,36 +144,58 @@ public class dashboardController implements Initializable {
             protected Void call() {
                 try
                 {
-                    ConfigurationBuilder cb = new ConfigurationBuilder();
-                    cb.setDebugEnabled(true)
-		                .setOAuthConsumerKey(config.get("twitter_oauth_consumer_key"))
-		                .setOAuthConsumerSecret(config.get("twitter_oauth_consumer_secret"))
-		                .setOAuthAccessToken(config.get("twitter_oauth_access_token"))
-                        .setOAuthAccessTokenSecret(config.get("twitter_oauth_access_token_secret"));
+                    if(config.get("twitter_oauth_consumer_key").equals("NULL") || config.get("twitter_oauth_consumer_secret").equals("NULL") || config.get("twitter_oauth_access_token").equals("NULL") || config.get("twitter_oauth_access_token_secret").equals("NULL"))
+                    {
+                        isTwitterSetup = false;
+                    }
+                    else
+                    {
+                        System.setProperty("twitter4j.http.useSSL", "true");
+                        ConfigurationBuilder cb = new ConfigurationBuilder();
+                        cb.setDebugEnabled(true)
+                                .setOAuthConsumerKey(config.get("twitter_oauth_consumer_key"))
+                                .setOAuthConsumerSecret(config.get("twitter_oauth_consumer_secret"))
+                                .setOAuthAccessToken(config.get("twitter_oauth_access_token"))
+                                .setOAuthAccessTokenSecret(config.get("twitter_oauth_access_token_secret"));
 
-		            TwitterFactory tf = new TwitterFactory(cb.build());
-		            twitter = tf.getSingleton();
-		            isTwitterSetup = true;
+                        TwitterFactory tf = new TwitterFactory(cb.build());
+                        twitter = tf.getInstance();
+                        twitter.verifyCredentials();
+                        isTwitterSetup = true;
+                    }
                 }
                 catch (Exception e)
                 {
+                    showErrorAlert(":(","Unable to Verify Twitter Login. Check stacktrace, or perhaps try relogging in.");
                     isTwitterSetup = false;
                     e.printStackTrace();
                 }
+                System.out.println("GAYYY : "+isTwitterSetup);
                 return null;
             }
         }).start();
     }
 
+    Random r = new Random();
     public void createNewTweet(String txtMsg)
     {
+        for(int i = 0;i<r.nextInt(150);i++)
+        {
+            txtMsg+="⠀"; // U+2800 Blank code
+        }
         try
         {
             twitter.updateStatus(txtMsg);
         }
         catch (Exception e)
         {
-            showErrorAlert("Error!","Something went wrong. Check Stacktrace for more info.");
+            e.printStackTrace();
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    showErrorAlert("Error!","Something went wrong. Check Stacktrace for more info.");
+                }
+            });
         }
     }
 
@@ -283,36 +318,56 @@ public class dashboardController implements Initializable {
     @FXML
     public void applySettings()
     {
+        boolean error = false;
+
+        String errs = "";
         if(serverPortField.getText().length()==0)
         {
-            showErrorAlert("Invalid Server Port Value","It cannot be left empty!");
+            errs += "*Invalid Server Port Value, It cannot be left empty!\n";
+            error = true;
         }
         else
         {
-            try
-            {
+            try {
                 Integer.parseInt(serverPortField.getText());
-                if(config.get("server_port").equals(serverPortField.getText()))
-                {
-                    updateConfig("server_port",serverPortField.getText());
-                }
-                else
-                {
-                    updateConfig("server_port",serverPortField.getText());
-                    showErrorAlert("Done","Restart this app to see changes!");
-                }
             }
-            catch (Exception e2)
+            catch (Exception e)
             {
-                showErrorAlert("Invalid Server Port Value","It must be a numeric value.");
+                errs += "*Invalid Server Port Value, Only Numbers are accepted!\n";
+                error = true;
             }
+        }
+
+        if(twitterConsumerKeyField.getText().length() ==0)
+        {
+            errs += "*Invalid Twitter Consumer Key Field, It cannot be left empty!\n";
+            error = true;
+        }
+
+        if(twitterConsumerSecretField.getText().length() == 0)
+        {
+            errs += "*Invalid Twitter Consumer Secret Key Field, It cannot be left empty!\n";
+            error = true;
+        }
+
+
+        if(!error)
+        {
+            updateConfig("server_port", serverPortField.getText());
+            updateConfig("twitter_oauth_consumer_key", twitterConsumerKeyField.getText());
+            updateConfig("twitter_oauth_consumer_secret",twitterConsumerSecretField.getText());
+            showErrorAlert("Done!","Restart to see changes ;)");
+        }
+        else
+        {
+            showErrorAlert("Alert!","Please resolve the following errors : \n"+errs);
         }
     }
 
     public void updateConfig(String keyName, String newValue)
     {
         config.put(keyName,newValue);
-        io.writeToFile(config.get("server_port")+"::","config");
+        io.writeToFile(config.get("server_port")+"::"+config.get("twitter_oauth_consumer_key")+"::"+config.get("twitter_oauth_consumer_secret")+"::"+config.get("twitter_oauth_access_token")+"::"+config.get("twitter_oauth_access_token_secret")+"::","config");
     }
 
     @FXML
@@ -879,7 +934,7 @@ public class dashboardController implements Initializable {
                     if(isTwitterSetup)
                         createNewTweet(data[0]);
                     else
-                        showErrorAlert("Uh Oh!","It looks like Twitter is not setup on this computer. Go to settings to add youa account.");
+                        showErrorAlert("Uh Oh!","It looks like Twitter is not setup on this computer. Go to settings to add your account.");
                 }
                 else
                 {
@@ -1019,7 +1074,6 @@ public class dashboardController implements Initializable {
 
     public void showErrorAlert(String heading, String content)
     {
-        System.out.println("XD");
         JFXDialogLayout l = new JFXDialogLayout();
         l.getStyleClass().add("dialog_style");
         Label headingLabel = new Label(heading);
@@ -1051,8 +1105,137 @@ public class dashboardController implements Initializable {
             }
         });
 
-        alertStackPane.toFront();
-        alertDialog.show();
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                alertStackPane.toFront();
+                alertDialog.show();
+            }
+        });
+
+    }
+
+    @FXML
+    public void loginButtonTwitterClicked()
+    {
+        loginButtonTwitter.setDisable(true);
+        new Thread(new Task<Void>() {
+            @Override
+            protected Void call() {
+                try {
+                    ConfigurationBuilder cb2 = new ConfigurationBuilder();
+                    cb2.setDebugEnabled(true);
+                    cb2.setOAuthConsumerKey(config.get("twitter_oauth_consumer_key"));
+                    cb2.setOAuthConsumerSecret(config.get("twitter_oauth_consumer_secret"));
+
+                    TwitterFactory tf2 = new TwitterFactory(cb2.build());
+                    Twitter t2 = tf2.getInstance();
+
+                    RequestToken rt = t2.getOAuthRequestToken();
+                    System.out.println(rt.getAuthorizationURL());
+
+                    JFXDialogLayout l = new JFXDialogLayout();
+                    l.getStyleClass().add("dialog_style");
+                    Label headingLabel = new Label("Twitter Login");
+                    headingLabel.setTextFill(WHITE_PAINT);
+                    headingLabel.setFont(Font.font("Roboto Regular",25));
+                    l.setHeading(headingLabel);
+
+                    Label contentLabel = new Label("Go to the following URL ...");
+                    contentLabel.setFont(Font.font("Roboto Regular",15));
+                    contentLabel.setTextFill(WHITE_PAINT);
+                    contentLabel.setWrapText(true);
+
+
+                    JFXTextField c2 = new JFXTextField(rt.getAuthenticationURL());
+                    c2.setStyle("-fx-text-inner-color:white");
+                    c2.setEditable(false);
+                    c2.setFont(Font.font("Roboto Regular",15));
+
+                    Label c3 = new Label("... Then Authorize StreamPi, and enter the shown PIN Below ...");
+                    c3.setFont(Font.font("Roboto Regular",15));
+                    c3.setTextFill(WHITE_PAINT);
+                    c3.setWrapText(true);
+
+                    JFXTextField pinField = new JFXTextField();
+                    pinField.setStyle("-fx-text-inner-color:white");
+                    pinField.setFont(Font.font("Roboto Regular",15));
+
+                    JFXButton goButton = new JFXButton("Login!");
+                    goButton.setFont(Font.font("Roboto Regular",15));
+                    goButton.setTextFill(WHITE_PAINT);
+
+                    VBox x = new VBox(contentLabel,c2,c3,pinField,goButton);
+                    x.setSpacing(10);
+                    x.setAlignment(Pos.CENTER);
+                    l.setBody(x);
+
+                    JFXDialog loginTwitterPopup = new JFXDialog(loginTwitterStackPane,l, JFXDialog.DialogTransition.CENTER);
+                    loginTwitterPopup.setOverlayClose(false);
+                    loginTwitterPopup.getStyleClass().add("dialog_box");
+
+                    goButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            new Thread(new Task<Void>() {
+                                @Override
+                                protected Void call() {
+                                    String pin = pinField.getText();
+                                    try {
+                                        if (pin.length() > 0) {
+                                            AccessToken accessToken = t2.getOAuthAccessToken(rt,pin);
+                                            Platform.runLater(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    loginTwitterPopup.close();
+                                                    loginTwitterPopup.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
+                                                        @Override
+                                                        public void handle(JFXDialogEvent event) {
+                                                            loginTwitterStackPane.toBack();
+                                                        }
+                                                    });
+                                                    updateConfig("twitter_oauth_access_token",accessToken.getToken());
+                                                    updateConfig("twitter_oauth_access_token_secret",accessToken.getTokenSecret());
+                                                    twitterSetup();
+                                                    showErrorAlert("Congratulations "+accessToken.getUserId(),"Twitter is now Setup!");
+                                                    loginButtonTwitter.setDisable(false);
+                                                }
+                                            });
+                                        }
+                                        else
+                                        {
+                                            showErrorAlert("Uh Oh!","Please enter a valid PIN");
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        showErrorAlert(":(","Unable to Proceed! Check StackTrace!");
+                                    }
+                                    return null;
+                                }
+                            }).start();
+                        }
+                    });
+
+
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            loginTwitterStackPane.toFront();
+                            loginTwitterPopup.show();
+                        }
+                    });
+
+                }
+                catch (Exception e)
+                {
+                    showErrorAlert(":(","Unable to Proceed! Check StackTrace!");
+                    loginButtonTwitter.setDisable(false);
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }).start();
     }
 
     public void showProgress(String heading, String text)
@@ -1104,4 +1287,5 @@ public class dashboardController implements Initializable {
             }
         });
     }
+
 }
