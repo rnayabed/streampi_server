@@ -34,7 +34,7 @@
       </HBox>
       <HBox alignment="CENTER_LEFT" spacing="10.0">
          <children>
-            <Label text="Path to run script with (.exe)" textFill="WHITE">
+            <Label text="Path to run script with (.exe) Optional" textFill="WHITE">
                <font>
                   <Font name="Roboto Regular" size="17.0" />
                </font>

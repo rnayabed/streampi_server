@@ -11,9 +11,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="mode_new" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="10.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scriptConfig">
+<VBox fx:id="mode_1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="10.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="folderConfig">
    <children>
-      <Label fx:id="headingLabel" text="New Script Action" textFill="WHITE">
+      <Label fx:id="headingLabel" alignment="TOP_LEFT" prefHeight="58.0" prefWidth="204.0" text="New Folder Action" textFill="WHITE">
          <font>
             <Font name="Roboto Regular" size="25.0" />
          </font>
@@ -21,41 +21,6 @@
             <Insets bottom="5.0" />
          </VBox.margin>
       </Label>
-      <HBox alignment="CENTER_LEFT" spacing="10.0">
-         <children>
-            <Label text="Action Name" textFill="WHITE">
-               <font>
-                  <Font name="Roboto Regular" size="17.0" />
-               </font>
-            </Label>
-            <Region HBox.hgrow="ALWAYS" />
-            <JFXTextField fx:id="actionCasualNameField" prefHeight="25.0" prefWidth="261.0" style="-fx-text-inner-color: white;" unFocusColor="WHITE" />
-         </children>
-      </HBox>
-      <HBox alignment="CENTER_LEFT" spacing="10.0">
-         <children>
-            <Label text="Path to run script with (.exe) Optional" textFill="WHITE">
-               <font>
-                  <Font name="Roboto Regular" size="17.0" />
-               </font>
-            </Label>
-            <Region HBox.hgrow="ALWAYS" />
-            <JFXTextField fx:id="scriptRunnerField" disable="true" prefHeight="25.0" prefWidth="192.0" style="-fx-text-inner-color: white;" unFocusColor="WHITE" />
-            <JFXButton fx:id="scriptRunnerBrowseButton" buttonType="RAISED" onAction="#scriptRunnerPathBrowseButtonClicked" style="-fx-background-color: #484848;" text="Browse..." textFill="WHITE" />
-         </children>
-      </HBox>
-      <HBox alignment="CENTER_LEFT" spacing="10.0">
-         <children>
-            <Label text="Script Path" textFill="WHITE">
-               <font>
-                  <Font name="Roboto Regular" size="17.0" />
-               </font>
-            </Label>
-            <Region HBox.hgrow="ALWAYS" />
-            <JFXTextField fx:id="scriptPathField" disable="true" prefHeight="25.0" prefWidth="192.0" style="-fx-text-inner-color: white;" unFocusColor="WHITE" />
-            <JFXButton fx:id="scriptPathFieldBrowseButton" buttonType="RAISED" onAction="#scriptPathBrowseButtonClicked" style="-fx-background-color: #484848;" text="Browse..." textFill="WHITE" />
-         </children>
-      </HBox>
       <HBox alignment="CENTER_LEFT" spacing="10.0">
          <children>
             <Label text="Icon" textFill="WHITE">
@@ -85,7 +50,7 @@
                   <Font name="Roboto Regular" size="15.0" />
                </font>
             </JFXButton>
-            <JFXButton fx:id="addButton" buttonType="RAISED" onAction="#addButtonClicked" style="-fx-background-color: #484848;" text="Add" textFill="#50dd0e">
+            <JFXButton fx:id="addButton" buttonType="RAISED" onAction="#addButtonClicked" style="-fx-background-color: #484848;" text="Add" textFill="#38e835">
                <font>
                   <Font name="Roboto Regular" size="15.0" />
                </font>

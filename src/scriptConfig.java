@@ -127,7 +127,7 @@ public class scriptConfig implements Initializable {
                     }
 
                     int x2 = 0;
-                    String[][] newActions = new String[dashboardController.actions.length-1][7];
+                    String[][] newActions = new String[dashboardController.actions.length-1][8];
                     for(int x1 = 0;x1<dashboardController.actions.length;x1++)
                     {
                         String[] eachAction = dashboardController.actions[x1];
@@ -142,6 +142,7 @@ public class scriptConfig implements Initializable {
                             newActions[x2][4] = eachAction[4];
                             newActions[x2][5] = eachAction[5];
                             newActions[x2][6] = eachAction[6];
+                            newActions[x2][7] = eachAction[7];
                             x2++;
                         }
                     }
@@ -196,11 +197,11 @@ public class scriptConfig implements Initializable {
             isError = true;
         }
 
-        if(scriptRunnerPath.length() == 0)
+        /*if(scriptRunnerPath.length() == 0)
         {
             errors.append("Invalid Script Runner Path Entered\n");
             isError = true;
-        }
+        }*/
 
         if(scriptPath.length() == 0)
         {
@@ -249,7 +250,7 @@ public class scriptConfig implements Initializable {
                         Main.dc.writeToOS("update_icon::"+iconName+"::"+base64EncryptedIcon+"::");
 
                         //first update local actions....
-                        String[][] oldActions = new String[Main.dc.actions.length+1][7];
+                        String[][] oldActions = new String[Main.dc.actions.length+1][8];
 
                         for(i = 0;i<Main.dc.actions.length;i++)
                         {
@@ -265,6 +266,7 @@ public class scriptConfig implements Initializable {
                         oldActions[i][4] = newFileName;
                         oldActions[i][5] = Main.dc.selectedRow+"";
                         oldActions[i][6] = Main.dc.selectedCol+"";
+                        oldActions[i][7] = dashboardController.currentLayer+"";
 
                         Main.dc.actions = oldActions;
 
@@ -329,6 +331,7 @@ public class scriptConfig implements Initializable {
                                 }
                                 oldActions[i][5] = dashboardController.selectedRow+"";
                                 oldActions[i][6] = dashboardController.selectedCol+"";
+                                oldActions[i][7] = dashboardController.currentLayer+"";
                                 System.out.println("YAAY");
                                 break;
                             }
@@ -374,7 +377,7 @@ public class scriptConfig implements Initializable {
                         //byte[] imageB = fs.readAllBytes();
                         //fs.close();
                         //String base64Image = Base64.getEncoder().encodeToString(imageB);
-                        towrite+=eachAction[0]+"__"+eachAction[1]+"__"+eachAction[2]+"__"+eachAction[3]+"__"+eachAction[4]+"__"+eachAction[5]+"__"+eachAction[6]+"::";
+                        towrite+=eachAction[0]+"__"+eachAction[1]+"__"+eachAction[2]+"__"+eachAction[3]+"__"+eachAction[4]+"__"+eachAction[5]+"__"+eachAction[6]+"__"+eachAction[7]+"::";
                     }
 
                     System.out.println(towrite);
@@ -473,6 +476,7 @@ public class scriptConfig implements Initializable {
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             System.out.println("XXD");
         }
     }
