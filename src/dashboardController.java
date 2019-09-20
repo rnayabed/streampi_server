@@ -922,39 +922,8 @@ public class dashboardController implements Initializable {
                     deviceConfigPane.toFront();
                 }
 
-                if(currentLayer > layerIndex)
-                {
-                    FadeOutRight gay = new FadeOutRight(controlVBox);
-                    gay.play();
-                    gay.setOnFinished(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent event) {
-                            controlVBox.getChildren().clear();
-                            controlVBox.getChildren().addAll(rows);
-                            FadeInLeft fag = new FadeInLeft(controlVBox);
-                            fag.play();
-                        }
-                    });
-                }
-                else if(currentLayer < layerIndex)
-                {
-                    FadeOutLeft gay = new FadeOutLeft(controlVBox);
-                    gay.play();
-                    gay.setOnFinished(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent event) {
-                            controlVBox.getChildren().clear();
-                            controlVBox.getChildren().addAll(rows);
-                            FadeInRight fag = new FadeInRight(controlVBox);
-                            fag.play();
-                        }
-                    });
-                }
-                else
-                {
-                    controlVBox.getChildren().clear();
-                    controlVBox.getChildren().addAll(rows);
-                }
+                controlVBox.getChildren().clear();
+                controlVBox.getChildren().addAll(rows);
 
                 if(layerIndex != -1)
                     currentLayer = layerIndex;
@@ -965,10 +934,13 @@ public class dashboardController implements Initializable {
     @FXML
     public void returnToParentLayerButtonClicked()
     {
-        System.out.println(currentLayer);
-        if(currentLayer > 0)
+        for(String[] eachAction : actions)
         {
-            drawLayer(0);
+            if(eachAction[2].equals("folder") && eachAction[3].equals(currentLayer+""))
+            {
+                drawLayer(Integer.parseInt(eachAction[7]));
+                break;
+            }
         }
     }
 

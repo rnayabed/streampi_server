@@ -141,6 +141,7 @@ public class folderConfig implements Initializable {
                         oldActions[i][6] = Main.dc.selectedCol+"";
                         oldActions[i][7] = dashboardController.currentLayer+"";
 
+                        dashboardController.maxLayers++;
                         Main.dc.actions = oldActions;
 
 
