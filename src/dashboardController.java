@@ -1,8 +1,11 @@
+/*
+dashboardController
+ */
+
 import animatefx.animation.*;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.events.JFXDialogEvent;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -16,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
@@ -23,7 +27,6 @@ import javafx.scene.robot.Robot;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
@@ -40,6 +43,8 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 public class dashboardController implements Initializable {
+
+    // Importing all neccessary nodes from the FXML
     @FXML
     public Label statusLabelNotConnectedPane;
     @FXML
@@ -81,32 +86,46 @@ public class dashboardController implements Initializable {
     @FXML
     private StackPane progressStackPane;
 
-    int currentSelectionMode = 0;
+    //currentSelectionMode is used to distinguish between the type of action user wants to add...
+    private int currentSelectionMode = 0;
     /*
     Selection Modes:
     0 - Nothing (Normal)
     1 - Hotkey
     2 - Script
     3 - Tweet
+    4 - Folder
+    This isn't final and will go on increasing in the future.
      */
+
+    //Global Boolean to ensure whether Twitter Dependencies are Setup...
     static boolean isTwitterSetup = true;
 
-    HashMap<String, String> config = new HashMap<>();
-    boolean isServerStarted = false;
-    boolean isConnectedToClient = false;
-    boolean firstRun = true;
-    final Paint WHITE_PAINT = Paint.valueOf("#ffffff");
-    Image close_icon = new Image(getClass().getResourceAsStream("icons/icon_preview.png"));
+    //Global Hashmap where config will be stored (taken from the config file)
+    private HashMap<String, String> config = new HashMap<>();
+    //Global Variable to store whether Server is actually up and running
+    private boolean isServerStarted = false;
+    //Global Variable to store whether Server is connected to the client
+    private boolean isConnectedToClient = false;
+    //First Run variable, used especially to avoid init server animations on startup
+    private boolean firstRun = true;
+    //Global Paint Constant for white font in Alert Boxes (They are generated from code, and not hardcoded FXML)
+    private final Paint WHITE_PAINT = Paint.valueOf("#ffffff");
 
+    //Initialize method, runs when the application first starts
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         readConfig();
         twitterSetup();
 
         try {
+            //Global variable to store the Computer's (Server) IP of the local network.
             serverIP = Inet4Address.getLocalHost().getHostAddress();
+            //Global Socket Variable, which is mainly used here to just open and close comms.
             server = new ServerSocket(Integer.parseInt(config.get("server_port")));
+            //Reuse address, if the previous thing goes haywire
             server.setReuseAddress(true);
+            //Set Buffersize to 9.5 X 10^8 Bytes to accommodate for the
             server.setReceiveBufferSize(950000000);
             server.setSoTimeout(0);
             server.setReceiveBufferSize(370923);
@@ -425,7 +444,7 @@ public class dashboardController implements Initializable {
                     {
                         System.out.println("xa11");
                         writeToOS("client_details::");
-                        Thread.sleep(1000);
+                        Thread.sleep(300);
                         writeToOS("get_actions::");
                     }
 
@@ -608,6 +627,8 @@ public class dashboardController implements Initializable {
     static int currentLayer = 0;
     static HashMap<String, Image> icons = new HashMap<>();
     static String[][] actions;
+    int eachActionSize;
+    int eachActionPadding;
     Task<Void> serverCommTask = new Task<Void>() {
         @Override
         protected Void call() {
@@ -686,6 +707,9 @@ public class dashboardController implements Initializable {
                     streamPIHeight = Integer.parseInt(msgArr[4]);
                     streamPIMaxActionsPerRow = Integer.parseInt(msgArr[5]);
                     streamPIMaxNoOfRows = Integer.parseInt(msgArr[6]);
+                    eachActionSize = Integer.parseInt(msgArr[7]);
+                    eachActionPadding = Integer.parseInt(msgArr[8]);
+                    controlVBox.setSpacing(eachActionPadding);
                     System.out.println("NIGGER REGISTERED!");
                 }
                 else if(msgHeader.equals("action_icon"))
@@ -818,14 +842,14 @@ public class dashboardController implements Initializable {
         for(int i = 0;i<streamPIMaxNoOfRows;i++)
         {
             rows[i] = new HBox();
-            rows[i].setSpacing(20);
+            rows[i].setSpacing(eachActionPadding);
             rows[i].setAlignment(Pos.CENTER);
 
             Pane[] actionPane = new Pane[streamPIMaxActionsPerRow];
             for(int k = 0;k<streamPIMaxActionsPerRow;k++)
             {
                 actionPane[k] = new Pane();
-                actionPane[k].setPrefSize(90,90);
+                actionPane[k].setPrefSize(eachActionSize,eachActionSize);
                 actionPane[k].setId("freeAction_"+i+"_"+k);
                 actionPane[k].setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
@@ -856,7 +880,14 @@ public class dashboardController implements Initializable {
                                             loadPopupFXML("tweetConfig.fxml",2);
                                         else if(eachAction[2].equals("folder"))
                                             {
-                                                drawLayer(Integer.parseInt(eachAction[3]));
+                                                if(event.getButton() == MouseButton.SECONDARY)
+                                                {
+                                                    loadPopupFXML("folderConfig.fxml",2);
+                                                }
+                                                else if(event.getButton() == MouseButton.PRIMARY)
+                                                {
+                                                    drawLayer(Integer.parseInt(eachAction[3]));
+                                                }
                                             }
                                         break;
                                     }
@@ -894,13 +925,13 @@ public class dashboardController implements Initializable {
                 System.out.println("actions[i]XX : "+actions[i][3]);
                 ImageView icon = new ImageView();
                 icon.setImage(icons.get(actions[i][4]));
-                icon.setFitHeight(90);
-                icon.setFitWidth(90);
+                icon.setFitHeight(eachActionSize);
+                icon.setFitWidth(eachActionSize);
 
                 Pane aPane = (Pane) rows[Integer.parseInt(actions[i][5])].getChildren().get(Integer.parseInt(actions[i][6]));
                 aPane.getChildren().add(icon);
                 //Pane actionPane = new Pane(icon);
-                aPane.setPrefSize(90,90);
+                aPane.setPrefSize(eachActionSize,eachActionSize);
                 //actionPane.setStyle("-fx-effect: dropshadow(three-pass-box, "+actions[i][4]+", 5, 0, 0, 0);-fx-background-color:#212121");
                 aPane.setId("allocatedaction_"+actions[i][5]+"_"+actions[i][6]+"_"+actions[i][0]);
 
@@ -1011,10 +1042,7 @@ public class dashboardController implements Initializable {
     public void newFolderAction()
     {
         System.out.println(currentLayer);
-        if(currentLayer == 0)
-            showNewActionHint("Folder");
-        else
-            showErrorAlert("Alert!","StreamPi Doesn't Support Nested Folders yet ...");
+        showNewActionHint("Folder");
     }
 
     @FXML
@@ -1022,6 +1050,9 @@ public class dashboardController implements Initializable {
     {
         showNewActionHint("Tweet");
     }
+
+    @FXML
+    public JFXButton returnToParentLayerButton;
 
     public void showNewActionHint(String actionName)
     {
@@ -1035,6 +1066,7 @@ public class dashboardController implements Initializable {
             currentSelectionMode = 4;
 
         actionsAccordion.setDisable(true);
+        returnToParentLayerButton.setDisable(true);
         for(Node eachRowN : controlVBox.getChildren())
         {
             HBox eachRow = (HBox) eachRowN;
@@ -1057,6 +1089,7 @@ public class dashboardController implements Initializable {
     public void hideNewActionHint()
     {
         actionsAccordion.setDisable(false);
+        returnToParentLayerButton.setDisable(false);
         for(Node eachRowN : controlVBox.getChildren())
         {
             HBox eachRow = (HBox) eachRowN;

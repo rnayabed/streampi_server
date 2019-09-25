@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -133,7 +134,7 @@ public class folderConfig implements Initializable {
                         oldActions[i][0] = generateRandomID();
                         oldActions[i][1] = "Random Folder HAXX";
                         oldActions[i][2] = "folder";
-                        String toWrite = dashboardController.maxLayers+1+"";
+                        String toWrite = r.nextInt((15000 - 1) + 1) + 1+"";
                         oldActions[i][3] = toWrite;
                         //oldActions[i][4] = selectedIconFile.getName();
                         oldActions[i][4] = newFileName;
@@ -282,6 +283,7 @@ public class folderConfig implements Initializable {
         Main.dc.newActionConfigDialog.close();
     }
 
+    String layerToBeDeleted;
     @FXML
     void deleteButtonClicked() {
         new Thread(new Task<Void>() {
@@ -295,6 +297,7 @@ public class folderConfig implements Initializable {
                             Main.dc.showProgress("Updating StreamPi Client","Removing requested Action ");
                         }
                     });
+
 
                     for(String[] eachAction : dashboardController.actions)
                     {
@@ -310,35 +313,91 @@ public class folderConfig implements Initializable {
                                     ac.getStyleClass().add("action_box");
                                 }
                             });
+                            layerToBeDeleted = eachAction[3];
                             System.out.println("Removed from Server...");
+                            System.out.println("delete_action::"+dashboardController.selectedActionUniqueID+"::"+eachAction[4]);
                             Main.dc.writeToOS("delete_action::"+dashboardController.selectedActionUniqueID+"::"+eachAction[4]);
                             System.out.println("Removed from Client!");
                             break;
                         }
                     }
 
-                    int x2 = 0;
-                    String[][] newActions = new String[dashboardController.actions.length-1][8];
-                    for(int x1 = 0;x1<dashboardController.actions.length;x1++)
+                    System.out.println(layerToBeDeleted);
+
+                    boolean isNestedFolderFound = true;
+
+                    while(true)
                     {
-                        String[] eachAction = dashboardController.actions[x1];
-                        if(eachAction[0].equals(dashboardController.selectedActionUniqueID))
-                            continue;
-                        else
+                        int l = 0;
+                        for(String[] eachAction : dashboardController.actions)
                         {
-                            newActions[x2][0] = eachAction[0];
-                            newActions[x2][1] = eachAction[1];
-                            newActions[x2][2] = eachAction[2];
-                            newActions[x2][3] = eachAction[3];
-                            newActions[x2][4] = eachAction[4];
-                            newActions[x2][5] = eachAction[5];
-                            newActions[x2][6] = eachAction[6];
-                            newActions[x2][7] = eachAction[7];
-                            x2++;
+                            if(eachAction[7].equals(layerToBeDeleted))
+                            {
+                                l++;
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if((dashboardController.currentLayer+"") == layerToBeDeleted)
+                                        {
+                                            HBox row = (HBox) Main.dc.controlVBox.getChildren().get(Integer.parseInt(eachAction[5]));
+                                            Pane ac = (Pane) row.getChildren().get(Integer.parseInt(eachAction[6]));
+                                            ac.getChildren().clear();
+                                            ac.setId("freeAction_" + eachAction[5] + "_" + eachAction[6]);
+                                            ac.getStyleClass().add("action_box");
+                                        }
+                                    }
+                                });
+
+                                if (eachAction[2].equals("folder"))
+                                {
+                                    layerToBeDeleted = eachAction[3];
+                                }
+                                System.out.println("Removed from Server...");
+                                System.out.println("delete_action::" + eachAction[0] + "::" + eachAction[4]);
+                                Main.dc.writeToOS("delete_action::" + eachAction[0] + "::" + eachAction[4]);
+                                System.out.println("Removed from Client!");
+                                eachAction[7]="pls_give_me_a_gf";
+                                Thread.sleep(25);
+                            }
+                        }
+
+                        if(l == 0)
+                        {
+                            //All Nested stuff probably deleted...
+                            break;
                         }
                     }
 
-                    dashboardController.actions = newActions;
+
+                    //String[][] newActions = new String[dashboardController.actions.length][8];
+
+                    ArrayList<String[]> newActionsArrayList = new ArrayList<>();
+                    for(int x1 = 0;x1<dashboardController.actions.length;x1++)
+                    {
+                        String[] eachAction = dashboardController.actions[x1];
+                        if(eachAction[7].equals("pls_give_me_a_gf"))
+                            continue;
+                        else
+                        {
+                            String[] sex = new String[8];
+                            sex[0] = eachAction[0];
+                            sex[1] = eachAction[1];
+                            sex[2] = eachAction[2];
+                            sex[3] = eachAction[3];
+                            sex[4] = eachAction[4];
+                            sex[5] = eachAction[5];
+                            sex[6] = eachAction[6];
+                            sex[7] = eachAction[7];
+                            newActionsArrayList.add(sex);
+                        }
+                    }
+
+                    String[][] gay = new String[newActionsArrayList.size()][8];
+                    for(int i=0;i<gay.length;i++)
+                    {
+                        gay[i]=newActionsArrayList.get(i);
+                    }
+                    dashboardController.actions = gay;
 
 
                     Platform.runLater(new Runnable() {

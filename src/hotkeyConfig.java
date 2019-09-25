@@ -107,33 +107,18 @@ public class hotkeyConfig implements Initializable {
                     }
                     else if(txt.equals("Backspace"))
                     {
-                        txt = "Back_Space";
+                       txt = "Back_Space";
                     }
 
                     boolean isFound = false;
-                    for(String eachHotkey : getHotkeysEntered())
-                    {
-                        if(eachHotkey.equals(txt))
-                        {
-                            isFound = true;
-                            break;
+                    System.out.println("asdkjahdjsahdj");
+                    System.out.println(event.getText());
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            hotkeyCodeChipView.getChips().add(txt);
                         }
-                    }
-                    if (!isFound)
-                    {
-                        System.out.println("asdkjahdjsahdj");
-                        System.out.println(event.getText());
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                hotkeyCodeChipView.getChips().add(txt);
-                            }
-                        });
-                    }
-                    else
-                    {
-                        System.out.println("BHAKK");
-                    }
+                    });
                 }
             }
         });
