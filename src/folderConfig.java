@@ -151,8 +151,8 @@ public class folderConfig implements Initializable {
 
                         ImageView icon = new ImageView();
                         icon.setImage(Main.dc.icons.get(Main.dc.actions[i][4]));
-                        icon.setFitHeight(90);
-                        icon.setFitWidth(90);
+                        icon.setFitHeight(dashboardController.eachActionSize);
+                        icon.setFitWidth(dashboardController.eachActionSize);
 
 
                         HBox row = (HBox) Main.dc.controlVBox.getChildren().get(Main.dc.selectedRow);
@@ -223,8 +223,8 @@ public class folderConfig implements Initializable {
 
                         ImageView icon = new ImageView();
                         icon.setImage(dashboardController.icons.get(dashboardController.actions[i][4]));
-                        icon.setFitHeight(90);
-                        icon.setFitWidth(90);
+                        icon.setFitHeight(dashboardController.eachActionSize);
+                        icon.setFitWidth(dashboardController.eachActionSize);
 
 
                         HBox row = (HBox) Main.dc.controlVBox.getChildren().get(dashboardController.selectedRow);

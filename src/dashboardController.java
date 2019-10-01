@@ -1,5 +1,8 @@
 /*
-dashboardController
+dashboardController Class
+Originally Written By Debayan Sutradhar
+Contributors :
+
  */
 
 import animatefx.animation.*;
@@ -7,7 +10,6 @@ import com.jfoenix.controls.*;
 import com.jfoenix.controls.events.JFXDialogEvent;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -44,7 +46,7 @@ import java.util.ResourceBundle;
 
 public class dashboardController implements Initializable {
 
-    // Importing all neccessary nodes from the FXML
+    // Importing all neccessary nodes from dashboard.fxml via respective FXML IDs
     @FXML
     public Label statusLabelNotConnectedPane;
     @FXML
@@ -84,7 +86,15 @@ public class dashboardController implements Initializable {
     @FXML
     public JFXTextField twitterConsumerKeyField;
     @FXML
-    private StackPane progressStackPane;
+    public StackPane progressStackPane;
+    @FXML
+    public JFXButton applyButton;
+    @FXML
+    public JFXTextField eachActionSizeField;
+    @FXML
+    public JFXTextField eachActionPaddingField;
+    @FXML
+    public Accordion actionsAccordion;
 
     //currentSelectionMode is used to distinguish between the type of action user wants to add...
     private int currentSelectionMode = 0;
@@ -103,8 +113,6 @@ public class dashboardController implements Initializable {
 
     //Global Hashmap where config will be stored (taken from the config file)
     private HashMap<String, String> config = new HashMap<>();
-    //Global Variable to store whether Server is actually up and running
-    private boolean isServerStarted = false;
     //Global Variable to store whether Server is connected to the client
     private boolean isConnectedToClient = false;
     //First Run variable, used especially to avoid init server animations on startup
@@ -119,9 +127,9 @@ public class dashboardController implements Initializable {
         twitterSetup();
 
         try {
-            //Global variable to store the Computer's (Server) IP of the local network.
+            //Global variable to store the Computer's (Server) IP of the local network
             serverIP = Inet4Address.getLocalHost().getHostAddress();
-            //Global Socket Variable, which is mainly used here to just open and close comms.
+            //Global Socket Variable, which is mainly used here to just open and close comms
             server = new ServerSocket(Integer.parseInt(config.get("server_port")));
             //Reuse address, if the previous thing goes haywire
             server.setReuseAddress(true);
@@ -130,7 +138,8 @@ public class dashboardController implements Initializable {
             server.setSoTimeout(0);
             server.setReceiveBufferSize(370923);
 
-            if (!isServerStarted) {
+            if (!isConnectedToClient) {
+                //Server not started? Then Start it
                 startServer();
             }
         }
@@ -139,36 +148,44 @@ public class dashboardController implements Initializable {
             e.printStackTrace();
         }
 
-
-
+        //In settings, set server IP field as the Host IP address (for the local network)
         serverIPField.setText(serverIP);
+        //Set the Port Filed as the port no written in config
         serverPortField.setText(config.get("server_port"));
+        //Set Twitter Api Keys
         twitterConsumerSecretField.setText(config.get("twitter_oauth_consumer_secret"));
         twitterConsumerKeyField.setText(config.get("twitter_oauth_consumer_key"));
 
-
+        //Start new background thread to handle server connections
         Thread t = new Thread(serverCommTask);
         t.setDaemon(true);
         t.start();
 
+        //Set the instance of dc in main as this class, so that other classes can access its nodes
         Main.dc = this;
     }
 
-    Twitter twitter;
+    private Twitter twitter;
 
-    public void twitterSetup()
+    //Checks whether Twitter is Setup or not, and takes the necessary steps
+    private void twitterSetup()
     {
+        //Runs in Thread to avoid UI Freezing
         new Thread(new Task<Void>() {
             @Override
             protected Void call() {
                 try
                 {
+                    //Checks whether Twitter OAuth Keys are present or not ...
                     if(config.get("twitter_oauth_consumer_key").equals("NULL") || config.get("twitter_oauth_consumer_secret").equals("NULL") || config.get("twitter_oauth_access_token").equals("NULL") || config.get("twitter_oauth_access_token_secret").equals("NULL"))
                     {
                         isTwitterSetup = false;
                     }
                     else
                     {
+                        //If present, then starts using the Twitter4j library
+
+                        //Sets mode of connection via SSL as Twitter API uses only SSL
                         System.setProperty("twitter4j.http.useSSL", "true");
                         ConfigurationBuilder cb = new ConfigurationBuilder();
                         cb.setDebugEnabled(true)
@@ -185,160 +202,116 @@ public class dashboardController implements Initializable {
                 }
                 catch (Exception e)
                 {
-                    showErrorAlert(":(","Unable to Verify Twitter Login. Check stacktrace, or perhaps try relogging in.");
+                    showErrorAlert(":(","Unable to Verify Twitter Login. Check stacktrace, or perhaps try relogging in.\nIt might be a network connection error as well");
                     isTwitterSetup = false;
                     e.printStackTrace();
                 }
-                System.out.println("GAYYY : "+isTwitterSetup);
                 return null;
             }
         }).start();
     }
 
-    Random r = new Random();
-    public void createNewTweet(String txtMsg)
+    private Random r = new Random();
+    private void createNewTweet(String txtMsg)
     {
-        for(int i = 0;i<r.nextInt(150);i++)
-        {
-            txtMsg+="⠀"; // U+2800 Blank code
-        }
+        //IMPORTANT : Twitter does not allow same tweet to be sent over and over again so here is workaround.
+        //This trick adds few blank characters after the original text, so that twitter thinks it to be a new text tweet, and goes on to publish it!
+
+        txtMsg = txtMsg + ("⠀".repeat(Math.max(0, r.nextInt(150)))) // U+2800 Blank code to avoid twitter
+        ;
+
         try
         {
+            //Uses the Twitter4J Instance to finally send the tweet
             twitter.updateStatus(txtMsg);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    showErrorAlert("Error!","Something went wrong. Check Stacktrace for more info.");
-                }
-            });
+            Platform.runLater(() -> showErrorAlert("Error!","Something went wrong. Check Stacktrace for more info."));
         }
     }
 
+    //Shows that Server was unable to start
     @FXML
-    public void showConnectionErrorPane()
+    private void showConnectionErrorPane()
     {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                retryButton.setDisable(false);
-                connectionErrorPane.toFront();
-                ZoomIn x = new ZoomIn(connectionErrorPane);
-                x.setSpeed(3.0);
-                x.play();
-                System.out.println("XDC");
-            }
+        Platform.runLater(() -> {
+            retryButton.setDisable(false);
+            connectionErrorPane.toFront();
+            ZoomIn x = new ZoomIn(connectionErrorPane);
+            x.setSpeed(3.0);
+            x.play();
         });
     }
 
+    //Shows About
     @FXML
     public void aboutStreamPiButtonClicked()
     {
         showErrorAlert("About Us","Created By Debayan\nOrginally Thought of by CorporalSaturn\nBETA");
     }
 
+    //Hides that server was unable to start
     @FXML
-    public void hideConnectionErrorPane()
+    private void hideConnectionErrorPane()
     {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                if(connectionErrorPane.getOpacity()>0)
-                {
-                    System.out.println("FADING");
-                    ZoomOut x = new ZoomOut(connectionErrorPane);
-                    x.setOnFinished(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent event) {
-                            connectionErrorPane.toBack();
-                        }
-                    });
-                    x.setSpeed(3);
-                    x.play();
-                }
+        Platform.runLater(() -> {
+            if(connectionErrorPane.getOpacity()>0)
+            {
+                ZoomOut x = new ZoomOut(connectionErrorPane);
+                x.setOnFinished(event -> connectionErrorPane.toBack());
+                x.setSpeed(3);
+                x.play();
             }
         });
     }
 
+    //Shows the Settings Pane
     @FXML
     public void showSettingsPane()
     {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                retryButton.setDisable(false);
-                settingsPane.toFront();
-                ZoomIn x = new ZoomIn(settingsPane);
-                x.setSpeed(3.0);
-                x.play();
-                System.out.println("XDC");
-            }
+        Platform.runLater(() -> {
+            retryButton.setDisable(false);
+            settingsPane.toFront();
+            ZoomIn x = new ZoomIn(settingsPane);
+            x.setSpeed(3.0);
+            x.play();
         });
     }
 
+    //Hides the Settings Pane
     @FXML
     public void hideSettingsPane()
     {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                if(settingsPane.getOpacity()>0)
-                {
-                    System.out.println("FADING");
-                    ZoomOut x = new ZoomOut(settingsPane);
-                    x.setOnFinished(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent event) {
-                            settingsPane.toBack();
-                        }
-                    });
-                    x.setSpeed(2);
-                    x.play();
-                }
+        Platform.runLater(() -> {
+            if(settingsPane.getOpacity()>0)
+            {
+                ZoomOut x = new ZoomOut(settingsPane);
+                x.setOnFinished(event -> settingsPane.toBack());
+                x.setSpeed(2);
+                x.play();
             }
         });
     }
 
+    //Called when the Retry Button for "unable to start server" is clicked
     @FXML
     public void retryButtonClicked()
     {
-        /*if(serverPortField.getText().length()==0)
-        {
-            showErrorAlert("Invalid Server Port Value","It cannot be left empty!");
-        }
-        else
-        {
-            try
-            {
-                Integer.parseInt(serverPortField.getText());
-
-                retryButton.setDisable(true);
-                updateConfig("server_port",serverPortField.getText());
-                startServer();
-            }
-            catch (Exception e2)
-            {
-                showErrorAlert("Invalid Server Port Value","It must be a numeric value.");
-            }
-        }*/
-
         retryButton.setDisable(true);
         hideConnectionErrorPane();
         startServer();
         retryButton.setDisable(false);
     }
 
+    //Called when the "Apply" Button in Settings is clicked
     @FXML
-    public JFXButton applyButton;
-
-    @FXML
-    public void applySettings()
+    private void applySettings()
     {
         boolean error = false;
 
+        boolean isRestartableSettingChanged = false;
         String errs = "";
         if(serverPortField.getText().length()==0)
         {
@@ -349,6 +322,8 @@ public class dashboardController implements Initializable {
         {
             try {
                 Integer.parseInt(serverPortField.getText());
+                if(!(serverPortField.getText()+"").equals(config.get("server_port")))
+                    isRestartableSettingChanged = true;
             }
             catch (Exception e)
             {
@@ -370,12 +345,62 @@ public class dashboardController implements Initializable {
         }
 
 
+        String paddingTextFieldText = eachActionPaddingField.getText();
+        String sizeTextFieldText = eachActionSizeField.getText();
+        try
+        {
+            int padding = Integer.parseInt(paddingTextFieldText);
+            int size = Integer.parseInt(sizeTextFieldText);
+
+            if(padding==0)
+            {
+                errs += "*Invalid Action Padding, It cannot be left empty!\n";
+                error = true;
+            }
+
+            if(size==0)
+            {
+                errs += "*Invalid Action Size. It cannot be left empty\n";
+                error = true;
+            }
+        }
+        catch (Exception e)
+        {
+            errs += "*Invalid Action Size. Needs to be integer\n";
+            error = true;
+        }
+
         if(!error)
         {
             updateConfig("server_port", serverPortField.getText());
             updateConfig("twitter_oauth_consumer_key", twitterConsumerKeyField.getText());
             updateConfig("twitter_oauth_consumer_secret",twitterConsumerSecretField.getText());
-            showErrorAlert("Done!","Restart to see changes ;)");
+            try {
+                if(!sizeTextFieldText.equals(eachActionSize+"") || !paddingTextFieldText.equals(eachActionPadding))
+                {
+                    eachActionSize = Integer.parseInt(sizeTextFieldText);
+                    eachActionPadding = Integer.parseInt(paddingTextFieldText);
+
+                    streamPIMaxActionsPerRow = (int) Math.floor(streamPIWidth / (eachActionSize + eachActionPadding + eachActionPadding));
+                    streamPIMaxNoOfRows = (int) Math.floor(streamPIHeight / (eachActionSize +eachActionPadding + eachActionPadding));
+
+                    drawLayer(0);
+                    writeToOS("client_action_size_padding_update::"+eachActionSize+"::"+eachActionPadding+"::");
+                }
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
+            if(isRestartableSettingChanged)
+            {
+                showErrorAlert("Done!","Restart to see changes ;)");
+            }
+            else
+            {
+                showErrorAlert("Done!","Settings have been applied");
+            }
         }
         else
         {
@@ -383,72 +408,59 @@ public class dashboardController implements Initializable {
         }
     }
 
-    public void updateConfig(String keyName, String newValue)
+    //Used to update the "config" file
+    private void updateConfig(String keyName, String newValue)
     {
         config.put(keyName,newValue);
         io.writeToFile(config.get("server_port")+"::"+config.get("twitter_oauth_consumer_key")+"::"+config.get("twitter_oauth_consumer_secret")+"::"+config.get("twitter_oauth_access_token")+"::"+config.get("twitter_oauth_access_token_secret")+"::","config");
     }
 
+    //Shows "Listening For StreamPi" pane, indicating user that no Pi is connected to the server
     @FXML
-    public void showNotConnectedPane() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                if(firstRun)
-                {
-                    notConnectedPane.toFront();
-                    notConnectedPane.setOpacity(1.0);
-                    firstRun = false;
-                }
-                else
-                {
-                    new ZoomIn(notConnectedPane).play();
-                    if(newActionHintHBox.getOpacity()==1)
-                        hideNewActionHint();
-                    notConnectedPane.toFront();
-                }
+    private void showNotConnectedPane() {
+        Platform.runLater(() -> {
+            if(firstRun)
+            {
+                notConnectedPane.toFront();
+                notConnectedPane.setOpacity(1.0);
+                firstRun = false;
+            }
+            else
+            {
+                new ZoomIn(notConnectedPane).play();
+                if(newActionHintHBox.getOpacity()==1)
+                    hideNewActionHint();
+                notConnectedPane.toFront();
             }
         });
-
     }
 
+    //Hides "Listening For StreamPi" pane, indicating user that Pi is successfully connected to the server
     @FXML
     public void hideNotConnectedPane()
     {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                new ZoomOut(notConnectedPane).play();
-                notConnectedPane.toBack();
-            }
+        Platform.runLater(() -> {
+            new ZoomOut(notConnectedPane).play();
+            notConnectedPane.toBack();
         });
-
     }
 
     @FXML
-    private Accordion actionsAccordion;
-
-    @FXML
-    public void showDeviceConfigPane()
+    private void showDeviceConfigPane()
     {
-        //retrieve actions...
+        //Retrieve actions from the pi, in a background Thread to avoid UI Freeze
         new Thread(new Task<Void>() {
             @Override
             protected Void call() {
                 try
                 {
                     hideConnectionErrorPane();
-                    //Thread.sleep(3000);
-                    System.out.println("xc");
                     if(isConnectedToClient)
                     {
-                        System.out.println("xa11");
                         writeToOS("client_details::");
                         Thread.sleep(300);
                         writeToOS("get_actions::");
                     }
-
-
                 }
                 catch (Exception e)
                 {
@@ -457,72 +469,43 @@ public class dashboardController implements Initializable {
                 return null;
             }
         }).start();
-
     }
 
-    public boolean currentlyWriting = false;
-    public boolean currentlyReading = false;
+    private boolean currentlyReading = false;
+
+    //Writes to the Output Stream of the Socket connection between pi and pc
     public void writeToOS(String txt) throws Exception
     {
-        //System.out.println("txt  : "+txt);
-        /*txt = txt + "<END>";
-        currentlyWriting = true;
-        String[] chunks = Iterables.toArray(Splitter.fixedLength(1000).split(txt),String.class);
-        for(int i = 0;i<chunks.length;i++)
-        {
-            os.writeUTF(chunks[i]);
-            Thread.sleep(100);
-
-        }*/
-        //currentlyWriting = true;
         os.writeUTF(txt);
-
-        //os.write(txt.getBytes(StandardCharsets.UTF_8).length);
-        //os.write(txt.getBytes(StandardCharsets.UTF_8));
-        //currentlyWriting = false;
         os.flush();
-        ////System.out.println("txt : "+txt);
     }
 
-    public String readFromIS() throws Exception
+    //Writes from the Input Stream of the Socket connection between pi and pc
+    public String readFromIS()
     {
-        String eachChunk = is.readUTF();
-        return eachChunk;
-        /*String finalResult = "";
-        while(true)
-        {
-            if(currentlyWriting)
-            {
-                Thread.sleep(500);
-                continue;
-            }
-            String eachChunk = is.readUTF();
-            if(!eachChunk.endsWith("<END>"))
-            {
-                finalResult += eachChunk;
-            }
-            else
-            {
-                finalResult += eachChunk.replace("<END>","");
-                break;
-            }
+        try {
+            return is.readUTF();
         }
-
-        //System.out.println("txtrr : "+finalResult);
-        return finalResult;*/
+        catch (Exception e)
+        {
+            return null;
+        }
     }
 
-    ServerSocket server;
-    Socket socket;
-    DataInputStream is;
-    DataOutputStream os;
+    //Necessary Variables for Socket Handling
+    private ServerSocket server;
+    private Socket socket;
+    private DataInputStream is;
+    private DataOutputStream os;
 
-    String serverIP;
+    //Stores the Server IP (Host's IP)
+    private String serverIP;
 
-
+    //Starts the Server, listening for the Pi on the Host
     @FXML
-    public void startServer()
+    private void startServer()
     {
+        //Run in background Thread to avoid UI Freeze
         Thread t1 = new Thread(new Task<Void>() {
             @Override
             protected Void call(){
@@ -536,20 +519,11 @@ public class dashboardController implements Initializable {
                         socket.close();
                     }
 
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            showNotConnectedPane();
-                        }
-                    });
+                    Platform.runLater(() -> showNotConnectedPane());
 
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            System.out.println("xcasd");
-                            statusLabelNotConnectedPane.setText("Listening for StreamPi");
-                            serverStatsLabel.setText("Server Running on "+serverIP+", Port "+config.get("server_port"));
-                        }
+                    Platform.runLater(() -> {
+                        statusLabelNotConnectedPane.setText("Listening for StreamPi");
+                        serverStatsLabel.setText("Server Running on "+serverIP+", Port "+config.get("server_port"));
                     });
 
                     socket = server.accept();
@@ -558,36 +532,27 @@ public class dashboardController implements Initializable {
                     FadeOutUp fou3 = new FadeOutUp(serverStatsLabel);
                     fou3.play();
                     fou2.play();
-                    fou2.setOnFinished(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent event) {
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    statusLabelNotConnectedPane.setText("Connected to "+socket.getRemoteSocketAddress().toString().replace("/",""));
-                                    serverStatsLabel.setText("Getting Things Ready...");
-                                }
-                            });
-                            isConnectedToClient = true;
-                            FadeInUp fiu3 = new FadeInUp(statusLabelNotConnectedPane);
-                            FadeInUp fiu4 = new FadeInUp(serverStatsLabel);
-                            fiu3.setDelay(Duration.millis(500));
-                            fiu3.play();
-                            fiu3.setOnFinished(new EventHandler<ActionEvent>() {
-                                @Override
-                                public void handle(ActionEvent event) {
-                                    fiu4.play();
-                                    try
-                                    {
-                                        showDeviceConfigPane();
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-                        }
+                    fou2.setOnFinished(event -> {
+                        Platform.runLater(() -> {
+                            statusLabelNotConnectedPane.setText("Connected to "+socket.getRemoteSocketAddress().toString().replace("/",""));
+                            serverStatsLabel.setText("Getting Things Ready...");
+                        });
+                        isConnectedToClient = true;
+                        FadeInUp fiu3 = new FadeInUp(statusLabelNotConnectedPane);
+                        FadeInUp fiu4 = new FadeInUp(serverStatsLabel);
+                        fiu3.setDelay(Duration.millis(500));
+                        fiu3.play();
+                        fiu3.setOnFinished(event1 -> {
+                            fiu4.play();
+                            try
+                            {
+                                showDeviceConfigPane();
+                            }
+                            catch (Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+                        });
                     });
                 }
                 catch (Exception e)
@@ -597,7 +562,9 @@ public class dashboardController implements Initializable {
                         Thread.sleep(2500);
                     }
                     catch (Exception ex)
-                    {}
+                    {
+                        e.printStackTrace();
+                    }
                     showConnectionErrorPane();
                     StringWriter sw = new StringWriter();
                     PrintWriter pw = new PrintWriter(sw);
@@ -608,16 +575,17 @@ public class dashboardController implements Initializable {
             }
         });
         t1.setDaemon(true);
+        //Start the thread.
         t1.start();
     }
 
     @FXML
-    public void showStackTraceOfConnectionError()
+    private void showStackTraceOfConnectionError()
     {
         showErrorAlert("Stack Trace",stackTrace1);
     }
 
-    String stackTrace1 = "";
+    private String stackTrace1 = "";
 
     static int selectedRow;
     static int selectedCol;
@@ -627,80 +595,62 @@ public class dashboardController implements Initializable {
     static int currentLayer = 0;
     static HashMap<String, Image> icons = new HashMap<>();
     static String[][] actions;
-    int eachActionSize;
-    int eachActionPadding;
-    Task<Void> serverCommTask = new Task<Void>() {
+    static int eachActionSize;
+    private int eachActionPadding;
+
+    //listens to any replies or queries from the pi. Runs in a background Thread
+    private Task<Void> serverCommTask = new Task<>() {
         @Override
         protected Void call() {
-            while(true) {
-            try
-            {
-                if(!isConnectedToClient)
-                {
+            while (true) try {
+                if (!isConnectedToClient) {
                     Thread.sleep(100);
                     continue;
                 }
                 is = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
                 os = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-                if (currentlyReading)
-                {
+                if (currentlyReading) {
                     Thread.sleep(500);
                     continue;
                 }
-                System.out.println("sdsdasdasdasdasd");
                 String message = readFromIS();
                 System.out.println(message);
 
                 String[] msgArr = message.split("::");
                 String msgHeader = msgArr[0];
 
-                System.out.println("'"+msgHeader+"'");
-                if(msgHeader.equals("client_actions"))
-                {
-                    System.out.println("XDA@@!@");
+                System.out.println("'" + msgHeader + "'");
+                if (msgHeader.equals("client_actions")) {
                     int noOfActions = Integer.parseInt(msgArr[1]);
                     actions = new String[noOfActions][8];
                     int index = 2;
-                    for(int i = 0; i<noOfActions;i++)
-                    {
+                    for (int i = 0; i < noOfActions; i++) {
                         String[] actionChunk = msgArr[index].split("__");
                         actions[i][0] = actionChunk[0]; //Unique ID
                         actions[i][1] = actionChunk[1]; //Casual Name
                         actions[i][2] = actionChunk[2]; //Action Type
                         actions[i][3] = actionChunk[3]; //Action Content
-                        //actions[i][3] = actionChunk[3]; //Picture in base 64
                         actions[i][4] = actionChunk[4]; //Picture file name
-                        //actions[i][4] = actionChunk[4]; //Ambient Colour
                         actions[i][5] = actionChunk[5]; //Row No
                         actions[i][6] = actionChunk[6]; //Col No
                         actions[i][7] = actionChunk[7]; //Layer Index
                         index++;
                     }
 
-                    System.out.println("MAX LAYERZZ : "+Integer.parseInt(msgArr[index]));
                     maxLayers = Integer.parseInt(msgArr[index]);
 
-                    if(noOfActions == 0)
-                    {
-                        System.out.println("DRAWW");
+                    if (noOfActions == 0) {
                         drawLayer(-1);
-                    }
-                    else
-                    {
+                    } else {
                         controlVBox.setAlignment(Pos.TOP_CENTER);
-                        System.out.println("XDAasdsd@@!@");
-                        Thread.sleep(1500);
+                        Thread.sleep(1000);
                         writeToOS("client_actions_icons_get::");
                     }
-                }
-                else if(msgHeader.equals("client_quit"))
-                {
+                } else if (msgHeader.equals("client_quit")) {
                     isConnectedToClient = false;
                     socket.close();
                     startServer();
-                }
-                else if(msgHeader.equals("client_details"))
-                {
+                } else if (msgHeader.equals("client_details")) {
                     streamPIIP = msgArr[1];
                     streamPINickName = msgArr[2];
                     streamPIWidth = Integer.parseInt(msgArr[3]);
@@ -709,45 +659,40 @@ public class dashboardController implements Initializable {
                     streamPIMaxNoOfRows = Integer.parseInt(msgArr[6]);
                     eachActionSize = Integer.parseInt(msgArr[7]);
                     eachActionPadding = Integer.parseInt(msgArr[8]);
+
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            eachActionSizeField.setText(eachActionSize+"");
+                            eachActionPaddingField.setText(eachActionPadding+"");
+                        }
+                    });
+
                     controlVBox.setSpacing(eachActionPadding);
-                    System.out.println("NIGGER REGISTERED!");
-                }
-                else if(msgHeader.equals("action_icon"))
-                {
+                } else if (msgHeader.equals("action_icon")) {
                     String iconName = msgArr[1];
-                    System.out.println("ICON NAME : "+iconName);
-                    //byte[] imageIcon = Base64.getDecoder().decode(msgArr[2]);
-                    //Image newImage = new Image(new ByteArrayInputStream(imageIcon));
-                    System.out.println("msg arr : "+msgArr[2]);
 
                     byte[] img_byte;
                     img_byte = Base64.getDecoder().decode(msgArr[2]);
-                    //BufferedImage img = ImageIO.read(new ByteArrayInputStream(img_byte));
                     Image img = new Image(new ByteArrayInputStream(img_byte));
-                    if(!icons.containsKey(msgArr[2]))
+                    if (!icons.containsKey(msgArr[2]))
                         icons.put(iconName, img);
 
-
-                    //check all icons present or not
                     boolean isPresent = true;
-                    for(String[] eachAction : actions)
-                    {
-                        if(!icons.containsKey(eachAction[4]))
-                        {
-                            System.out.println(eachAction[4]+"XXS");
+                    for (String[] eachAction : actions) {
+                        if (!icons.containsKey(eachAction[4])) {
+                            System.out.println(eachAction[4] + "XXS");
                             isPresent = false;
                             break;
                         }
                     }
 
-                    if(isPresent && !isDrawn)
-                    {
+                    if (isPresent && !isDrawn) {
                         drawLayer(currentLayer);
 
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-                                //hideNotConnectedPane();
                                 ZoomIn x = new ZoomIn(deviceConfigPane);
                                 x.setSpeed(3.0);
                                 x.play();
@@ -755,21 +700,8 @@ public class dashboardController implements Initializable {
                             }
                         });
                     }
-                    else
-                    {
-                        System.out.println("SORRY MADARCHOD!");
-                    }
-                }
-                else if(msgHeader.equals("hotkey"))
-                {
+                } else if (msgHeader.equals("hotkey")) {
                     String keysRaw[] = msgArr[1].split("<>");
-                    /*int[] keys = new int[keysRaw.length];
-
-                    for(int i = 0;i<keysRaw.length; i++)
-                    {
-                        keys[i] = Integer.parseInt(keysRaw[i]);
-                        System.out.println("SAXX : "+keys[i]);
-                    }*/
 
                     Platform.runLater(new Runnable() {
                         @Override
@@ -777,64 +709,48 @@ public class dashboardController implements Initializable {
                             try {
                                 Robot robot = new Robot();
 
-                                for(String eachKey : keysRaw)
-                                {
+                                for (String eachKey : keysRaw) {
                                     System.out.println(eachKey);
                                     robot.keyPress(KeyCode.valueOf(eachKey));
                                 }
                                 Thread.sleep(50);
-                                for(String eachKey : keysRaw)
-                                {
+                                for (String eachKey : keysRaw) {
                                     robot.keyRelease(KeyCode.valueOf(eachKey));
                                 }
-                            }
-                            catch (Exception e)
-                            {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                     });
-                }
-                else if(msgHeader.equals("script"))
-                {
-                    String scriptRunn[] = msgArr[1].split("<>");
+                } else if (msgHeader.equals("script")) {
+                    String[] scriptRunn = msgArr[1].split("<>");
                     Runtime r = Runtime.getRuntime();
-                    System.out.println("Running \""+scriptRunn[0]+"\" \""+scriptRunn[1]+"\"");
-                    if(scriptRunn[0].length() == 0)
-                    {
-                        r.exec("\""+scriptRunn[1]+"\"");
+                    System.out.println("Running \"" + scriptRunn[0] + "\" \"" + scriptRunn[1] + "\"");
+                    if (scriptRunn[0].length() == 0) {
+                        r.exec("\"" + scriptRunn[1] + "\"");
+                    } else {
+                        r.exec("\"" + scriptRunn[0] + "\" \"" + scriptRunn[1] + "\"");
                     }
-                    else
-                    {
-                        r.exec("\""+scriptRunn[0]+"\" \""+scriptRunn[1]+"\"");
-                    }
-                }
-                else if(msgHeader.equals("tweet"))
-                {
-                    String data[] = msgArr[1].split("<>");
-                    if(isTwitterSetup)
+                } else if (msgHeader.equals("tweet")) {
+                    String[] data = msgArr[1].split("<>");
+                    if (isTwitterSetup)
                         createNewTweet(data[0]);
                     else
-                        showErrorAlert("Uh Oh!","It looks like Twitter is not setup on this computer. Go to settings to add your account.");
+                        showErrorAlert("Uh Oh!", "It looks like Twitter is not setup on this computer. Go to settings to add your account.");
+                } else {
+                    System.out.println("'" + message + "'");
                 }
-                else
-                {
-                    System.out.println("'"+message+"'");
-                }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
 
                 startServer();
                 isConnectedToClient = false;
                 isDrawn = false;
                 e.printStackTrace();
             }
-            }
         }
     };
 
-    public void drawLayer(int layerIndex)
+    private void drawLayer(int layerIndex)
     {
         isDrawn = true;
         System.out.println("PRESENT!!!");
@@ -913,52 +829,47 @@ public class dashboardController implements Initializable {
             rows[i].getChildren().addAll(actionPane);
         }
 
-        if(layerIndex > -1)
-        {
-            for(int i = 0;i<actions.length; i++)
+        try {
+            if(layerIndex > -1)
             {
-                System.out.println(Integer.parseInt(actions[i][7])+","+layerIndex);
-                if(Integer.parseInt(actions[i][7]) != layerIndex)
-                    continue;
+                for(int i = 0;i<actions.length; i++)
+                {
+                    System.out.println(Integer.parseInt(actions[i][7])+","+layerIndex);
+                    if(Integer.parseInt(actions[i][7]) != layerIndex)
+                        continue;
+                    ImageView icon = new ImageView();
+                    icon.setImage(icons.get(actions[i][4]));
+                    icon.setPreserveRatio(false);
+                    icon.setFitHeight(eachActionSize);
+                    icon.setFitWidth(eachActionSize);
 
-                System.out.println("XDA121d@@!@");
-                System.out.println("actions[i]XX : "+actions[i][3]);
-                ImageView icon = new ImageView();
-                icon.setImage(icons.get(actions[i][4]));
-                icon.setFitHeight(eachActionSize);
-                icon.setFitWidth(eachActionSize);
-
-                Pane aPane = (Pane) rows[Integer.parseInt(actions[i][5])].getChildren().get(Integer.parseInt(actions[i][6]));
-                aPane.getChildren().add(icon);
-                //Pane actionPane = new Pane(icon);
-                aPane.setPrefSize(eachActionSize,eachActionSize);
-                //actionPane.setStyle("-fx-effect: dropshadow(three-pass-box, "+actions[i][4]+", 5, 0, 0, 0);-fx-background-color:#212121");
-                aPane.setId("allocatedaction_"+actions[i][5]+"_"+actions[i][6]+"_"+actions[i][0]);
-
-                //rows[Integer.parseInt(actions[i][5])].getChildren().set(Integer.parseInt(actions[i][6]), actionPane);
+                    Pane aPane = (Pane) rows[Integer.parseInt(actions[i][5])].getChildren().get(Integer.parseInt(actions[i][6]));
+                    aPane.getChildren().add(icon);
+                    aPane.setPrefSize(eachActionSize,eachActionSize);
+                    aPane.setId("allocatedaction_"+actions[i][5]+"_"+actions[i][6]+"_"+actions[i][0]);
+                }
             }
+        } catch (IndexOutOfBoundsException e)
+        {
+            //TODO :: Show error that some action(s) couldnt be added due to different screen size
         }
 
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                if(layerIndex == -1)
-                {
-                    System.out.println("XAXAX");
-                    currentLayer = 0;
-                    ZoomIn x = new ZoomIn(deviceConfigPane);
-                    x.setSpeed(3.0);
-                    x.play();
-                    deviceConfigPane.toFront();
-                }
-
-                controlVBox.getChildren().clear();
-                controlVBox.getChildren().addAll(rows);
-
-                if(layerIndex != -1)
-                    currentLayer = layerIndex;
+        Platform.runLater(()-> {
+            if(layerIndex == -1)
+            {
+                currentLayer = 0;
+                ZoomIn x = new ZoomIn(deviceConfigPane);
+                x.setSpeed(3.0);
+                x.play();
+                deviceConfigPane.toFront();
             }
+
+            controlVBox.getChildren().clear();
+            controlVBox.getChildren().addAll(rows);
+
+            if(layerIndex != -1)
+                currentLayer = layerIndex;
         });
     }
 
@@ -976,15 +887,16 @@ public class dashboardController implements Initializable {
     }
 
     JFXDialog newActionConfigDialog;
-    String streamPIIP;
-    String streamPINickName;
-    int streamPIWidth;
-    int streamPIHeight;
-    int streamPIMaxActionsPerRow;
-    int streamPIMaxNoOfRows;
-    boolean isDrawn = false;
+    private String streamPIIP;
+    private String streamPINickName;
+    private int streamPIWidth;
+    private int streamPIHeight;
+    private int streamPIMaxActionsPerRow;
+    private int streamPIMaxNoOfRows;
+    private boolean isDrawn = false;
 
     static int actionConfigType;
+
     /*
     1 = New
     2 = Edit
@@ -1002,12 +914,7 @@ public class dashboardController implements Initializable {
             newActionDialogLayout.setBody(actionConfig);
             newActionConfigDialog = new JFXDialog(popupStackPane, newActionDialogLayout, JFXDialog.DialogTransition.CENTER);
             newActionConfigDialog.setOverlayClose(false);
-            newActionConfigDialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
-                @Override
-                public void handle(JFXDialogEvent event) {
-                    popupStackPane.toBack();
-                }
-            });
+            newActionConfigDialog.setOnDialogClosed(event -> popupStackPane.toBack());
             newActionConfigDialog.show();
         }
         catch (Exception e)
@@ -1016,7 +923,7 @@ public class dashboardController implements Initializable {
         }
     }
 
-    public void readConfig()
+    private void readConfig()
     {
         String[] configArray = io.readFileArranged("config","::");
         config.put("server_port",configArray[0]);
@@ -1041,7 +948,6 @@ public class dashboardController implements Initializable {
     @FXML
     public void newFolderAction()
     {
-        System.out.println(currentLayer);
         showNewActionHint("Folder");
     }
 
@@ -1054,16 +960,22 @@ public class dashboardController implements Initializable {
     @FXML
     public JFXButton returnToParentLayerButton;
 
-    public void showNewActionHint(String actionName)
+    private void showNewActionHint(String actionName)
     {
-        if(actionName.equals("Hotkey"))
-            currentSelectionMode = 1;
-        else if(actionName.equals("Script"))
-            currentSelectionMode = 2;
-        else if(actionName.equals("Tweet"))
-            currentSelectionMode = 3;
-        else if(actionName.equals("Folder"))
-            currentSelectionMode = 4;
+        switch (actionName) {
+            case "Hotkey":
+                currentSelectionMode = 1;
+                break;
+            case "Script":
+                currentSelectionMode = 2;
+                break;
+            case "Tweet":
+                currentSelectionMode = 3;
+                break;
+            case "Folder":
+                currentSelectionMode = 4;
+                break;
+        }
 
         actionsAccordion.setDisable(true);
         returnToParentLayerButton.setDisable(true);
@@ -1203,7 +1115,11 @@ public class dashboardController implements Initializable {
                     goButton.setFont(Font.font("Roboto Regular",15));
                     goButton.setTextFill(WHITE_PAINT);
 
-                    VBox x = new VBox(contentLabel,c2,c3,pinField,goButton);
+                    JFXButton closeButton = new JFXButton("Close");
+                    closeButton.setFont(Font.font("Roboto Regular",15));
+                    closeButton.setTextFill(WHITE_PAINT);
+
+                    VBox x = new VBox(contentLabel,c2,c3,pinField,goButton,closeButton);
                     x.setSpacing(10);
                     x.setAlignment(Pos.CENTER);
                     l.setBody(x);
@@ -1254,6 +1170,14 @@ public class dashboardController implements Initializable {
                         }
                     });
 
+                    closeButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            loginTwitterPopup.close();
+                            loginTwitterStackPane.toBack();
+                            loginButtonTwitter.setDisable(false);
+                        }
+                    });
 
                     Platform.runLater(new Runnable() {
                         @Override
