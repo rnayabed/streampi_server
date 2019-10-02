@@ -54,3 +54,24 @@
 .accordion .content {
     -fx-border-width: 0;
 }
+
+.list-view {
+    -fx-background-color: #232323;
+}
+
+.list-view .list-cell:hover {
+    -fx-background-color: #434343;
+}
+
+.list-view .list-cell:selected {
+    -fx-background-color: #434343;
+}
+
+.list-view .list-cell {
+    -fx-background-color: #232323;
+    -fx-text-fill: white;
+}
+
+.list-view .label {
+    -fx-text-fill: white;
+}

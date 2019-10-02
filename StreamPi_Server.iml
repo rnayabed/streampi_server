@@ -10,5 +10,7 @@
     <orderEntry type="library" name="com.jfoenix:jfoenix:9.0.8" level="project" />
     <orderEntry type="library" name="io.github.typhon0:AnimateFX:1.2.1" level="project" />
     <orderEntry type="library" name="org.twitter4j:twitter4j-core:[4.0,)" level="project" />
+    <orderEntry type="library" name="obs-remote-java-1.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="obs-remote-java" level="project" />
   </component>
 </module>

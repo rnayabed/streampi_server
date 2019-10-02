@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="obs-remote-java-1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../Java Library Jars/obs-remote-java-1.0-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

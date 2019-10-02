@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="mode_new" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="10.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="OBSSetSceneConfig">
+   <children>
+      <Label fx:id="headingLabel" text="New OBS Studio (Set Scene) Action" textFill="WHITE">
+         <font>
+            <Font name="Roboto Regular" size="25.0" />
+         </font>
+         <VBox.margin>
+            <Insets bottom="5.0" />
+         </VBox.margin>
+      </Label>
+      <HBox alignment="CENTER_LEFT" spacing="10.0">
+         <children>
+            <Label text="Action Name" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="17.0" />
+               </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <JFXTextField fx:id="actionCasualNameField" prefHeight="25.0" prefWidth="261.0" style="-fx-text-inner-color: white;" unFocusColor="WHITE" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" spacing="10.0">
+         <children>
+            <Label text="Select A Scene" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="17.0" />
+               </font>
+            </Label>
+            <Region prefHeight="80.0" prefWidth="171.0" HBox.hgrow="ALWAYS" />
+            <JFXListView fx:id="sceneOptionsListView" prefHeight="105.0" prefWidth="265.0" style="-fx-background-color: #212121;" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" spacing="10.0">
+         <children>
+            <Label text="Icon" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="17.0" />
+               </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <JFXTextField fx:id="iconPathField" disable="true" prefHeight="25.0" prefWidth="192.0" style="-fx-text-inner-color: white;" unFocusColor="WHITE" />
+            <JFXButton fx:id="browseButton" buttonType="RAISED" onAction="#browseButtonClicked" style="-fx-background-color: #484848;" text="Browse..." textFill="WHITE" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="147.0" prefWidth="565.0">
+         <children>
+            <ImageView fx:id="iconPreviewImg" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@icons/icon_preview.png" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+      <Label fx:id="sceneSelectedNotPresentLabel" prefHeight="29.0" prefWidth="551.0" text="Scene Selected is not present in the current profile" textFill="WHITE" visible="false">
+         <font>
+            <Font name="Roboto Regular" size="15.0" />
+         </font>
+      </Label>
+      <HBox prefHeight="41.0" prefWidth="565.0" spacing="10.0">
+         <children>
+            <Label fx:id="unableToConnectToOBSLabel" prefHeight="42.0" prefWidth="143.0" text="Unable to Connect to OBS!" textFill="WHITE" visible="false" />
+            <Region prefHeight="40.0" prefWidth="124.0" HBox.hgrow="ALWAYS" />
+            <JFXButton fx:id="deleteButton" buttonType="RAISED" disable="true" onAction="#deleteButtonClicked" style="-fx-background-color: #484848;" text="Delete " textFill="#db0f0f" visible="false">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="addButton" buttonType="RAISED" onAction="#addButtonClicked" style="-fx-background-color: #484848;" text="Add" textFill="#50dd0e">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="cancelButton1" buttonType="RAISED" onAction="#cancelButtonClicked" style="-fx-background-color: #484848;" text="Cancel" textFill="#db0f0f">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </JFXButton>
+         </children>
+      </HBox>
+   </children>
+</VBox>

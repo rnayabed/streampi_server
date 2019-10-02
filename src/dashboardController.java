@@ -28,6 +28,9 @@ import javafx.scene.paint.Paint;
 import javafx.scene.robot.Robot;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import net.twasi.obsremotejava.Callback;
+import net.twasi.obsremotejava.OBSRemoteController;
+import net.twasi.obsremotejava.requests.ResponseBase;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
@@ -95,6 +98,12 @@ public class dashboardController implements Initializable {
     public JFXTextField eachActionPaddingField;
     @FXML
     public Accordion actionsAccordion;
+    @FXML
+    public HBox unableToConnectOBSHBox;
+    @FXML
+    public JFXButton retryConnectOBSButton;
+    @FXML
+    public JFXToggleButton obsToggleButton;
 
     //currentSelectionMode is used to distinguish between the type of action user wants to add...
     private int currentSelectionMode = 0;
@@ -105,11 +114,15 @@ public class dashboardController implements Initializable {
     2 - Script
     3 - Tweet
     4 - Folder
+    5 - OBS Studio - Set Scene
     This isn't final and will go on increasing in the future.
      */
 
     //Global Boolean to ensure whether Twitter Dependencies are Setup...
-    static boolean isTwitterSetup = true;
+    static boolean isTwitterSetup = false;
+
+    static OBSRemoteController obsController;
+    private boolean isOBSSetup = false;
 
     //Global Hashmap where config will be stored (taken from the config file)
     private HashMap<String, String> config = new HashMap<>();
@@ -125,6 +138,7 @@ public class dashboardController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         readConfig();
         twitterSetup();
+        obsSetup();
 
         try {
             //Global variable to store the Computer's (Server) IP of the local network
@@ -163,8 +177,67 @@ public class dashboardController implements Initializable {
 
         //Set the instance of dc in main as this class, so that other classes can access its nodes
         Main.dc = this;
+
+
     }
 
+    @FXML
+    private void obsSetup()
+    {
+        Task<Void> obsTask = new Task<Void>() {
+            @Override
+            protected Void call()
+            {
+                Platform.runLater(() -> retryConnectOBSButton.setDisable(true));
+                try
+                {
+                    if(config.get("is_obs_setup").equals("0"))
+                    {
+                        obsToggleButton.setSelected(false);
+                        isOBSSetup = false;
+                        unableToConnectOBSHBox.setVisible(false);
+                    }
+                    else
+                    {
+                        obsToggleButton.setSelected(true);
+                        obsController = new OBSRemoteController("ws://localhost:4444",false);
+                        if(obsController.isFailed())
+                        {
+                            unableToConnectOBSHBox.setVisible(true);
+                            isOBSSetup = false;
+                        }
+                        obsController.registerDisconnectCallback(new Callback() {
+                            @Override
+                            public void run(ResponseBase responseBase) {
+                                isOBSSetup = false;
+                                showErrorAlert("Uh Oh!","OBS is no more running!");
+                                unableToConnectOBSHBox.setVisible(true);
+                            }
+                        });
+                        obsController.registerConnectCallback(new Callback() {
+                            @Override
+                            public void run(ResponseBase responseBase) {
+                                isOBSSetup = true;
+                                unableToConnectOBSHBox.setVisible(false);
+                                System.out.println("gay");
+                            }
+                        });
+                    }
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                Platform.runLater(() -> retryConnectOBSButton.setDisable(false));
+                return null;
+            }
+        };
+
+        OBSThread= new Thread(obsTask);
+        OBSThread.start();
+    }
+
+    Thread OBSThread;
     private Twitter twitter;
 
     //Checks whether Twitter is Setup or not, and takes the necessary steps
@@ -183,6 +256,7 @@ public class dashboardController implements Initializable {
                     }
                     else
                     {
+                        isTwitterSetup = true;
                         //If present, then starts using the Twitter4j library
 
                         //Sets mode of connection via SSL as Twitter API uses only SSL
@@ -212,7 +286,7 @@ public class dashboardController implements Initializable {
     }
 
     private Random r = new Random();
-    private void createNewTweet(String txtMsg)
+    private void createNewTweet(String txtMsg) throws Exception
     {
         //IMPORTANT : Twitter does not allow same tweet to be sent over and over again so here is workaround.
         //This trick adds few blank characters after the original text, so that twitter thinks it to be a new text tweet, and goes on to publish it!
@@ -220,16 +294,8 @@ public class dashboardController implements Initializable {
         txtMsg = txtMsg + ("⠀".repeat(Math.max(0, r.nextInt(150)))) // U+2800 Blank code to avoid twitter
         ;
 
-        try
-        {
-            //Uses the Twitter4J Instance to finally send the tweet
-            twitter.updateStatus(txtMsg);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            Platform.runLater(() -> showErrorAlert("Error!","Something went wrong. Check Stacktrace for more info."));
-        }
+        //Uses the Twitter4J Instance to finally send the tweet
+        twitter.updateStatus(txtMsg);
     }
 
     //Shows that Server was unable to start
@@ -249,7 +315,7 @@ public class dashboardController implements Initializable {
     @FXML
     public void aboutStreamPiButtonClicked()
     {
-        showErrorAlert("About Us","Created By Debayan\nOrginally Thought of by CorporalSaturn\nBETA");
+        showErrorAlert("About Us","Programmed By Debayan. Originally Thought of of Corporal Saturn\n\nAlpha - No Version");
     }
 
     //Hides that server was unable to start
@@ -272,6 +338,14 @@ public class dashboardController implements Initializable {
     public void showSettingsPane()
     {
         Platform.runLater(() -> {
+            if(config.get("is_obs_setup").equals("0"))
+            {
+                obsToggleButton.setSelected(false);
+            }
+            else if(config.get("is_obs_setup").equals("1"))
+            {
+                obsToggleButton.setSelected(true);
+            }
             retryButton.setDisable(false);
             settingsPane.toFront();
             ZoomIn x = new ZoomIn(settingsPane);
@@ -372,6 +446,21 @@ public class dashboardController implements Initializable {
 
         if(!error)
         {
+            if(obsToggleButton.isSelected())
+            {
+                updateConfig("is_obs_setup","1");
+                if(!isOBSSetup)
+                {
+                    obsSetup();
+                }
+            }
+            else
+            {
+                updateConfig("is_obs_setup","0");
+                isOBSSetup = false;
+                unableToConnectOBSHBox.setVisible(false);
+            }
+
             updateConfig("server_port", serverPortField.getText());
             updateConfig("twitter_oauth_consumer_key", twitterConsumerKeyField.getText());
             updateConfig("twitter_oauth_consumer_secret",twitterConsumerSecretField.getText());
@@ -412,7 +501,7 @@ public class dashboardController implements Initializable {
     private void updateConfig(String keyName, String newValue)
     {
         config.put(keyName,newValue);
-        io.writeToFile(config.get("server_port")+"::"+config.get("twitter_oauth_consumer_key")+"::"+config.get("twitter_oauth_consumer_secret")+"::"+config.get("twitter_oauth_access_token")+"::"+config.get("twitter_oauth_access_token_secret")+"::","config");
+        io.writeToFile(config.get("server_port")+"::"+config.get("twitter_oauth_consumer_key")+"::"+config.get("twitter_oauth_consumer_secret")+"::"+config.get("twitter_oauth_access_token")+"::"+config.get("twitter_oauth_access_token_secret")+"::"+config.get("is_obs_setup")+"::","config");
     }
 
     //Shows "Listening For StreamPi" pane, indicating user that no Pi is connected to the server
@@ -646,6 +735,36 @@ public class dashboardController implements Initializable {
                         Thread.sleep(1000);
                         writeToOS("client_actions_icons_get::");
                     }
+                } else if (msgHeader.equals("obs_set_scene")) {
+                    if(isOBSSetup)
+                    {
+                        try {
+                            obsController.setCurrentScene(msgArr[1], new Callback() {
+                                @Override
+                                public void run(ResponseBase responseBase) {
+                                    if(responseBase.getStatus().equals("error"))
+                                    {
+                                        showErrorAlert("Uh Oh!","Unable to change to Scene '"+msgArr[1]+"'. Check whether it actually exists in the current profile...");
+                                        sendSuccessResponse(msgArr[2],false);
+                                    }
+                                    else
+                                    {
+                                        sendSuccessResponse(msgArr[2],true);
+                                    }
+                                }
+                            });
+                        }
+                        catch (Exception e)
+                        {
+                            showErrorAlert("Uh Oh!","Check whether OBS is setup in settings, or if OBS Studio is running with websocket plugin installed");
+                            sendSuccessResponse(msgArr[2],false);
+                        }
+                    }
+                    else
+                    {
+                        showErrorAlert("Uh Oh!","Check whether OBS is setup in settings, or if OBS Studio is running with websocket plugin installed");
+                        sendSuccessResponse(msgArr[2],false);
+                    }
                 } else if (msgHeader.equals("client_quit")) {
                     isConnectedToClient = false;
                     socket.close();
@@ -660,12 +779,9 @@ public class dashboardController implements Initializable {
                     eachActionSize = Integer.parseInt(msgArr[7]);
                     eachActionPadding = Integer.parseInt(msgArr[8]);
 
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            eachActionSizeField.setText(eachActionSize+"");
-                            eachActionPaddingField.setText(eachActionPadding+"");
-                        }
+                    Platform.runLater(()-> {
+                        eachActionSizeField.setText(eachActionSize+"");
+                        eachActionPaddingField.setText(eachActionPadding+"");
                     });
 
                     controlVBox.setSpacing(eachActionPadding);
@@ -702,7 +818,7 @@ public class dashboardController implements Initializable {
                     }
                 } else if (msgHeader.equals("hotkey")) {
                     String keysRaw[] = msgArr[1].split("<>");
-
+                    sendSuccessResponse(msgArr[2],true);
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
@@ -723,6 +839,7 @@ public class dashboardController implements Initializable {
                         }
                     });
                 } else if (msgHeader.equals("script")) {
+                    sendSuccessResponse(msgArr[2],true);
                     String[] scriptRunn = msgArr[1].split("<>");
                     Runtime r = Runtime.getRuntime();
                     System.out.println("Running \"" + scriptRunn[0] + "\" \"" + scriptRunn[1] + "\"");
@@ -734,9 +851,24 @@ public class dashboardController implements Initializable {
                 } else if (msgHeader.equals("tweet")) {
                     String[] data = msgArr[1].split("<>");
                     if (isTwitterSetup)
-                        createNewTweet(data[0]);
+                    {
+                        try
+                        {
+                            sendSuccessResponse(msgArr[2],true);
+                            createNewTweet(data[0]);
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                            sendSuccessResponse(msgArr[2],false);
+                            Platform.runLater(() -> showErrorAlert("Error!","Something went wrong. Check Stacktrace for more info."));
+                        }
+                    }
                     else
+                    {
                         showErrorAlert("Uh Oh!", "It looks like Twitter is not setup on this computer. Go to settings to add your account.");
+                        sendSuccessResponse(msgArr[2],false);
+                    }
                 } else {
                     System.out.println("'" + message + "'");
                 }
@@ -749,6 +881,21 @@ public class dashboardController implements Initializable {
             }
         }
     };
+
+    private void sendSuccessResponse(String uniqueID, boolean isSuccess)
+    {
+        try
+        {
+            if(isSuccess)
+                writeToOS("action_success_response::"+uniqueID+"::1::");
+            else
+                writeToOS("action_success_response::"+uniqueID+"::0::");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     private void drawLayer(int layerIndex)
     {
@@ -805,6 +952,10 @@ public class dashboardController implements Initializable {
                                                     drawLayer(Integer.parseInt(eachAction[3]));
                                                 }
                                             }
+                                        else if(eachAction[2].equals("obs_set_scene"))
+                                        {
+                                            loadPopupFXML("OBSSetSceneConfig.fxml",2);
+                                        }
                                         break;
                                     }
                                 }
@@ -820,6 +971,8 @@ public class dashboardController implements Initializable {
                                 loadPopupFXML("tweetConfig.fxml",1);
                             else if(currentSelectionMode == 4)
                                 loadPopupFXML("folderConfig.fxml",1);
+                            else if(currentSelectionMode == 5)
+                                loadPopupFXML("OBSSetSceneConfig.fxml",1);
                         }
                     }
                 });
@@ -931,6 +1084,7 @@ public class dashboardController implements Initializable {
         config.put("twitter_oauth_consumer_secret",configArray[2]);
         config.put("twitter_oauth_access_token",configArray[3]);
         config.put("twitter_oauth_access_token_secret",configArray[4]);
+        config.put("is_obs_setup",configArray[5]);
     }
 
     @FXML
@@ -949,6 +1103,18 @@ public class dashboardController implements Initializable {
     public void newFolderAction()
     {
         showNewActionHint("Folder");
+    }
+
+    @FXML
+    public void newOBSStudioSetSceneAction() {
+        if(!isOBSSetup)
+        {
+            showErrorAlert("Uh Oh!","Make sure OBS Studio is setup in Settings\nIf yes, then check whether OBS Studio is running, with OBS Studio Websocket installed ...");
+        }
+        else
+        {
+            showNewActionHint("OBS Studio (Set Scene)");
+        }
     }
 
     @FXML
@@ -974,6 +1140,9 @@ public class dashboardController implements Initializable {
                 break;
             case "Folder":
                 currentSelectionMode = 4;
+                break;
+            case "OBS Studio (Set Scene)":
+                currentSelectionMode = 5;
                 break;
         }
 
@@ -1038,6 +1207,12 @@ public class dashboardController implements Initializable {
         okButton.setTextFill(WHITE_PAINT);
         l.setActions(okButton);
 
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                alertStackPane.getChildren().clear();
+            }
+        });
         JFXDialog alertDialog = new JFXDialog(alertStackPane,l, JFXDialog.DialogTransition.CENTER);
         alertDialog.setOverlayClose(false);
         alertDialog.getStyleClass().add("dialog_box");

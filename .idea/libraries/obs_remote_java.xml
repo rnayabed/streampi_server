@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="obs-remote-java">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Downloads/websocket-obs-java-master/classes/artifacts/obs_remote_java_jar/obs-remote-java.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

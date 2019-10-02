@@ -1,9 +1,12 @@
 import com.jfoenix.controls.JFXDecorator;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.util.HashMap;
@@ -19,6 +22,13 @@ public class Main extends Application {
         Scene x = new Scene(decorator);
         primaryStage.setScene(x);
         primaryStage.show();
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                System.out.println("Quitting ...");
+                System.exit(0);
+            }
+        });
         ps = primaryStage;
         xs = x;
     }
