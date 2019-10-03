@@ -104,6 +104,8 @@ public class dashboardController implements Initializable {
     public JFXButton retryConnectOBSButton;
     @FXML
     public JFXToggleButton obsToggleButton;
+    @FXML
+    public JFXTextField obsWebsocketAddressField;
 
     //currentSelectionMode is used to distinguish between the type of action user wants to add...
     private int currentSelectionMode = 0;
@@ -115,6 +117,7 @@ public class dashboardController implements Initializable {
     3 - Tweet
     4 - Folder
     5 - OBS Studio - Set Scene
+    6 - OBS Studio - Set Transition
     This isn't final and will go on increasing in the future.
      */
 
@@ -188,19 +191,24 @@ public class dashboardController implements Initializable {
             @Override
             protected Void call()
             {
-                Platform.runLater(() -> retryConnectOBSButton.setDisable(true));
+                Platform.runLater(() -> {
+                    retryConnectOBSButton.setDisable(true);
+                    obsWebsocketAddressField.setText(config.get("obs_websocket_address"));
+                });
                 try
                 {
                     if(config.get("is_obs_setup").equals("0"))
                     {
                         obsToggleButton.setSelected(false);
                         isOBSSetup = false;
+                        obsWebsocketAddressField.setDisable(true);
                         unableToConnectOBSHBox.setVisible(false);
                     }
                     else
                     {
                         obsToggleButton.setSelected(true);
-                        obsController = new OBSRemoteController("ws://localhost:4444",false);
+                        obsWebsocketAddressField.setDisable(false);
+                        obsController = new OBSRemoteController(config.get("obs_websocket_address"),false);
                         if(obsController.isFailed())
                         {
                             unableToConnectOBSHBox.setVisible(true);
@@ -226,7 +234,9 @@ public class dashboardController implements Initializable {
                 }
                 catch (Exception e)
                 {
-                    e.printStackTrace();
+                    System.out.println("asdcc");
+                    unableToConnectOBSHBox.setVisible(true);
+                    isOBSSetup = false;
                 }
                 Platform.runLater(() -> retryConnectOBSButton.setDisable(false));
                 return null;
@@ -444,26 +454,49 @@ public class dashboardController implements Initializable {
             error = true;
         }
 
+        if(obsWebsocketAddressField.getText().length() == 0)
+        {
+            errs += "*Invalid Web Socket Address. Can't be left empty!\n";
+            error = true;
+        }
+        else
+        {
+            try {
+                Integer.parseInt(obsWebsocketAddressField.getText().split(":")[2]);
+            }
+            catch (Exception e)
+            {
+                errs += "*Invalid Web Socket Address. Port number needs to be a number\n";
+                error = true;
+            }
+        }
+
         if(!error)
         {
             if(obsToggleButton.isSelected())
             {
                 updateConfig("is_obs_setup","1");
-                if(!isOBSSetup)
-                {
-                    obsSetup();
-                }
+                isOBSSetup = false;
+                obsSetup();
             }
             else
             {
                 updateConfig("is_obs_setup","0");
                 isOBSSetup = false;
-                unableToConnectOBSHBox.setVisible(false);
+                obsSetup();
             }
 
             updateConfig("server_port", serverPortField.getText());
             updateConfig("twitter_oauth_consumer_key", twitterConsumerKeyField.getText());
             updateConfig("twitter_oauth_consumer_secret",twitterConsumerSecretField.getText());
+
+            String newObsWebSocketAddress = obsWebsocketAddressField.getText();
+            if(!newObsWebSocketAddress.equals(config.get("obs_websocket_address")))
+            {
+                updateConfig("obs_websocket_address",newObsWebSocketAddress);
+                obsSetup();
+            }
+
             try {
                 if(!sizeTextFieldText.equals(eachActionSize+"") || !paddingTextFieldText.equals(eachActionPadding))
                 {
@@ -501,7 +534,7 @@ public class dashboardController implements Initializable {
     private void updateConfig(String keyName, String newValue)
     {
         config.put(keyName,newValue);
-        io.writeToFile(config.get("server_port")+"::"+config.get("twitter_oauth_consumer_key")+"::"+config.get("twitter_oauth_consumer_secret")+"::"+config.get("twitter_oauth_access_token")+"::"+config.get("twitter_oauth_access_token_secret")+"::"+config.get("is_obs_setup")+"::","config");
+        io.writeToFile(config.get("server_port")+"::"+config.get("twitter_oauth_consumer_key")+"::"+config.get("twitter_oauth_consumer_secret")+"::"+config.get("twitter_oauth_access_token")+"::"+config.get("twitter_oauth_access_token_secret")+"::"+config.get("is_obs_setup")+"::"+config.get("obs_websocket_address")+"::","config");
     }
 
     //Shows "Listening For StreamPi" pane, indicating user that no Pi is connected to the server
@@ -765,7 +798,37 @@ public class dashboardController implements Initializable {
                         showErrorAlert("Uh Oh!","Check whether OBS is setup in settings, or if OBS Studio is running with websocket plugin installed");
                         sendSuccessResponse(msgArr[2],false);
                     }
-                } else if (msgHeader.equals("client_quit")) {
+                } else if(msgHeader.equals("obs_set_transition")) {
+                    if(isOBSSetup)
+                    {
+                        try {
+                            obsController.setCurrentTransition(msgArr[1], new Callback() {
+                                @Override
+                                public void run(ResponseBase responseBase) {
+                                    if(responseBase.getStatus().equals("error"))
+                                    {
+                                        showErrorAlert("Uh Oh!","Unable to change to Transition '"+msgArr[1]+"'. Check whether it actually exists in the current profile...");
+                                        sendSuccessResponse(msgArr[2],false);
+                                    }
+                                    else
+                                    {
+                                        sendSuccessResponse(msgArr[2],true);
+                                    }
+                                }
+                            });
+                        }
+                        catch (Exception e)
+                        {
+                            showErrorAlert("Uh Oh!","Check whether OBS is setup in settings, or if OBS Studio is running with websocket plugin installed");
+                            sendSuccessResponse(msgArr[2],false);
+                        }
+                    }
+                    else
+                    {
+                        showErrorAlert("Uh Oh!","Check whether OBS is setup in settings, or if OBS Studio is running with websocket plugin installed");
+                        sendSuccessResponse(msgArr[2],false);
+                    }
+                }else if (msgHeader.equals("client_quit")) {
                     isConnectedToClient = false;
                     socket.close();
                     startServer();
@@ -956,6 +1019,8 @@ public class dashboardController implements Initializable {
                                         {
                                             loadPopupFXML("OBSSetSceneConfig.fxml",2);
                                         }
+                                        else if(eachAction[2].equals("obs_set_transition"))
+                                            loadPopupFXML("OBSSetTransitionConfig.fxml",2);
                                         break;
                                     }
                                 }
@@ -973,6 +1038,8 @@ public class dashboardController implements Initializable {
                                 loadPopupFXML("folderConfig.fxml",1);
                             else if(currentSelectionMode == 5)
                                 loadPopupFXML("OBSSetSceneConfig.fxml",1);
+                            else if(currentSelectionMode == 6)
+                                loadPopupFXML("OBSSetTransitionConfig.fxml",1);
                         }
                     }
                 });
@@ -1085,6 +1152,7 @@ public class dashboardController implements Initializable {
         config.put("twitter_oauth_access_token",configArray[3]);
         config.put("twitter_oauth_access_token_secret",configArray[4]);
         config.put("is_obs_setup",configArray[5]);
+        config.put("obs_websocket_address",configArray[6]);
     }
 
     @FXML
@@ -1118,6 +1186,18 @@ public class dashboardController implements Initializable {
     }
 
     @FXML
+    public void newOBSStudioSetTransitionAction() {
+        if(!isOBSSetup)
+        {
+            showErrorAlert("Uh Oh!","Make sure OBS Studio is setup in Settings\nIf yes, then check whether OBS Studio is running, with OBS Studio Websocket installed ...");
+        }
+        else
+        {
+            showNewActionHint("OBS Studio (Set Transition)");
+        }
+    }
+
+    @FXML
     public void newTweetAction()
     {
         showNewActionHint("Tweet");
@@ -1143,6 +1223,9 @@ public class dashboardController implements Initializable {
                 break;
             case "OBS Studio (Set Scene)":
                 currentSelectionMode = 5;
+                break;
+            case "OBS Studio (Set Transition)":
+                currentSelectionMode = 6;
                 break;
         }
 

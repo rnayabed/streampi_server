@@ -95,6 +95,11 @@
                                     <Font size="15.0" />
                                  </font>
                               </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newOBSStudioSetTransitionAction" prefHeight="25.0" prefWidth="268.0" text="Set Transition" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
                            </children>
                         </VBox>
                      </content>
@@ -126,9 +131,9 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </ScrollPane>
-            <HBox fx:id="newActionHintHBox" alignment="CENTER" layoutX="69.0" layoutY="14.0" opacity="0.0" prefHeight="52.0" prefWidth="938.0">
+            <HBox fx:id="newActionHintHBox" alignment="CENTER" layoutX="30.0" layoutY="14.0" opacity="0.0" prefHeight="52.0" prefWidth="1053.0">
                <children>
-                  <Label fx:id="addNewButtonHintLabel" alignment="CENTER" prefHeight="29.0" prefWidth="785.0" text="To add a new &lt;type&gt; click on the desired green Action Box" textFill="WHITE">
+                  <Label fx:id="addNewButtonHintLabel" alignment="CENTER" prefHeight="29.0" prefWidth="959.0" text="To add a new &lt;type&gt; click on the desired green Action Box" textFill="WHITE">
                   <font>
                      <Font name="Roboto Regular" size="23.0" />
                   </font>
@@ -299,6 +304,20 @@
                   </Label>
                   <Region prefHeight="29.0" prefWidth="80.0" />
                   <JFXToggleButton fx:id="obsToggleButton" text=" " />
+               </children>
+            </HBox>
+            <HBox spacing="50.0">
+               <children>
+                  <Label prefHeight="54.0" prefWidth="514.0" text="Websocket Address (Requires the OBS Web Socket Plugin to be installed) Auth doesn't work, will fix later" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField fx:id="obsWebsocketAddressField" prefHeight="29.0" prefWidth="362.0" style="-fx-text-inner-color: white;">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </JFXTextField>
                </children>
             </HBox>
             <HBox alignment="CENTER" spacing="50.0">
