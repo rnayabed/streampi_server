@@ -69,11 +69,6 @@
                 </ImageView>
             </children>
         </HBox>
-        <Label fx:id="transitionSelectedNotPresentLabel" prefHeight="29.0" prefWidth="551.0" text="Scene Selected is not present in the current profile" textFill="WHITE" visible="false">
-            <font>
-                <Font name="Roboto Regular" size="15.0" />
-            </font>
-        </Label>
         <HBox prefHeight="41.0" prefWidth="565.0" spacing="10.0">
             <children>
                 <Label fx:id="unableToConnectToOBSLabel" prefHeight="42.0" prefWidth="143.0" text="Unable to Connect to OBS!" textFill="WHITE" visible="false" />

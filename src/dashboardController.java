@@ -122,6 +122,7 @@ public class dashboardController implements Initializable {
     5 - OBS Studio - Set Scene
     6 - OBS Studio - Set Transition
     7 - OBS Studio - Start / Stop Streaming
+    8 - OBS Studio - Set Source Visibility
     This isn't final and will go on increasing in the future.
      */
 
@@ -801,6 +802,46 @@ public class dashboardController implements Initializable {
                         showErrorAlert("Uh Oh!","Check whether OBS is setup in settings, or if OBS Studio is running with websocket plugin installed");
                         sendSuccessResponse(msgArr[2],false);
                     }
+                } else if(msgHeader.equals("obs_set_source_visibility")) {
+                    if(isOBSSetup)
+                    {
+                        try {
+                            boolean v = false;
+                            String[] msgElements = msgArr[1].split("<>");
+                            String sceneName = msgElements[0];
+                            String sourceName = msgElements[1];
+                            String visibilityStr = msgElements[2];
+                            if(visibilityStr.equals("1"))
+                                v = true;
+                            else if(visibilityStr.equals("0"))
+                                v = false;
+
+                            obsController.setSourceVisibility(sceneName,sourceName,v, new Callback() {
+                                @Override
+                                public void run(ResponseBase responseBase) {
+                                    if(responseBase.getStatus().equals("error"))
+                                    {
+                                        showErrorAlert("Uh Oh!","Unable to modify Visibility of "+sourceName+" in "+sceneName+". Check whether it actually exists in the current profile...");
+                                        sendSuccessResponse(msgArr[2],false);
+                                    }
+                                    else
+                                    {
+                                        sendSuccessResponse(msgArr[2],true);
+                                    }
+                                }
+                            });
+                        }
+                        catch (Exception e)
+                        {
+                            showErrorAlert("Uh Oh!","Check whether OBS is setup in settings, or if OBS Studio is running with websocket plugin installed");
+                            sendSuccessResponse(msgArr[2],false);
+                        }
+                    }
+                    else
+                    {
+                        showErrorAlert("Uh Oh!","Check whether OBS is setup in settings, or if OBS Studio is running with websocket plugin installed");
+                        sendSuccessResponse(msgArr[2],false);
+                    }
                 } else if(msgHeader.equals("obs_set_transition")) {
                     if(isOBSSetup)
                     {
@@ -1071,6 +1112,8 @@ public class dashboardController implements Initializable {
                                             loadPopupFXML("OBSSetTransitionConfig.fxml",2);
                                         else if(eachAction[2].equals("obs_start_stop_streaming"))
                                             loadPopupFXML("OBSStartStopStreamingConfig.fxml",2);
+                                        else if(eachAction[2].equals("obs_set_source_visibility"))
+                                            loadPopupFXML("OBSSetSourceVisibilityConfig.fxml",2);
                                         break;
                                     }
                                 }
@@ -1092,6 +1135,8 @@ public class dashboardController implements Initializable {
                                 loadPopupFXML("OBSSetTransitionConfig.fxml",1);
                             else if(currentSelectionMode == 7)
                                 loadPopupFXML("OBSStartStopStreamingConfig.fxml",1);
+                            else if(currentSelectionMode == 8)
+                                loadPopupFXML("OBSSetSourceVisibilityConfig.fxml",1);
                         }
                     }
                 });
@@ -1262,6 +1307,18 @@ public class dashboardController implements Initializable {
     }
 
     @FXML
+    public void newOBSStudioSetSourceVisibilityAction() {
+        if(!isOBSSetup)
+        {
+            showErrorAlert("Uh Oh!","Make sure OBS Studio is setup in Settings\nIf yes, then check whether OBS Studio is running, with OBS Studio Websocket installed ...");
+        }
+        else
+        {
+            showNewActionHint("OBS Studio (Set Source Visibility)");
+        }
+    }
+
+    @FXML
     public void newTweetAction()
     {
         showNewActionHint("Tweet");
@@ -1293,6 +1350,9 @@ public class dashboardController implements Initializable {
                 break;
             case "OBS Studio (Start/Stop Streaming)":
                 currentSelectionMode = 7;
+                break;
+            case "OBS Studio (Set Source Visibility)":
+                currentSelectionMode = 8;
                 break;
         }
 

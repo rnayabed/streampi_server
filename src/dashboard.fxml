@@ -274,6 +274,11 @@
                                     <Font size="15.0" />
                                  </font>
                               </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newOBSStudioSetSourceVisibilityAction" prefHeight="25.0" prefWidth="268.0" text="Set Source Visibility" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
                            </children>
                         </VBox>
                      </content>
