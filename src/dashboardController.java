@@ -30,6 +30,9 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 import net.twasi.obsremotejava.Callback;
 import net.twasi.obsremotejava.OBSRemoteController;
+import net.twasi.obsremotejava.objects.Scene;
+import net.twasi.obsremotejava.objects.Source;
+import net.twasi.obsremotejava.requests.GetSceneList.GetSceneListResponse;
 import net.twasi.obsremotejava.requests.ResponseBase;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
@@ -118,6 +121,7 @@ public class dashboardController implements Initializable {
     4 - Folder
     5 - OBS Studio - Set Scene
     6 - OBS Studio - Set Transition
+    7 - OBS Studio - Start / Stop Streaming
     This isn't final and will go on increasing in the future.
      */
 
@@ -227,7 +231,6 @@ public class dashboardController implements Initializable {
                             public void run(ResponseBase responseBase) {
                                 isOBSSetup = true;
                                 unableToConnectOBSHBox.setVisible(false);
-                                System.out.println("gay");
                             }
                         });
                     }
@@ -828,7 +831,52 @@ public class dashboardController implements Initializable {
                         showErrorAlert("Uh Oh!","Check whether OBS is setup in settings, or if OBS Studio is running with websocket plugin installed");
                         sendSuccessResponse(msgArr[2],false);
                     }
-                }else if (msgHeader.equals("client_quit")) {
+                } else if(msgHeader.equals("obs_start_stop_streaming")) {
+                    if(isOBSSetup)
+                    {
+                        try {
+                            if(msgArr[1].equals("1"))
+                            {
+                                obsController.startStreaming(responseBase -> {
+                                    System.out.println(responseBase.getStatus());
+                                    if(responseBase.getStatus().equals("error"))
+                                    {
+                                        showErrorAlert("Uh Oh!","Unable to Start Streaming! Check stacktrace and obs Streamping Setup");
+                                        sendSuccessResponse(msgArr[2],false);
+                                    }
+                                    else
+                                    {
+                                        sendSuccessResponse(msgArr[2],true);
+                                    }
+                                });
+                            }
+                            else if(msgArr[1].equals("2"))
+                            {
+                                obsController.stopStreaming(responseBase -> {
+                                    if(responseBase.getStatus().equals("error"))
+                                    {
+                                        showErrorAlert("Uh Oh!","Unable to Start Streaming! Are you even streaming?");
+                                        sendSuccessResponse(msgArr[2],false);
+                                    }
+                                    else
+                                    {
+                                        sendSuccessResponse(msgArr[2],true);
+                                    }
+                                });
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            showErrorAlert("Uh Oh!","Check whether OBS is setup in settings, or if OBS Studio is running with websocket plugin installed");
+                            sendSuccessResponse(msgArr[2],false);
+                        }
+                    }
+                    else
+                    {
+                        showErrorAlert("Uh Oh!","Check whether OBS is setup in settings, or if OBS Studio is running with websocket plugin installed");
+                        sendSuccessResponse(msgArr[2],false);
+                    }
+                } else if (msgHeader.equals("client_quit")) {
                     isConnectedToClient = false;
                     socket.close();
                     startServer();
@@ -1021,6 +1069,8 @@ public class dashboardController implements Initializable {
                                         }
                                         else if(eachAction[2].equals("obs_set_transition"))
                                             loadPopupFXML("OBSSetTransitionConfig.fxml",2);
+                                        else if(eachAction[2].equals("obs_start_stop_streaming"))
+                                            loadPopupFXML("OBSStartStopStreamingConfig.fxml",2);
                                         break;
                                     }
                                 }
@@ -1040,6 +1090,8 @@ public class dashboardController implements Initializable {
                                 loadPopupFXML("OBSSetSceneConfig.fxml",1);
                             else if(currentSelectionMode == 6)
                                 loadPopupFXML("OBSSetTransitionConfig.fxml",1);
+                            else if(currentSelectionMode == 7)
+                                loadPopupFXML("OBSStartStopStreamingConfig.fxml",1);
                         }
                     }
                 });
@@ -1198,6 +1250,18 @@ public class dashboardController implements Initializable {
     }
 
     @FXML
+    public void newOBSStudioStartStopStreamingAction() {
+        if(!isOBSSetup)
+        {
+            showErrorAlert("Uh Oh!","Make sure OBS Studio is setup in Settings\nIf yes, then check whether OBS Studio is running, with OBS Studio Websocket installed ...");
+        }
+        else
+        {
+            showNewActionHint("OBS Studio (Start/Stop Streaming)");
+        }
+    }
+
+    @FXML
     public void newTweetAction()
     {
         showNewActionHint("Tweet");
@@ -1226,6 +1290,9 @@ public class dashboardController implements Initializable {
                 break;
             case "OBS Studio (Set Transition)":
                 currentSelectionMode = 6;
+                break;
+            case "OBS Studio (Start/Stop Streaming)":
+                currentSelectionMode = 7;
                 break;
         }
 

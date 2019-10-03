@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 import net.twasi.obsremotejava.Callback;
-import net.twasi.obsremotejava.objects.Scene;
-import net.twasi.obsremotejava.requests.GetSceneList.GetSceneListResponse;
 import net.twasi.obsremotejava.requests.GetTransitionList.GetTransitionListResponse;
 import net.twasi.obsremotejava.requests.ResponseBase;
 
@@ -38,7 +36,7 @@ public class OBSSetTransitionConfig implements Initializable {
     private JFXTextField iconPathField;
 
     @FXML
-    private Label sceneSelectedNotPresentLabel;
+    private Label transitionSelectedNotPresentLabel;
 
     @FXML
     private ImageView iconPreviewImg;
@@ -107,7 +105,7 @@ public class OBSSetTransitionConfig implements Initializable {
                                         red.setTextFill(Paint.valueOf("#FF0000"));
                                         transitionOptionsListView.getItems().add(red);
                                         addButton.setDisable(true);
-                                        sceneSelectedNotPresentLabel.setVisible(true);
+                                        transitionSelectedNotPresentLabel.setVisible(true);
                                     }
                                 }
                                 catch (Exception e)
@@ -268,7 +266,7 @@ public class OBSSetTransitionConfig implements Initializable {
 
         if(selectedTransitionName == null)
         {
-            errors.append("Please select any Scene");
+            errors.append("Please select a Transition");
             isError = true;
         }
 

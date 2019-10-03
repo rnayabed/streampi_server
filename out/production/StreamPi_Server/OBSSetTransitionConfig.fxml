@@ -65,7 +65,7 @@
                 </ImageView>
             </children>
         </HBox>
-        <Label fx:id="sceneSelectedNotPresentLabel" prefHeight="29.0" prefWidth="551.0" text="Scene Selected is not present in the current profile" textFill="WHITE" visible="false">
+        <Label fx:id="transitionSelectedNotPresentLabel" prefHeight="29.0" prefWidth="551.0" text="Scene Selected is not present in the current profile" textFill="WHITE" visible="false">
             <font>
                 <Font name="Roboto Regular" size="15.0" />
             </font>
