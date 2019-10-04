@@ -38,7 +38,7 @@ However, if you are downloading the executable with JDK bundled, then you dont n
 
 *For packages with JDK bundled*
 
-Configuring Server is pretty easy, grab the latest build from [Releases](https://github.com/ladiesman6969/streampi_server) according to your preferred Operating System, and then run the server.bat (Windows), server.sh (Linux and MacOS) to start the Server! No Installation required!
+Configuring Server is pretty easy, grab the latest build from [Releases](https://github.com/ladiesman6969/streampi_server/releases) according to your preferred Operating System, and then run the server.bat (Windows), server.sh (Linux and MacOS) to start the Server! No Installation required!
 
 *For packages without JDK bundled*
 

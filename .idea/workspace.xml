@@ -113,15 +113,16 @@
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Debayan Sutradhar\IdeaProjects\romankh3_version\StreamPi_Server\src" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Coding\Java Projects\streampi_server\java_lib" />
+      <recent name="C:\Users\Debayan Sutradhar\IdeaProjects\romankh3_version\StreamPi_Server\devices" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\Coding\Java Projects\streampi_server\java_lib" />
-      <recent name="C:\Users\Debayan Sutradhar\IdeaProjects\romankh3_version\StreamPi_Server\devices" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Coding\Java Projects\streampi_server\src\StreamPiServer" />
+      <recent name="C:\Users\Debayan Sutradhar\IdeaProjects\romankh3_version\StreamPi_Server\src" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -156,7 +157,7 @@
       </method>
     </configuration>
     <configuration name="Main" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="Main" />
+      <option name="MAIN_CLASS_NAME" value="StreamPiServer.Main" />
       <module name="StreamPi_Server" />
       <option name="VM_PARAMETERS" value="-Dprism.lcdtext=false" />
       <extension name="coverage">
@@ -253,5 +254,10 @@
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
     <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/streampi_server$Main.ic" NAME="Main Coverage Results" MODIFIED="1570184635804" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>.*</FILTER>
+    </SUITE>
   </component>
 </project>
