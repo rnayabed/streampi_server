@@ -30,19 +30,13 @@ Since the Raspberry Pi is a small form factor motherboard, it can be used as a k
 
 A network connection to connect to the Client.
 
-This software has been written with Java, and is designed to work with Java 8+. If you want to compile this on your own, or download the executable without jdk, then you need to have Java 11+ installed on your computer, along with JavaFX 11+ installed. 
+This software has been written with Java, and is designed to work with Java 11+. If you want to compile this on your own, or download the executable without jdk, then you need to have Java 11+ installed on your computer, along with JavaFX 11+ installed. 
 
 However, if you are downloading the executable with JDK bundled, then you dont need to worry about JDK versions or configuring anything.
 
 #### How to install StreamPi Server?
 
-*For packages with JDK bundled*
-
 Configuring Server is pretty easy, grab the latest build from [Releases](https://github.com/ladiesman6969/streampi_server/releases) according to your preferred Operating System, and then run the server.bat (Windows), server.sh (Linux and MacOS) to start the Server! No Installation required!
-
-*For packages without JDK bundled*
-
-You will need to have JDK 11+ along with JavaFX 11+ installed to run the executable jar. You can use [Liberica JDK 11 By BellSoft](https://bell-sw.com/pages/java-11.0.4/) as well since it comes with JavaFX prebundled.
 
 #### Contribution
 
