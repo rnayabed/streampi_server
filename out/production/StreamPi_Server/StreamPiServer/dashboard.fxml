@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="877.0" prefWidth="1411.0" styleClass="basePane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="StreamPiServer.dashboardController">
+<AnchorPane prefHeight="768.0" prefWidth="1366.0" styleClass="basePane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="StreamPiServer.dashboardController">
    <children>
       <StackPane fx:id="loginTwitterStackPane" layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="0.0" />
       <VBox fx:id="connectionErrorPane" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -216,7 +216,7 @@
       </VBox>
       <AnchorPane fx:id="deviceConfigPane" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Accordion fx:id="actionsAccordion" layoutX="1098.0" layoutY="20.0" prefHeight="795.0" prefWidth="289.0" AnchorPane.bottomAnchor="62.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="20.0">
+            <Accordion fx:id="actionsAccordion" layoutX="1098.0" layoutY="20.0" prefHeight="656.0" prefWidth="289.0" AnchorPane.bottomAnchor="92.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="20.0">
               <panes>
                 <TitledPane animated="false" text="System " textFill="WHITE">
                      <content>
@@ -284,7 +284,7 @@
                   </TitledPane>
               </panes>
             </Accordion>
-            <ScrollPane layoutX="43.0" layoutY="105.0" prefHeight="683.0" prefWidth="1040.0" style="-fx-background-color: black;" styleClass="edge-to-edge" AnchorPane.leftAnchor="43.0" AnchorPane.topAnchor="105.0">
+            <ScrollPane layoutX="43.0" layoutY="105.0" prefHeight="422.0" prefWidth="838.0" style="-fx-background-color: black;" styleClass="edge-to-edge" AnchorPane.leftAnchor="43.0" AnchorPane.topAnchor="105.0">
                <content>
                   <VBox fx:id="controlVBox" alignment="TOP_CENTER" spacing="20.0">
                      <padding>
@@ -310,7 +310,7 @@
                   </JFXButton>
                </children>
             </HBox>
-            <JFXButton contentDisplay="CENTER" layoutX="1350.0" layoutY="824.0" onAction="#showSettingsPane" style="-fx-background-color: #484848;" text=" " textFill="WHITE" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0">
+            <JFXButton contentDisplay="CENTER" layoutX="1293.0" layoutY="690.0" onAction="#showSettingsPane" style="-fx-background-color: #484848;" text=" " textFill="WHITE" AnchorPane.bottomAnchor="37.0" AnchorPane.rightAnchor="24.0">
                <graphic>
                   <ImageView fitHeight="31.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -319,11 +319,17 @@
                   </ImageView>
                </graphic>
             </JFXButton>
-            <JFXButton fx:id="returnToParentLayerButton" layoutX="37.0" layoutY="803.0" onAction="#returnToParentLayerButtonClicked" text="Return To Parent Layer" textFill="WHITE" />
-            <HBox fx:id="unableToConnectOBSHBox" layoutX="240.0" layoutY="796.0" prefHeight="38.0" prefWidth="245.0" spacing="25.0" visible="false">
+            <JFXButton fx:id="returnToParentLayerButton" layoutX="30.0" layoutY="694.0" onAction="#returnToParentLayerButtonClicked" text="Return To Parent Layer" textFill="WHITE" AnchorPane.bottomAnchor="37.0" AnchorPane.leftAnchor="30.0" />
+            <HBox fx:id="unableToConnectOBSHBox" layoutX="240.0" layoutY="699.0" prefHeight="38.0" prefWidth="289.0" spacing="25.0" visible="false" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="240.0">
                <children>
-                  <Label prefHeight="39.0" prefWidth="144.0" text="Unable To Connect to OBS." textFill="WHITE" />
-                  <JFXButton fx:id="retryConnectOBSButton" onAction="#obsSetup" prefHeight="38.0" prefWidth="44.0" text="Retry" textFill="#3dc33b" />
+                  <Label prefHeight="38.0" prefWidth="178.0" text="Unable To Connect to OBS." textFill="WHITE">
+                     <font>
+                        <Font name="Roboto Regular" size="13.0" />
+                     </font></Label>
+                  <JFXButton fx:id="retryConnectOBSButton" onAction="#obsSetup" prefHeight="38.0" prefWidth="63.0" text="Retry" textFill="#3dc33b">
+                     <font>
+                        <Font name="Roboto Regular" size="13.0" />
+                     </font></JFXButton>
                </children>
             </HBox>
          </children></AnchorPane>

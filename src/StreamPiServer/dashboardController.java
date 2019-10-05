@@ -31,6 +31,7 @@ import javafx.scene.robot.Robot;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import jdk.jfr.StackTrace;
 import net.twasi.obsremotejava.Callback;
 import net.twasi.obsremotejava.OBSRemoteController;
 import net.twasi.obsremotejava.requests.ResponseBase;
@@ -174,6 +175,13 @@ public class dashboardController extends Application implements Initializable {
         catch (Exception e)
         {
             e.printStackTrace();
+            String error = "";
+            for(StackTraceElement eachElement : e.getStackTrace())
+            {
+                error += eachElement.toString() + "\n";
+            }
+            stackTrace1 = error;
+            showConnectionErrorPane();
         }
 
         //In settings, set server IP field as the Host IP address (for the local network)
@@ -335,7 +343,7 @@ public class dashboardController extends Application implements Initializable {
     @FXML
     public void aboutStreamPiButtonClicked()
     {
-        showErrorAlert("About Us","Programmed By Debayan. Originally Thought of of Corporal Saturn\n\nAlpha - 0.1");
+        showErrorAlert("About Us","Programmed By Debayan. Originally Thought of CorporalSaturn\n\n0.0.2");
     }
 
     //Hides that server was unable to start
@@ -441,27 +449,40 @@ public class dashboardController extends Application implements Initializable {
 
         String paddingTextFieldText = eachActionPaddingField.getText();
         String sizeTextFieldText = eachActionSizeField.getText();
-        try
-        {
-            int padding = Integer.parseInt(paddingTextFieldText);
-            int size = Integer.parseInt(sizeTextFieldText);
 
-            if(padding==0)
+        if(isConnectedToClient)
+        {
+            try
             {
-                errs += "*Invalid Action Padding, It cannot be left empty!\n";
+                int size = Integer.parseInt(sizeTextFieldText);
+
+                if(size==0)
+                {
+                    errs += "*Invalid Action Size. It cannot be left empty\n";
+                    error = true;
+                }
+            }
+            catch (Exception e)
+            {
+                errs += "*Invalid Action Size. Needs to be integer\n";
                 error = true;
             }
 
-            if(size==0)
+            try
             {
-                errs += "*Invalid Action Size. It cannot be left empty\n";
+                int padding = Integer.parseInt(paddingTextFieldText);
+
+                if(padding==0)
+                {
+                    errs += "*Invalid Action Padding, It cannot be left empty!\n";
+                    error = true;
+                }
+            }
+            catch (Exception e)
+            {
+                errs += "*Invalid Action Padding. Needs to be integer\n";
                 error = true;
             }
-        }
-        catch (Exception e)
-        {
-            errs += "*Invalid Action Size. Needs to be integer\n";
-            error = true;
         }
 
         if(obsWebsocketAddressField.getText().length() == 0)
@@ -508,16 +529,19 @@ public class dashboardController extends Application implements Initializable {
             }
 
             try {
-                if(!sizeTextFieldText.equals(eachActionSize+"") || !paddingTextFieldText.equals(eachActionPadding))
+                if(isConnectedToClient)
                 {
-                    eachActionSize = Integer.parseInt(sizeTextFieldText);
-                    eachActionPadding = Integer.parseInt(paddingTextFieldText);
+                    if(!sizeTextFieldText.equals(eachActionSize+"") || !paddingTextFieldText.equals(eachActionPadding))
+                    {
+                        eachActionSize = Integer.parseInt(sizeTextFieldText);
+                        eachActionPadding = Integer.parseInt(paddingTextFieldText);
 
-                    streamPIMaxActionsPerRow = (int) Math.floor(streamPIWidth / (eachActionSize + eachActionPadding + eachActionPadding));
-                    streamPIMaxNoOfRows = (int) Math.floor(streamPIHeight / (eachActionSize +eachActionPadding + eachActionPadding));
+                        streamPIMaxActionsPerRow = (int) Math.floor(streamPIWidth / (eachActionSize + eachActionPadding + eachActionPadding));
+                        streamPIMaxNoOfRows = (int) Math.floor(streamPIHeight / (eachActionSize +eachActionPadding + eachActionPadding));
 
-                    drawLayer(0);
-                    writeToOS("client_action_size_padding_update::"+eachActionSize+"::"+eachActionPadding+"::");
+                        drawLayer(0);
+                        writeToOS("client_action_size_padding_update::"+eachActionSize+"::"+eachActionPadding+"::");
+                    }
                 }
             }
             catch (Exception e)
