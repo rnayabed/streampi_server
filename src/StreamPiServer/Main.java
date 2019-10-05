@@ -35,7 +35,6 @@ public class Main extends Application {
     public static Stage ps;
     public static Scene xs;
 
-
     public static void main(String[] args) {
         launch(args);
     }

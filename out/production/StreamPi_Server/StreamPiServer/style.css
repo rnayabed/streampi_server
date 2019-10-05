@@ -72,6 +72,10 @@
     -fx-text-fill: white;
 }
 
+.hyperlink_label {
+    -fx-cursor: hand;
+}
+
 /*.list-view .label {
     -fx-text-fill: white;
 }*/

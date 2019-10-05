@@ -3,6 +3,7 @@ package StreamPiServer;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXChipView;
 import com.jfoenix.controls.JFXTextField;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -24,13 +25,14 @@ import java.util.Base64;
 import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 
-public class hotkeyConfig implements Initializable {
+public class hotkeyConfig extends Application implements Initializable {
     @FXML
     private JFXTextField actionCasualNameField;
 
     @FXML
-    private JFXChipView hotkeyCodeChipView;
+    private JFXChipView<String> hotkeyCodeChipView;
 
     @FXML
     private JFXTextField iconPathField;
@@ -60,6 +62,12 @@ public class hotkeyConfig implements Initializable {
 
     Image previewImageDefault = new Image(getClass().getResourceAsStream("../icons/icon_preview.png"));
     String txt;
+
+    @Override
+    public void start(Stage primaryStage) {
+
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if(dashboardController.actionConfigType == 2)
@@ -240,7 +248,7 @@ public class hotkeyConfig implements Initializable {
             isError = true;
         }
 
-        if(hotkeyCode.length == 1)
+        if(hotkeyCode.length == 0)
         {
             errors.append("Invalid HotKey Entered\n");
             isError = true;
@@ -280,11 +288,13 @@ public class hotkeyConfig implements Initializable {
                         //send icon to client ...
                         FileInputStream fs = new FileInputStream(newFile.getAbsolutePath());
                         byte[] imageB = fs.readAllBytes();
+                        fs.close();
                         String base64EncryptedIcon = Base64.getEncoder().encodeToString(imageB);
 
                         String iconName = newFile.getName();
 
                         Main.dc.writeToOS("update_icon::"+iconName+"::"+base64EncryptedIcon+"::");
+                        newFile.delete();
 
                         //first update local actions....
                         String[][] oldActions = new String[Main.dc.actions.length+1][8];
@@ -509,5 +519,12 @@ public class hotkeyConfig implements Initializable {
     public String generateRandomID() {
         Random r = new Random();
         return "action_"+r.nextInt((15000 - 1) + 1) + 1;
+    }
+
+
+    @FXML
+    public void openElgatoStreamDeckKeyCreator()
+    {
+        getHostServices().showDocument("https://www.elgato.com/en/gaming/keycreator");
     }
 }

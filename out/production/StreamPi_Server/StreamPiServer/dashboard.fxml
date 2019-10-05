@@ -45,20 +45,6 @@
       <StackPane fx:id="alertStackPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <StackPane fx:id="progressStackPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <StackPane fx:id="popupStackPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <VBox fx:id="notConnectedPane" alignment="CENTER" cache="true" cacheHint="SPEED" spacing="30.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <Label fx:id="statusLabelNotConnectedPane" text="Setting Up..." textFill="WHITE">
-               <font>
-                  <Font name="Roboto Regular" size="25.0" />
-               </font>
-            </Label>
-            <Label fx:id="serverStatsLabel" layoutX="601.0" layoutY="395.0" textFill="WHITE">
-               <font>
-                  <Font name="Roboto Regular" size="15.0" />
-               </font>
-            </Label>
-         </children>
-      </VBox>
       <VBox fx:id="settingsPane" spacing="15.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox>
@@ -341,5 +327,19 @@
                </children>
             </HBox>
          </children></AnchorPane>
+      <VBox fx:id="notConnectedPane" alignment="CENTER" cache="true" cacheHint="SPEED" spacing="30.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label fx:id="statusLabelNotConnectedPane" text="Setting Up..." textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="25.0" />
+               </font>
+            </Label>
+            <Label fx:id="serverStatsLabel" layoutX="601.0" layoutY="395.0" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -23,13 +24,15 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
+
+import javafx.stage.Stage;
 import net.twasi.obsremotejava.Callback;
 import net.twasi.obsremotejava.objects.Scene;
 import net.twasi.obsremotejava.objects.Source;
 import net.twasi.obsremotejava.requests.GetSceneList.GetSceneListResponse;
 import net.twasi.obsremotejava.requests.ResponseBase;
 
-public class OBSSetSourceVisibilityConfig implements Initializable {
+public class OBSSetSourceVisibilityConfig extends Application implements Initializable{
     @FXML
     private JFXTextField actionCasualNameField;
 
@@ -66,6 +69,12 @@ public class OBSSetSourceVisibilityConfig implements Initializable {
 
     Image previewImageDefault = new Image(getClass().getResourceAsStream("../icons/icon_preview.png"));
     String txt;
+
+    @Override
+    public void start(Stage primaryStage) {
+
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //First get the list of actions from obsStudio
@@ -403,11 +412,13 @@ public class OBSSetSourceVisibilityConfig implements Initializable {
                         //send icon to client ...
                         FileInputStream fs = new FileInputStream(newFile.getAbsolutePath());
                         byte[] imageB = fs.readAllBytes();
+                        fs.close();
                         String base64EncryptedIcon = Base64.getEncoder().encodeToString(imageB);
 
                         String iconName = newFile.getName();
 
                         Main.dc.writeToOS("update_icon::"+iconName+"::"+base64EncryptedIcon+"::");
+                        newFile.delete();
 
                         //first update local actions....
                         String[][] oldActions = new String[Main.dc.actions.length+1][8];
@@ -611,5 +622,11 @@ public class OBSSetSourceVisibilityConfig implements Initializable {
     public String generateRandomID() {
         Random r = new Random();
         return "action_"+r.nextInt((15000 - 1) + 1) + 1;
+    }
+
+    @FXML
+    public void openElgatoStreamDeckKeyCreator()
+    {
+        getHostServices().showDocument("https://www.elgato.com/en/gaming/keycreator");
     }
 }

@@ -8,6 +8,7 @@ Contributors :
 import animatefx.animation.*;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.events.JFXDialogEvent;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
@@ -17,6 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -27,6 +29,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import javafx.scene.robot.Robot;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import net.twasi.obsremotejava.Callback;
 import net.twasi.obsremotejava.OBSRemoteController;
@@ -47,7 +50,7 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-public class dashboardController implements Initializable {
+public class dashboardController extends Application implements Initializable {
 
     // Importing all neccessary nodes from dashboard.fxml via respective FXML IDs
     @FXML
@@ -139,6 +142,12 @@ public class dashboardController implements Initializable {
     private final Paint WHITE_PAINT = Paint.valueOf("#ffffff");
 
     //Initialize method, runs when the application first starts
+
+    @Override
+    public void start(Stage primaryStage) {
+
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         readConfig();
@@ -663,10 +672,9 @@ public class dashboardController implements Initializable {
                         isConnectedToClient = true;
                         FadeInUp fiu3 = new FadeInUp(statusLabelNotConnectedPane);
                         FadeInUp fiu4 = new FadeInUp(serverStatsLabel);
-                        fiu3.setDelay(Duration.millis(500));
                         fiu3.play();
+                        fiu4.play();
                         fiu3.setOnFinished(event1 -> {
-                            fiu4.play();
                             try
                             {
                                 showDeviceConfigPane();
@@ -975,11 +983,13 @@ public class dashboardController implements Initializable {
                                 Robot robot = new Robot();
 
                                 for (String eachKey : keysRaw) {
+                                    eachKey = eachKey.replace(" ","");
                                     System.out.println(eachKey);
                                     robot.keyPress(KeyCode.valueOf(eachKey));
                                 }
                                 Thread.sleep(50);
                                 for (String eachKey : keysRaw) {
+                                    eachKey = eachKey.replace(" ","");
                                     robot.keyRelease(KeyCode.valueOf(eachKey));
                                 }
                             } catch (Exception e) {
@@ -1318,7 +1328,14 @@ public class dashboardController implements Initializable {
     @FXML
     public void newTweetAction()
     {
-        showNewActionHint("Tweet");
+        if(!isTwitterSetup)
+        {
+            showErrorAlert("Uh Oh!","Twitter has not been setup for the StreamPi. Go to Settings to setup Twitter.");
+        }
+        else
+        {
+            showNewActionHint("Tweet");
+        }
     }
 
     @FXML
@@ -1630,5 +1647,4 @@ public class dashboardController implements Initializable {
             }
         });
     }
-
 }

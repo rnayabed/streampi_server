@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="mode_new" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="583.0" prefWidth="812.0" spacing="10.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="StreamPiServer.OBSSetSourceVisibilityConfig">
+<VBox fx:id="mode_new" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="899.0" spacing="10.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="StreamPiServer.OBSSetSourceVisibilityConfig">
     <children>
         <Label fx:id="headingLabel" text="New OBS Studio (Set Source Visibility) Action" textFill="WHITE">
             <font>
@@ -92,6 +92,20 @@
                 </ImageView>
             </children>
         </HBox>
+      <HBox alignment="CENTER">
+         <children>
+            <Label prefHeight="9.0" prefWidth="225.0" text="To Create your own icons, head over to" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="13.0" />
+               </font>
+            </Label>
+            <Label onMouseClicked="#openElgatoStreamDeckKeyCreator" prefHeight="9.0" prefWidth="225.0" styleClass="hyperlink_label" text=" The Elgato Stream Deck Key Creator" textFill="#4eb9d3">
+               <font>
+                  <Font name="Roboto Regular" size="13.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
         <Label fx:id="sourceSelectedNotPresentLabel" prefHeight="29.0" prefWidth="551.0" text="Source Selected is not present in the current profile" textFill="WHITE" visible="false">
             <font>
                 <Font name="Roboto Regular" size="15.0" />

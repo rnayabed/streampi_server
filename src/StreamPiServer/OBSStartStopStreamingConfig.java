@@ -3,6 +3,7 @@ package StreamPiServer;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -13,6 +14,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
@@ -21,7 +24,7 @@ import java.util.Base64;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-public class OBSStartStopStreamingConfig implements Initializable {
+public class OBSStartStopStreamingConfig extends Application implements Initializable{
     @FXML
     private JFXTextField actionCasualNameField;
 
@@ -52,6 +55,12 @@ public class OBSStartStopStreamingConfig implements Initializable {
 
     Image previewImageDefault = new Image(getClass().getResourceAsStream("../icons/icon_preview.png"));
     String txt;
+
+    @Override
+    public void start(Stage primaryStage) {
+
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //First get the list of actions from obsStudio
@@ -242,11 +251,13 @@ public class OBSStartStopStreamingConfig implements Initializable {
                         //send icon to client ...
                         FileInputStream fs = new FileInputStream(newFile.getAbsolutePath());
                         byte[] imageB = fs.readAllBytes();
+                        fs.close();
                         String base64EncryptedIcon = Base64.getEncoder().encodeToString(imageB);
 
                         String iconName = newFile.getName();
 
                         Main.dc.writeToOS("update_icon::"+iconName+"::"+base64EncryptedIcon+"::");
+                        newFile.delete();
 
                         //first update local actions....
                         String[][] oldActions = new String[Main.dc.actions.length+1][8];
@@ -450,5 +461,11 @@ public class OBSStartStopStreamingConfig implements Initializable {
     public String generateRandomID() {
         Random r = new Random();
         return "action_"+r.nextInt((15000 - 1) + 1) + 1;
+    }
+
+    @FXML
+    public void openElgatoStreamDeckKeyCreator()
+    {
+        getHostServices().showDocument("https://www.elgato.com/en/gaming/keycreator");
     }
 }

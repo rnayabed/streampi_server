@@ -65,6 +65,20 @@
             </ImageView>
          </children>
       </HBox>
+      <HBox alignment="CENTER">
+         <children>
+            <Label prefHeight="9.0" prefWidth="225.0" text="To Create your own icons, head over to" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="13.0" />
+               </font>
+            </Label>
+            <Label onMouseClicked="#openElgatoStreamDeckKeyCreator" prefHeight="9.0" prefWidth="225.0" styleClass="hyperlink_label" text=" The Elgato Stream Deck Key Creator" textFill="#4eb9d3">
+               <font>
+                  <Font name="Roboto Regular" size="13.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
       <Label fx:id="sceneSelectedNotPresentLabel" prefHeight="29.0" prefWidth="551.0" text="Scene Selected is not present in the current profile" textFill="WHITE" visible="false">
          <font>
             <Font name="Roboto Regular" size="15.0" />

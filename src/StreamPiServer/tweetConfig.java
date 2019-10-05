@@ -2,6 +2,7 @@ package StreamPiServer;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -13,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,10 +24,7 @@ import java.util.Base64;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-public class tweetConfig implements Initializable {
-    @FXML
-    private VBox mode_1;
-
+public class tweetConfig extends Application implements Initializable {
     @FXML
     private Label headingLabel;
 
@@ -51,9 +50,6 @@ public class tweetConfig implements Initializable {
     private JFXButton cancelButton;
 
     @FXML
-    private VBox mode_2;
-
-    @FXML
     private JFXButton addButton;
 
     boolean isImageFileOK = false;
@@ -64,10 +60,6 @@ public class tweetConfig implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if(!dashboardController.isTwitterSetup)
-            mode_2.toFront();
-        else
-            mode_1.toFront();
 
         if(dashboardController.actionConfigType == 2)
         {
@@ -239,11 +231,13 @@ public class tweetConfig implements Initializable {
                         //send icon to client ...
                         FileInputStream fs = new FileInputStream(newFile.getAbsolutePath());
                         byte[] imageB = fs.readAllBytes();
+                        fs.close();
                         String base64EncryptedIcon = Base64.getEncoder().encodeToString(imageB);
 
                         String iconName = newFile.getName();
 
                         Main.dc.writeToOS("update_icon::"+iconName+"::"+base64EncryptedIcon+"::");
+                        newFile.delete();
 
                         //first update local actions....
                         String[][] oldActions = new String[Main.dc.actions.length+1][8];
@@ -438,5 +432,16 @@ public class tweetConfig implements Initializable {
             iconPreviewImg.setImage(previewImageDefault);
             iconPathField.setText("");
         }
+    }
+
+    @FXML
+    public void openElgatoStreamDeckKeyCreator()
+    {
+        getHostServices().showDocument("https://www.elgato.com/en/gaming/keycreator");
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
     }
 }
