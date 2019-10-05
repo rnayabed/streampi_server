@@ -14,6 +14,8 @@ The original Stream Deck can serve as an extremely useful and powerful tool for 
 
 You can browse through a comprehensive list of tutorials [here](google.com).
 
+**ON LINUX SYSTEMS, THE MINIMUM PORT MUST BE 1024, OR ELSE SERVER MUST BE RUN AS ROOT**
+
 StreamPi has two branches of software - [Server](https://github.com/ladiesman6969/streampi_server) and [Client](https://github.com/ladiesman6969/streampi_client)
 
 This repository contains the Server Side code, which can run on any desktop/laptop running Windows or Linux. 
