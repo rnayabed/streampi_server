@@ -1,8 +1,8 @@
-package StreamPiServer;/*
+package StreamPiServer;
+
+/*
 dashboardController Class
 Originally Written By Debayan Sutradhar
-Contributors :
-
  */
 
 import animatefx.animation.*;
@@ -18,7 +18,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -30,8 +29,6 @@ import javafx.scene.paint.Paint;
 import javafx.scene.robot.Robot;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-import jdk.jfr.StackTrace;
 import net.twasi.obsremotejava.Callback;
 import net.twasi.obsremotejava.OBSRemoteController;
 import net.twasi.obsremotejava.requests.ResponseBase;

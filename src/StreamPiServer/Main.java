@@ -15,9 +15,11 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("dashboard.fxml"));
         primaryStage.setTitle("StreamPi Server");
-        JFXDecorator decorator = new JFXDecorator(primaryStage, root);
-        decorator.setCustomMaximize(true);
-        Scene x = new Scene(decorator);
+        //JFXDecorator decorator = new JFXDecorator(primaryStage, root);
+        //decorator.setCustomMaximize(true);
+        Scene x = new Scene(root);
+        primaryStage.setMinWidth(1360);
+        primaryStage.setMinHeight(760);
         primaryStage.setScene(x);
         primaryStage.show();
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
