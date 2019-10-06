@@ -146,6 +146,8 @@ public class dashboardController extends Application implements Initializable {
 
     }
 
+    boolean portFail = false;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         readConfig();
@@ -327,6 +329,7 @@ public class dashboardController extends Application implements Initializable {
     @FXML
     private void showConnectionErrorPane()
     {
+        portFail = true;
         Platform.runLater(() -> {
             retryButton.setDisable(false);
             connectionErrorPane.toFront();
@@ -678,6 +681,12 @@ public class dashboardController extends Application implements Initializable {
                         statusLabelNotConnectedPane.setText("Listening for StreamPi");
                         serverStatsLabel.setText("Server Running on "+serverIP+", Port "+config.get("server_port"));
                     });
+
+                    if(portFail)
+                    {
+                        server = new ServerSocket(Integer.parseInt(config.get("server_port")));
+                        portFail = false;
+                    }
 
                     socket = server.accept();
                     System.out.println("Connected!");

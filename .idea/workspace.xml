@@ -67,18 +67,6 @@
       </list>
     </option>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>showConnectioNerr</find>
-      <find>show</find>
-      <find>applyS</find>
-      <find>connectione</find>
-      <find>stackTrace</find>
-      <find>showConnecti</find>
-      <find>isFailed()</find>
-      <find>0.1</find>
-    </findStrings>
-  </component>
   <component name="FindManager">
     <FindUsagesManager>
       <setting name="OPEN_NEW_TAB" value="false" />
