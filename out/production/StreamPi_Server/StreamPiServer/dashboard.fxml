@@ -214,20 +214,6 @@
             <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
          </padding>
       </VBox>
-      <VBox fx:id="notConnectedPane" alignment="CENTER" spacing="30.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <Label fx:id="statusLabelNotConnectedPane" text="Setting Up..." textFill="WHITE">
-               <font>
-                  <Font name="Roboto Regular" size="25.0" />
-               </font>
-            </Label>
-            <Label fx:id="serverStatsLabel" layoutX="601.0" layoutY="395.0" textFill="WHITE">
-               <font>
-                  <Font name="Roboto Regular" size="15.0" />
-               </font>
-            </Label>
-         </children>
-      </VBox>
       <AnchorPane fx:id="deviceConfigPane" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Accordion fx:id="actionsAccordion" layoutX="1098.0" layoutY="84.0" prefHeight="490.0" prefWidth="289.0" AnchorPane.bottomAnchor="76.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="84.0">
@@ -347,5 +333,19 @@
                </children>
             </HBox>
          </children></AnchorPane>
+      <VBox fx:id="notConnectedPane" alignment="CENTER" spacing="30.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label fx:id="statusLabelNotConnectedPane" text="Setting Up..." textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="25.0" />
+               </font>
+            </Label>
+            <Label fx:id="serverStatsLabel" layoutX="601.0" layoutY="395.0" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

@@ -124,6 +124,7 @@ public class dashboardController extends Application implements Initializable {
 
     static OBSRemoteController obsController;
     private boolean isOBSSetup = false;
+    final String SERVER_VERSION = "0.0.3";
 
     //Global Hashmap where config will be stored (taken from the config file)
     private HashMap<String, String> config = new HashMap<>();
@@ -341,7 +342,7 @@ public class dashboardController extends Application implements Initializable {
     @FXML
     public void aboutStreamPiButtonClicked()
     {
-        showErrorAlert("About Us","Programmed By Debayan. Originally Thought of CorporalSaturn\n\n0.0.2");
+        showErrorAlert("About StreamPi","Programmed By Debayan Sutradhar (github.com/ladiesman6969) (twitter.com/ladiesman36069)\nThis entire project was the idea of Samuel Quinones (twitter.com/SamuelQuinones1)\nVersion : "+SERVER_VERSION);
     }
 
     //Hides that server was unable to start
