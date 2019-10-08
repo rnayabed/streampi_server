@@ -18,8 +18,8 @@ public class Main extends Application {
         //JFXDecorator decorator = new JFXDecorator(primaryStage, root);
         //decorator.setCustomMaximize(true);
         Scene x = new Scene(root);
-        primaryStage.setMinWidth(1360);
-        primaryStage.setMinHeight(760);
+        primaryStage.setMinWidth(1160);
+        primaryStage.setMinHeight(650);
         primaryStage.setScene(x);
         primaryStage.show();
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {

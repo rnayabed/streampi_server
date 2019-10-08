@@ -29,6 +29,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.robot.Robot;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import net.twasi.obsremotejava.Callback;
 import net.twasi.obsremotejava.OBSRemoteController;
 import net.twasi.obsremotejava.requests.ResponseBase;
@@ -39,14 +40,8 @@ import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.*;
-import java.net.Inet4Address;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.URL;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.net.*;
+import java.util.*;
 
 public class dashboardController extends Application implements Initializable {
 
@@ -138,6 +133,9 @@ public class dashboardController extends Application implements Initializable {
     private boolean firstRun = true;
     //Global Paint Constant for white font in Alert Boxes (They are generated from code, and not hardcoded FXML)
     private final Paint WHITE_PAINT = Paint.valueOf("#ffffff");
+
+    //Get OS Name for Platform related issues
+    String systemOS = System.getProperty("os.name").toLowerCase();
 
     //Initialize method, runs when the application first starts
 
@@ -680,6 +678,17 @@ public class dashboardController extends Application implements Initializable {
                     Platform.runLater(() -> {
                         statusLabelNotConnectedPane.setText("Listening for StreamPi");
                         serverStatsLabel.setText("Server Running on "+serverIP+", Port "+config.get("server_port"));
+                        if(serverIP.startsWith("127.0"))
+                        {
+                            if(systemOS.toLowerCase().contains("unix") || systemOS.toLowerCase().contains("linux"))
+                            {
+                                showErrorAlert("Warning!","Your IP Address is "+serverIP+", which cannot be used to connect from the client.\nCheck whether you are connected to a real network.\nSince you are running on a Linux System, please edit /etc/hosts and comment out lines starting with 127.0.X.X");
+                            }
+                            else
+                            {
+                                showErrorAlert("Warning!","Your IP Address is "+serverIP+", which cannot be used to connect from the client.\nCheck whether you are connected to a real network.\n");
+                            }
+                        }
                     });
 
                     if(portFail)
@@ -690,6 +699,7 @@ public class dashboardController extends Application implements Initializable {
 
                     socket = server.accept();
                     System.out.println("Connected!");
+
                     FadeOutUp fou2 = new FadeOutUp(statusLabelNotConnectedPane);
                     FadeOutUp fou3 = new FadeOutUp(serverStatsLabel);
                     fou3.play();
@@ -1416,7 +1426,9 @@ public class dashboardController extends Application implements Initializable {
         }
 
         addNewButtonHintLabel.setText("To add a new "+actionName+", click on the desired green Action Box");
-        new FadeInUp(newActionHintHBox).play();
+        FadeIn x = new FadeIn(newActionHintHBox);
+        x.setSpeed(1.5);
+        x.play();
         cancelNewActionButton.setDisable(false);
     }
 
@@ -1439,7 +1451,9 @@ public class dashboardController extends Application implements Initializable {
         }
         currentSelectionMode = 0;
         cancelNewActionButton.setDisable(true);
-        new FadeOutDown(newActionHintHBox).play();
+        FadeOut l = new FadeOut(newActionHintHBox);
+        l.setSpeed(1.5);
+        l.play();
     }
 
     //TODO : Call System.gc() every 30 secs to clear memory.

@@ -329,6 +329,7 @@ public class folderConfig extends Application implements Initializable{
                             System.out.println("delete_action::"+dashboardController.selectedActionUniqueID+"::"+eachAction[4]);
                             Main.dc.writeToOS("delete_action::"+dashboardController.selectedActionUniqueID+"::"+eachAction[4]);
                             System.out.println("Removed from Client!");
+                            eachAction[7]="pls_give_me_a_gf";
                             break;
                         }
                     }
