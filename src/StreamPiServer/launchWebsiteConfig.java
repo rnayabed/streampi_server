@@ -99,6 +99,14 @@ public class launchWebsiteConfig extends Application implements Initializable {
             errors.append("Invalid Website URL. Can't be left empty!\n");
             isError = true;
         }
+        else
+        {
+            if(websiteURLField.getText().contains("::"))
+            {
+                errors.append("URLs cannot contain this '::'\n");
+                isError = true;
+            }
+        }
 
         if(!isImageFileOK)
         {
