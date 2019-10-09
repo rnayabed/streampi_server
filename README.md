@@ -34,7 +34,7 @@ Configuring Server is pretty easy, grab the latest build from [Releases](https:/
 
 * A network connection to connect to the Client, via a router, or LAN.
 
-* **This software has been written with Java, and is designed to work with Java 11+. If you want to compile this on your own, then you need to have Java 11+ installed on your computer, along with JavaFX 11+ installed. ** [BellSoft's Liberica JDK 11](https://bell-sw.com/pages/java-11.0.4/) is preferred as it comes pre-bundled JavaFX 11.
+* This software has been written with Java, and is designed to work with Java 11+. If you want to compile this on your own, then you need to have Java 11+ installed on your computer, along with JavaFX 11+ installed. [BellSoft's Liberica JDK 11](https://bell-sw.com/pages/java-11.0.4/) is preferred as it comes pre-bundled JavaFX 11.
 
 #### Contribution
 
