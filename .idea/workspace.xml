@@ -56,98 +56,8 @@
     <ui_properties converted="true" />
     <breakpoint_rules converted="true" />
   </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="2054925583">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="6" />
-          <entry key="project.open.time.12" value="1" />
-          <entry key="project.open.time.17" value="1" />
-          <entry key="project.open.time.2" value="1" />
-          <entry key="project.open.time.23" value="1" />
-          <entry key="project.open.time.33" value="1" />
-          <entry key="project.open.time.4" value="1" />
-          <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="7" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="config" value="1" />
-          <entry key="fxml" value="1" />
-          <entry key="java" value="3" />
-          <entry key="sh" value="1" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="JAVA" value="3" />
-          <entry key="PLAIN_TEXT" value="2" />
-          <entry key="XML" value="1" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="fxml" value="2" />
-          <entry key="java" value="1395" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="JAVA" value="1395" />
-          <entry key="XML" value="2" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
   <component name="FavoritesManager">
     <favorites_list name="JavaFxApplication" />
-  </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/installer/linux64/config">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/installer/linux64/server.sh">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="36">
-              <caret line="2" selection-start-line="2" selection-end-line="2" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/StreamPiServer/dashboardController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="183">
-              <caret line="344" column="38" selection-start-line="344" selection-start-column="38" selection-end-line="344" selection-end-column="38" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/StreamPiServer/folderConfig.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="331" column="59" selection-start-line="331" selection-start-column="59" selection-end-line="331" selection-end-column="59" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/StreamPiServer/dashboard.fxml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="40" column="19" selection-start-line="40" selection-start-column="19" selection-end-line="40" selection-end-column="19" />
-            </state>
-          </provider>
-          <provider editor-type-id="JavaFX-Scene-Builder" />
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -157,17 +67,6 @@
       </list>
     </option>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>serverIP</find>
-      <find>serverIP =</find>
-      <find>drawLay</find>
-      <find>deleteButtonClicke</find>
-      <find>cac</find>
-      <find>fadeINU</find>
-      <find>newActionHint</find>
-    </findStrings>
-  </component>
   <component name="FindManager">
     <FindUsagesManager>
       <setting name="OPEN_NEW_TAB" value="false" />
@@ -176,71 +75,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/src/StreamPiServer/Main.java" />
-        <option value="$PROJECT_DIR$/src/StreamPiServer/folderConfig.java" />
-        <option value="$PROJECT_DIR$/src/StreamPiServer/dashboard.fxml" />
-        <option value="$PROJECT_DIR$/src/StreamPiServer/dashboardController.java" />
-      </list>
-    </option>
-  </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="82" />
-    <option name="y" value="30" />
-    <option name="width" value="1211" />
-    <option name="height" value="662" />
-  </component>
   <component name="ProjectId" id="1Omgwvb5Nkoppws8dsLuKyBDlUb" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectReloadState">
     <option name="STATE" value="0" />
-  </component>
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="streampi_server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="streampi_server" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="streampi_server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="streampi_server" type="462c0819:PsiDirectoryNode" />
-              <item name="installer" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="streampi_server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="streampi_server" type="462c0819:PsiDirectoryNode" />
-              <item name="installer" type="462c0819:PsiDirectoryNode" />
-              <item name="linux64" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="streampi_server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="streampi_server" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="streampi_server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="streampi_server" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="StreamPiServer" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-    </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
@@ -263,7 +104,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1570503739751" />
     <property name="dynamic.classpath" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../streampi_client" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/StreamPiServer" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -273,16 +114,18 @@
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\Coding\Java Projects\streampi_server\java_lib" />
-      <recent name="C:\Users\Debayan Sutradhar\IdeaProjects\romankh3_version\StreamPi_Server\devices" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Coding\Java Projects\streampi_server\src\StreamPiServer" />
       <recent name="C:\Users\Debayan Sutradhar\IdeaProjects\romankh3_version\StreamPi_Server\src" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="StreamPiServer" />
+      <recent name="" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Coding\Java Projects\streampi_server\src\StreamPiServer" />
+      <recent name="D:\Coding\Java Projects\streampi_server\java_lib" />
+      <recent name="C:\Users\Debayan Sutradhar\IdeaProjects\romankh3_version\StreamPi_Server\devices" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -310,7 +153,7 @@
       <Host>localhost</Host>
       <Port>5050</Port>
     </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
+    <configuration default="true" type="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -339,6 +182,7 @@
       </method>
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="TEST_OBJECT" value="class" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="TEST_SEARCH_SCOPE">
         <value defaultName="moduleWithDependencies" />
@@ -347,7 +191,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="TestNG" factoryName="TestNG">
+    <configuration default="true" type="TestNG">
+      <option name="TEST_OBJECT" value="CLASS" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="TEST_SEARCH_SCOPE">
         <value defaultName="moduleWithDependencies" />
@@ -358,11 +203,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
       <option name="PROGRAM_PARAMETERS" />
-      <predefined_log_file id="idea.log" enabled="true" />
+      <predefined_log_file enabled="true" id="idea.log" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -385,41 +230,6 @@
   <component name="TimeTrackingManager">
     <option name="totallyTimeSpent" value="1302000" />
   </component>
-  <component name="ToolWindowManager">
-    <frame x="0" y="30" width="1366" height="738" extended-state="6" />
-    <editor active="true" />
-    <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.27045456" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Image Layers" order="2" />
-      <window_info id="Designer" order="3" />
-      <window_info id="UI Designer" order="4" />
-      <window_info id="Capture Tool" order="5" />
-      <window_info id="Favorites" order="6" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32840723" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.32840723" />
-      <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
-      <window_info anchor="bottom" id="Flutter Performance" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="10" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Messages" order="11" weight="0.32840723" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="right" id="Palette&#9;" order="4" />
-      <window_info anchor="right" id="Capture Analysis" order="5" />
-      <window_info anchor="right" id="Theme Preview" order="6" />
-      <window_info anchor="right" id="Flutter Outline" order="7" />
-      <window_info anchor="right" id="Flutter Inspector" order="8" />
-      <window_info anchor="right" id="Maven Projects" order="9" />
-    </layout>
-  </component>
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.css" />
   </component>
@@ -429,21 +239,12 @@
         <entry key="MAIN">
           <value>
             <State>
-              <option name="RECENTLY_FILTERED_USER_GROUPS">
-                <collection />
-              </option>
-              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
-                <collection />
-              </option>
               <option name="COLUMN_ORDER" />
             </State>
           </value>
         </entry>
       </map>
     </option>
-  </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
@@ -458,7 +259,6 @@
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/StreamPiServer/tweetConfig.java</url>
           <line>423</line>
-          <properties />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
@@ -472,46 +272,5 @@
     <SUITE FILE_PATH="coverage/streampi_server$Main.ic" NAME="Main Coverage Results" MODIFIED="1570184635804" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>.*</FILTER>
     </SUITE>
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/installer/linux64/config">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/installer/linux64/server.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" selection-start-line="2" selection-end-line="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/StreamPiServer/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="118">
-          <caret line="15" column="31" selection-start-line="15" selection-start-column="31" selection-end-line="15" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/StreamPiServer/folderConfig.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="331" column="59" selection-start-line="331" selection-start-column="59" selection-end-line="331" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/StreamPiServer/dashboard.fxml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="40" column="19" selection-start-line="40" selection-start-column="19" selection-end-line="40" selection-end-column="19" />
-        </state>
-      </provider>
-      <provider editor-type-id="JavaFX-Scene-Builder" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/StreamPiServer/dashboardController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="344" column="38" selection-start-line="344" selection-start-column="38" selection-end-line="344" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
   </component>
 </project>

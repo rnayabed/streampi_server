@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane cache="true" cacheHint="SPEED" prefHeight="650.0" prefWidth="1160.0" styleClass="basePane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="StreamPiServer.dashboardController">
+<AnchorPane cache="true" cacheHint="SPEED" prefHeight="650.0" prefWidth="1160.0" styleClass="basePane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="StreamPiServer.dashboardController">
    <children>
       <StackPane fx:id="loginTwitterStackPane" cache="true" cacheHint="SPEED" layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="0.0" />
       <VBox fx:id="connectionErrorPane" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -214,6 +214,20 @@
             <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
          </padding>
       </VBox>
+      <VBox fx:id="notConnectedPane" alignment="CENTER" spacing="30.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label fx:id="statusLabelNotConnectedPane" text="Setting Up..." textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="25.0" />
+               </font>
+            </Label>
+            <Label fx:id="serverStatsLabel" layoutX="601.0" layoutY="395.0" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
       <AnchorPane fx:id="deviceConfigPane" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Accordion fx:id="actionsAccordion" layoutX="1098.0" layoutY="84.0" prefHeight="490.0" prefWidth="289.0" AnchorPane.bottomAnchor="76.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="84.0">
@@ -233,6 +247,16 @@
                                  </font>
                               </JFXButton>
                               <JFXButton alignment="TOP_LEFT" onAction="#newFolderAction" prefHeight="25.0" prefWidth="268.0" text="Folder" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newLaunchAppAction" prefHeight="25.0" prefWidth="268.0" text="Launch App" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newLaunchWebsiteAction" prefHeight="25.0" prefWidth="268.0" text="Launch Website" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
@@ -333,19 +357,5 @@
                </children>
             </HBox>
          </children></AnchorPane>
-      <VBox fx:id="notConnectedPane" alignment="CENTER" spacing="30.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <Label fx:id="statusLabelNotConnectedPane" text="Setting Up..." textFill="WHITE">
-               <font>
-                  <Font name="Roboto Regular" size="25.0" />
-               </font>
-            </Label>
-            <Label fx:id="serverStatsLabel" layoutX="601.0" layoutY="395.0" textFill="WHITE">
-               <font>
-                  <Font name="Roboto Regular" size="15.0" />
-               </font>
-            </Label>
-         </children>
-      </VBox>
    </children>
 </AnchorPane>

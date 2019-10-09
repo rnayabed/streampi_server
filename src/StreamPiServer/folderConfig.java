@@ -206,18 +206,11 @@ public class folderConfig extends Application implements Initializable{
                             {
                                 oldActions[i][0] = generateRandomID();
                                 oldActions[i][1] = ":P";
-                                oldActions[i][2] = "tweet";
-                                String toWrite = "";
-                                toWrite+=dashboardController.maxLayers;
-                                oldActions[i][3] = toWrite;
                                 //oldActions[i][4] = selectedIconFile.getName();
                                 if(iconPathField.getText().length()>0)
                                 {
                                     oldActions[i][4] = newFileName;
                                 }
-                                oldActions[i][5] = dashboardController.selectedRow+"";
-                                oldActions[i][6] = dashboardController.selectedCol+"";
-                                oldActions[i][7] = dashboardController.currentLayer+"";
                                 System.out.println(oldActions[i][7]+"XXASDSD");
                                 System.out.println("YAAY");
                                 break;

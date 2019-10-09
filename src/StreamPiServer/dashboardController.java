@@ -105,17 +105,21 @@ public class dashboardController extends Application implements Initializable {
 
     //currentSelectionMode is used to distinguish between the type of action user wants to add...
     private int currentSelectionMode = 0;
+
     /*
     Selection Modes:
-    0 - Nothing (Normal)
-    1 - Hotkey
-    2 - Script
-    3 - Tweet
-    4 - Folder
-    5 - OBS Studio - Set Scene
-    6 - OBS Studio - Set Transition
-    7 - OBS Studio - Start / Stop Streaming
-    8 - OBS Studio - Set Source Visibility
+    0  - Nothing (Normal)
+    1  - Hotkey
+    2  - Script
+    3  - Tweet
+    4  - Folder
+    5  - OBS Studio - Set Scene
+    6  - OBS Studio - Set Transition
+    7  - OBS Studio - Start / Stop Streaming
+    8  - OBS Studio - Set Source Visibility
+    9  - Launch Application
+    10 - Launch Website
+
     This isn't final and will go on increasing in the future.
      */
 
@@ -124,7 +128,7 @@ public class dashboardController extends Application implements Initializable {
 
     static OBSRemoteController obsController;
     private boolean isOBSSetup = false;
-    final String SERVER_VERSION = "0.0.3";
+    final String SERVER_VERSION = "0.0.4";
 
     //Global Hashmap where config will be stored (taken from the config file)
     private HashMap<String, String> config = new HashMap<>();
@@ -342,7 +346,7 @@ public class dashboardController extends Application implements Initializable {
     @FXML
     public void aboutStreamPiButtonClicked()
     {
-        showErrorAlert("About StreamPi","Programmed By Debayan Sutradhar (github.com/ladiesman6969) (twitter.com/ladiesman36069)\nThis entire project was the idea of Samuel Quinones (twitter.com/SamuelQuinones1)\nVersion : "+SERVER_VERSION);
+        showErrorAlert("About StreamPi","Programmed By Debayan Sutradhar (github.com/ladiesman6969) (twitter.com/ladiesman36069)\nThis entire project was the idea of Samuel Quinones (twitter.com/SamuelQuinones1)\n\nServer Version : "+SERVER_VERSION);
     }
 
     //Hides that server was unable to start
@@ -818,6 +822,31 @@ public class dashboardController extends Application implements Initializable {
                         Thread.sleep(1000);
                         writeToOS("client_actions_icons_get::");
                     }
+                } else if(msgHeader.equals("launch_website")) {
+                    try
+                    {
+                        getHostServices().showDocument(msgArr[1]);
+                        sendSuccessResponse(msgArr[2],true);
+                    }
+                    catch (Exception e)
+                    {
+                        sendSuccessResponse(msgArr[2],false);
+                        showErrorAlert("Uh Oh!","Unable to launch website. Check Stacktrace!");
+                    }
+                } else if (msgHeader.equals("launch_app")) {
+                    try
+                    {
+                        Runtime r = Runtime.getRuntime();
+                        System.out.println("Running \"" + msgArr[1] + "\"");
+                        r.exec("\"" + msgArr[1] + "\"");
+                        sendSuccessResponse(msgArr[2],true);
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                        sendSuccessResponse(msgArr[2],false);
+                        showErrorAlert("Uh Oh!","App couldn't launch, Check Stacktrace!");
+                    }
                 } else if (msgHeader.equals("obs_set_scene")) {
                     if(isOBSSetup)
                     {
@@ -1039,14 +1068,22 @@ public class dashboardController extends Application implements Initializable {
                         }
                     });
                 } else if (msgHeader.equals("script")) {
-                    sendSuccessResponse(msgArr[2],true);
-                    String[] scriptRunn = msgArr[1].split("<>");
-                    Runtime r = Runtime.getRuntime();
-                    System.out.println("Running \"" + scriptRunn[0] + "\" \"" + scriptRunn[1] + "\"");
-                    if (scriptRunn[0].length() == 0) {
-                        r.exec("\"" + scriptRunn[1] + "\"");
-                    } else {
-                        r.exec("\"" + scriptRunn[0] + "\" \"" + scriptRunn[1] + "\"");
+                    try {
+                        String[] scriptRunn = msgArr[1].split("<>");
+                        Runtime r = Runtime.getRuntime();
+                        System.out.println("Running \"" + scriptRunn[0] + "\" \"" + scriptRunn[1] + "\"");
+                        if (scriptRunn[0].length() == 0) {
+                            r.exec("\"" + scriptRunn[1] + "\"");
+                        } else {
+                            r.exec("\"" + scriptRunn[0] + "\" \"" + scriptRunn[1] + "\"");
+                        }
+                        sendSuccessResponse(msgArr[2],true);
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                        sendSuccessResponse(msgArr[2],false);
+                        showErrorAlert("Uh Oh!","Script couldn't launch, check stacktrace!");
                     }
                 } else if (msgHeader.equals("tweet")) {
                     String[] data = msgArr[1].split("<>");
@@ -1162,6 +1199,10 @@ public class dashboardController extends Application implements Initializable {
                                             loadPopupFXML("OBSStartStopStreamingConfig.fxml",2);
                                         else if(eachAction[2].equals("obs_set_source_visibility"))
                                             loadPopupFXML("OBSSetSourceVisibilityConfig.fxml",2);
+                                        else if(eachAction[2].equals("launch_app"))
+                                            loadPopupFXML("launchAppConfig.fxml",2);
+                                        else if(eachAction[2].equals("launch_website"))
+                                            loadPopupFXML("launchWebsiteConfig.fxml",2);
                                         break;
                                     }
                                 }
@@ -1185,6 +1226,10 @@ public class dashboardController extends Application implements Initializable {
                                 loadPopupFXML("OBSStartStopStreamingConfig.fxml",1);
                             else if(currentSelectionMode == 8)
                                 loadPopupFXML("OBSSetSourceVisibilityConfig.fxml",1);
+                            else if(currentSelectionMode == 9)
+                                loadPopupFXML("launchAppConfig.fxml",1);
+                            else if(currentSelectionMode == 10)
+                                loadPopupFXML("launchWebsiteConfig.fxml",1);
                         }
                     }
                 });
@@ -1380,6 +1425,18 @@ public class dashboardController extends Application implements Initializable {
     }
 
     @FXML
+    public void newLaunchAppAction()
+    {
+        showNewActionHint("New Application Launcher Action");
+    }
+
+    @FXML
+    public void newLaunchWebsiteAction()
+    {
+        showNewActionHint("New Website Launcher Action");
+    }
+
+    @FXML
     public JFXButton returnToParentLayerButton;
 
     private void showNewActionHint(String actionName)
@@ -1408,6 +1465,12 @@ public class dashboardController extends Application implements Initializable {
                 break;
             case "OBS Studio (Set Source Visibility)":
                 currentSelectionMode = 8;
+                break;
+            case "New Application Launcher Action":
+                currentSelectionMode = 9;
+                break;
+            case "New Website Launcher Action":
+                currentSelectionMode = 10;
                 break;
         }
 
