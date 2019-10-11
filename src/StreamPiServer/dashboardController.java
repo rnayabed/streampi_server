@@ -33,6 +33,7 @@ import javafx.util.Duration;
 import net.twasi.obsremotejava.Callback;
 import net.twasi.obsremotejava.OBSRemoteController;
 import net.twasi.obsremotejava.requests.ResponseBase;
+import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
@@ -1091,8 +1092,8 @@ public class dashboardController extends Application implements Initializable {
                     {
                         try
                         {
-                            sendSuccessResponse(msgArr[2],true);
                             createNewTweet(data[0]);
+                            sendSuccessResponse(msgArr[2],true);
                         }
                         catch (Exception e)
                         {
@@ -1124,9 +1125,16 @@ public class dashboardController extends Application implements Initializable {
         try
         {
             if(isSuccess)
+            {
+                System.out.println("12112");
                 writeToOS("action_success_response::"+uniqueID+"::1::");
+            }
             else
+            {
+                System.out.println("12112");
                 writeToOS("action_success_response::"+uniqueID+"::0::");
+            }
+
         }
         catch (Exception e)
         {
