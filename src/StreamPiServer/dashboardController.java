@@ -103,6 +103,8 @@ public class dashboardController extends Application implements Initializable {
     public JFXToggleButton obsToggleButton;
     @FXML
     public JFXTextField obsWebsocketAddressField;
+    @FXML
+    public JFXButton notConnectedPaneSettingsButton;
 
     //currentSelectionMode is used to distinguish between the type of action user wants to add...
     private int currentSelectionMode = 0;
@@ -129,7 +131,7 @@ public class dashboardController extends Application implements Initializable {
 
     static OBSRemoteController obsController;
     private boolean isOBSSetup = false;
-    final String SERVER_VERSION = "0.0.4";
+    final String SERVER_VERSION = "0.0.5";
 
     //Global Hashmap where config will be stored (taken from the config file)
     private HashMap<String, String> config = new HashMap<>();
@@ -160,9 +162,15 @@ public class dashboardController extends Application implements Initializable {
 
         try {
             //Global variable to store the Computer's (Server) IP of the local network
-            serverIP = Inet4Address.getLocalHost().getHostAddress();
+            if(config.get("server_ip").equals("NULL"))
+            {
+                serverIP = Inet4Address.getLocalHost().getHostAddress();
+                updateConfig("server_ip",serverIP);
+            }
+            else
+                serverIP = config.get("server_ip");
             //Global Socket Variable, which is mainly used here to just open and close comms
-            server = new ServerSocket(Integer.parseInt(config.get("server_port")));
+            server = new ServerSocket(Integer.parseInt(config.get("server_port")),0, InetAddress.getByName(serverIP));
             //Reuse address, if the previous thing goes haywire
             server.setReuseAddress(true);
             //Set Buffersize to 9.5 X 10^8 Bytes to accommodate for the
@@ -406,7 +414,6 @@ public class dashboardController extends Application implements Initializable {
     public void retryButtonClicked()
     {
         retryButton.setDisable(true);
-        hideConnectionErrorPane();
         startServer();
         retryButton.setDisable(false);
     }
@@ -419,6 +426,18 @@ public class dashboardController extends Application implements Initializable {
 
         boolean isRestartableSettingChanged = false;
         String errs = "";
+
+        if(serverIPField.getText().length() == 0)
+        {
+            errs += "*Invalid Server IP Value, It cannot be left empty!\n";
+            error = true;
+        }
+        else
+        {
+            if(!serverIPField.getText().equals(serverIP))
+                isRestartableSettingChanged = true;
+        }
+
         if(serverPortField.getText().length()==0)
         {
             errs += "*Invalid Server Port Value, It cannot be left empty!\n";
@@ -524,6 +543,7 @@ public class dashboardController extends Application implements Initializable {
             updateConfig("server_port", serverPortField.getText());
             updateConfig("twitter_oauth_consumer_key", twitterConsumerKeyField.getText());
             updateConfig("twitter_oauth_consumer_secret",twitterConsumerSecretField.getText());
+            updateConfig("server_ip",serverIPField.getText());
 
             String newObsWebSocketAddress = obsWebsocketAddressField.getText();
             if(!newObsWebSocketAddress.equals(config.get("obs_websocket_address")))
@@ -572,7 +592,7 @@ public class dashboardController extends Application implements Initializable {
     private void updateConfig(String keyName, String newValue)
     {
         config.put(keyName,newValue);
-        io.writeToFile(config.get("server_port")+"::"+config.get("twitter_oauth_consumer_key")+"::"+config.get("twitter_oauth_consumer_secret")+"::"+config.get("twitter_oauth_access_token")+"::"+config.get("twitter_oauth_access_token_secret")+"::"+config.get("is_obs_setup")+"::"+config.get("obs_websocket_address")+"::","config");
+        io.writeToFile(config.get("server_port")+"::"+config.get("twitter_oauth_consumer_key")+"::"+config.get("twitter_oauth_consumer_secret")+"::"+config.get("twitter_oauth_access_token")+"::"+config.get("twitter_oauth_access_token_secret")+"::"+config.get("is_obs_setup")+"::"+config.get("obs_websocket_address")+"::"+config.get("server_ip")+"::","config");
     }
 
     //Shows "Listening For StreamPi" pane, indicating user that no Pi is connected to the server
@@ -592,6 +612,8 @@ public class dashboardController extends Application implements Initializable {
                     hideNewActionHint();
                 notConnectedPane.toFront();
             }
+            eachActionSizeField.setDisable(true);
+            eachActionPaddingField.setDisable(true);
         });
     }
 
@@ -684,6 +706,10 @@ public class dashboardController extends Application implements Initializable {
                     Platform.runLater(() -> {
                         statusLabelNotConnectedPane.setText("Listening for StreamPi");
                         serverStatsLabel.setText("Server Running on "+serverIP+", Port "+config.get("server_port"));
+                        if(notConnectedPaneSettingsButton.getOpacity()<1)
+                        {
+                            new FadeInUp(notConnectedPaneSettingsButton).play();
+                        }
                         if(serverIP.startsWith("127.0"))
                         {
                             if(systemOS.toLowerCase().contains("unix") || systemOS.toLowerCase().contains("linux"))
@@ -699,7 +725,7 @@ public class dashboardController extends Application implements Initializable {
 
                     if(portFail)
                     {
-                        server = new ServerSocket(Integer.parseInt(config.get("server_port")));
+                        server = new ServerSocket(Integer.parseInt(config.get("server_port")), 0, InetAddress.getByName(serverIP));
                         portFail = false;
                     }
 
@@ -708,12 +734,17 @@ public class dashboardController extends Application implements Initializable {
 
                     FadeOutUp fou2 = new FadeOutUp(statusLabelNotConnectedPane);
                     FadeOutUp fou3 = new FadeOutUp(serverStatsLabel);
+                    FadeOutUp fou4 = new FadeOutUp(notConnectedPaneSettingsButton);
+
                     fou3.play();
                     fou2.play();
+                    fou4.play();
                     fou2.setOnFinished(event -> {
                         Platform.runLater(() -> {
                             statusLabelNotConnectedPane.setText("Connected to "+socket.getRemoteSocketAddress().toString().replace("/",""));
                             serverStatsLabel.setText("Getting Things Ready...");
+                            eachActionSizeField.setDisable(false);
+                            eachActionPaddingField.setDisable(false);
                         });
                         isConnectedToClient = true;
                         FadeInUp fiu3 = new FadeInUp(statusLabelNotConnectedPane);
@@ -1351,6 +1382,7 @@ public class dashboardController extends Application implements Initializable {
         config.put("twitter_oauth_access_token_secret",configArray[4]);
         config.put("is_obs_setup",configArray[5]);
         config.put("obs_websocket_address",configArray[6]);
+        config.put("server_ip",configArray[7]);
     }
 
     @FXML
@@ -1762,5 +1794,18 @@ public class dashboardController extends Application implements Initializable {
                 popupStackPane.toBack();
             }
         });
+    }
+
+    @FXML
+    public void setServerIPFieldHostAddress()
+    {
+        try {
+            serverIPField.setText(Inet4Address.getLocalHost().getHostAddress());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            showErrorAlert("Error!","Check Stacktrace!");
+        }
     }
 }
