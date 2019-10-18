@@ -331,8 +331,7 @@ public class dashboardController extends Application implements Initializable {
         //IMPORTANT : Twitter does not allow same tweet to be sent over and over again so here is workaround.
         //This trick adds few blank characters after the original text, so that twitter thinks it to be a new text tweet, and goes on to publish it!
 
-        txtMsg = txtMsg + ("⠀".repeat(Math.max(0, r.nextInt(150)))) // U+2800 Blank code to avoid twitter
-        ;
+        txtMsg = txtMsg + ("⠀".repeat(Math.max(0, r.nextInt(150)))); // U+2800 Blank code to avoid twitter
 
         //Uses the Twitter4J Instance to finally send the tweet
         twitter.updateStatus(txtMsg);
@@ -1781,8 +1780,13 @@ public class dashboardController extends Application implements Initializable {
                         @Override
                         public void handle(MouseEvent event) {
                             loginTwitterPopup.close();
-                            loginTwitterStackPane.toBack();
-                            loginButtonTwitter.setDisable(false);
+                            loginTwitterPopup.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
+                                @Override
+                                public void handle(JFXDialogEvent event) {
+                                    loginTwitterStackPane.toBack();
+                                    loginButtonTwitter.setDisable(false);
+                                }
+                            });
                         }
                     });
 

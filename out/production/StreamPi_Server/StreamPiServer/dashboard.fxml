@@ -23,157 +23,6 @@
       <StackPane fx:id="alertStackPane" cache="true" cacheHint="SPEED" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <StackPane fx:id="progressStackPane" cache="true" cacheHint="SPEED" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <StackPane fx:id="popupStackPane" cache="true" cacheHint="SPEED" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <AnchorPane fx:id="deviceConfigPane" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <Accordion fx:id="actionsAccordion" layoutX="1098.0" layoutY="84.0" prefHeight="490.0" prefWidth="289.0" AnchorPane.bottomAnchor="76.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="84.0">
-              <panes>
-                <TitledPane animated="false" text="System " textFill="WHITE">
-                     <content>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
-                           <children>
-                              <JFXButton alignment="TOP_LEFT" onAction="#newHotkeyAction" prefHeight="25.0" prefWidth="268.0" text="Hotkey" textFill="WHITE">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </JFXButton>
-                              <JFXButton alignment="TOP_LEFT" onAction="#newScriptAction" prefHeight="25.0" prefWidth="268.0" text="Script" textFill="WHITE">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </JFXButton>
-                              <JFXButton alignment="TOP_LEFT" onAction="#newFolderAction" prefHeight="25.0" prefWidth="268.0" text="Folder" textFill="WHITE">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </JFXButton>
-                              <JFXButton alignment="TOP_LEFT" onAction="#newLaunchAppAction" prefHeight="25.0" prefWidth="268.0" text="Launch App" textFill="WHITE">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </JFXButton>
-                              <JFXButton alignment="TOP_LEFT" onAction="#newLaunchWebsiteAction" prefHeight="25.0" prefWidth="268.0" text="Launch Website" textFill="WHITE">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </JFXButton>
-                           </children>
-                        </VBox>
-                     </content>
-                </TitledPane>
-                  <TitledPane animated="false" text="OBS Studio" textFill="WHITE">
-                     <content>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
-                           <children>
-                              <JFXButton alignment="TOP_LEFT" onAction="#newOBSStudioSetSceneAction" prefHeight="25.0" prefWidth="268.0" text="Set Scene" textFill="WHITE">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </JFXButton>
-                              <JFXButton alignment="TOP_LEFT" onAction="#newOBSStudioSetTransitionAction" prefHeight="25.0" prefWidth="268.0" text="Set Transition" textFill="WHITE">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </JFXButton>
-                              <JFXButton alignment="TOP_LEFT" onAction="#newOBSStudioStartStopStreamingAction" prefHeight="25.0" prefWidth="268.0" text="Start/Stop Streaming" textFill="WHITE">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </JFXButton>
-                              <JFXButton alignment="TOP_LEFT" onAction="#newOBSStudioSetSourceVisibilityAction" prefHeight="25.0" prefWidth="268.0" text="Set Source Visibility" textFill="WHITE">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </JFXButton>
-                           </children>
-                        </VBox>
-                     </content>
-                  </TitledPane>
-                  <TitledPane animated="false" text="Social Media" textFill="WHITE">
-                     <content>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
-                           <children>
-                              <JFXButton alignment="TOP_LEFT" onAction="#newTweetAction" prefHeight="25.0" prefWidth="268.0" text="Twitter" textFill="WHITE">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </JFXButton>
-                           </children>
-                        </VBox>
-                     </content>
-                  </TitledPane>
-              </panes>
-            </Accordion>
-            <ScrollPane cache="true" cacheHint="SPEED" layoutX="43.0" layoutY="93.0" prefHeight="434.0" prefWidth="791.0" style="-fx-background-color: black;" styleClass="edge-to-edge" AnchorPane.bottomAnchor="123.0" AnchorPane.leftAnchor="43.0" AnchorPane.topAnchor="93.0">
-               <content>
-                  <VBox fx:id="controlVBox" alignment="TOP_CENTER" cache="true" cacheHint="SPEED" spacing="20.0">
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                  </VBox>
-               </content>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-            </ScrollPane>
-            <HBox fx:id="newActionHintHBox" alignment="CENTER" layoutX="30.0" layoutY="14.0" opacity="0.0" prefHeight="52.0" prefWidth="1098.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="32.0">
-               <children>
-                  <Label fx:id="addNewButtonHintLabel" alignment="CENTER" prefHeight="29.0" prefWidth="959.0" text="To add a new &lt;type&gt; click on the desired green Action Box" textFill="WHITE">
-                  <font>
-                     <Font name="Roboto Regular" size="23.0" />
-                  </font>
-                  </Label>
-                  <JFXButton fx:id="cancelNewActionButton" disable="true" onAction="#hideNewActionHint" ripplerFill="#d72b2b" text="Cancel" textFill="RED">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </JFXButton>
-               </children>
-            </HBox>
-            <JFXButton contentDisplay="CENTER" layoutX="1093.0" layoutY="543.0" onAction="#showSettingsPane" style="-fx-background-color: #484848;" text=" " textFill="WHITE" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="24.0">
-               <graphic>
-                  <ImageView fitHeight="31.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../icons/baseline_settings_white_18dp.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </JFXButton>
-            <JFXButton fx:id="returnToParentLayerButton" layoutX="30.0" layoutY="551.0" onAction="#returnToParentLayerButtonClicked" text="Return To Parent Layer" textFill="WHITE" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="30.0" />
-            <HBox fx:id="unableToConnectOBSHBox" layoutX="235.0" layoutY="544.0" prefHeight="38.0" prefWidth="289.0" spacing="25.0" visible="false" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="235.0">
-               <children>
-                  <Label prefHeight="38.0" prefWidth="178.0" text="Unable To Connect to OBS." textFill="WHITE">
-                     <font>
-                        <Font name="Roboto Regular" size="13.0" />
-                     </font></Label>
-                  <JFXButton fx:id="retryConnectOBSButton" onAction="#obsSetup" prefHeight="38.0" prefWidth="63.0" text="Retry" textFill="#3dc33b">
-                     <font>
-                        <Font name="Roboto Regular" size="13.0" />
-                     </font></JFXButton>
-               </children>
-            </HBox>
-         </children></AnchorPane>
-      <VBox fx:id="connectionErrorPane" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <Label text="Unable To Start Server" textFill="WHITE">
-               <font>
-                  <Font name="Roboto Regular" size="30.0" />
-               </font>
-            </Label>
-            <Label text="Check your network settings and try again" textFill="WHITE">
-               <font>
-                  <Font name="Roboto Regular" size="15.0" />
-               </font>
-            </Label>
-            <HBox alignment="CENTER" spacing="50.0">
-               <children>
-                  <JFXButton onAction="#showSettingsPane" style="-fx-background-color: #484848;" text="Open Settings" textFill="WHITE" />
-                  <JFXButton fx:id="retryButton" onAction="#retryButtonClicked" style="-fx-background-color: #484848;" text="Retry" textFill="WHITE" />
-                  <JFXButton onAction="#showStackTraceOfConnectionError" style="-fx-background-color: #484848;" text="Show StackTrace" textFill="WHITE" />
-               </children>
-            </HBox>
-            <Label text="This is a terrible way of showing connection error. Will get a facelift in the future." />
-         </children>
-      </VBox>
       <VBox fx:id="settingsPane" prefHeight="700.0" prefWidth="1166.0" spacing="10.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox>
@@ -344,6 +193,164 @@
             <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
          </padding>
       </VBox>
+      <VBox fx:id="connectionErrorPane" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label text="Unable To Start Server" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="30.0" />
+               </font>
+            </Label>
+            <Label text="Check your network settings and try again" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER" spacing="50.0">
+               <children>
+                  <JFXButton onAction="#showSettingsPane" style="-fx-background-color: #484848;" text="Open Settings" textFill="WHITE" />
+                  <JFXButton fx:id="retryButton" onAction="#retryButtonClicked" style="-fx-background-color: #484848;" text="Retry" textFill="WHITE" />
+                  <JFXButton onAction="#showStackTraceOfConnectionError" style="-fx-background-color: #484848;" text="Show StackTrace" textFill="WHITE" />
+               </children>
+            </HBox>
+            <Label text="This is a terrible way of showing connection error. Will get a facelift in the future." />
+         </children>
+      </VBox>
+      <AnchorPane fx:id="deviceConfigPane" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Accordion fx:id="actionsAccordion" layoutX="1098.0" layoutY="84.0" prefHeight="490.0" prefWidth="289.0" AnchorPane.bottomAnchor="76.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="84.0">
+              <panes>
+                <TitledPane animated="false" text="System " textFill="WHITE">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newHotkeyAction" prefHeight="25.0" prefWidth="268.0" text="Hotkey" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newScriptAction" prefHeight="25.0" prefWidth="268.0" text="Script" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newFolderAction" prefHeight="25.0" prefWidth="268.0" text="Folder" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newLaunchAppAction" prefHeight="25.0" prefWidth="268.0" text="Launch App" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newLaunchWebsiteAction" prefHeight="25.0" prefWidth="268.0" text="Launch Website" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                           </children>
+                        </VBox>
+                     </content>
+                </TitledPane>
+                  <TitledPane animated="false" text="OBS Studio" textFill="WHITE">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newOBSStudioSetSceneAction" prefHeight="25.0" prefWidth="268.0" text="Set Scene" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newOBSStudioSetTransitionAction" prefHeight="25.0" prefWidth="268.0" text="Set Transition" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newOBSStudioStartStopStreamingAction" prefHeight="25.0" prefWidth="268.0" text="Start/Stop Streaming" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newOBSStudioSetSourceVisibilityAction" prefHeight="25.0" prefWidth="268.0" text="Set Source Visibility" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                           </children>
+                        </VBox>
+                     </content>
+                  </TitledPane>
+                  <TitledPane animated="false" text="Social Media" textFill="WHITE">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newTweetAction" prefHeight="25.0" prefWidth="268.0" text="  Twitter" textFill="WHITE">
+                                 <font>
+                                    <Font name="Roboto Regular" size="16.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/twitter.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </JFXButton>
+                           </children>
+                        </VBox>
+                     </content>
+                  </TitledPane>
+              </panes>
+            </Accordion>
+            <ScrollPane cache="true" cacheHint="SPEED" layoutX="43.0" layoutY="93.0" prefHeight="434.0" prefWidth="791.0" style="-fx-background-color: black;" styleClass="edge-to-edge" AnchorPane.bottomAnchor="123.0" AnchorPane.leftAnchor="43.0" AnchorPane.topAnchor="93.0">
+               <content>
+                  <VBox fx:id="controlVBox" alignment="TOP_CENTER" cache="true" cacheHint="SPEED" spacing="20.0">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+               </content>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </ScrollPane>
+            <HBox fx:id="newActionHintHBox" alignment="CENTER" layoutX="30.0" layoutY="14.0" opacity="0.0" prefHeight="52.0" prefWidth="1098.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="32.0">
+               <children>
+                  <Label fx:id="addNewButtonHintLabel" alignment="CENTER" prefHeight="29.0" prefWidth="959.0" text="To add a new &lt;type&gt; click on the desired green Action Box" textFill="WHITE">
+                  <font>
+                     <Font name="Roboto Regular" size="23.0" />
+                  </font>
+                  </Label>
+                  <JFXButton fx:id="cancelNewActionButton" disable="true" onAction="#hideNewActionHint" ripplerFill="#d72b2b" text="Cancel" textFill="RED">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </HBox>
+            <JFXButton contentDisplay="CENTER" layoutX="1093.0" layoutY="543.0" onAction="#showSettingsPane" style="-fx-background-color: #484848;" text=" " textFill="WHITE" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="24.0">
+               <graphic>
+                  <ImageView fitHeight="31.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icons/baseline_settings_white_18dp.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="returnToParentLayerButton" layoutX="30.0" layoutY="551.0" onAction="#returnToParentLayerButtonClicked" text="Return To Parent Layer" textFill="WHITE" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="30.0" />
+            <HBox fx:id="unableToConnectOBSHBox" layoutX="235.0" layoutY="544.0" prefHeight="38.0" prefWidth="289.0" spacing="25.0" visible="false" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="235.0">
+               <children>
+                  <Label prefHeight="38.0" prefWidth="178.0" text="Unable To Connect to OBS." textFill="WHITE">
+                     <font>
+                        <Font name="Roboto Regular" size="13.0" />
+                     </font></Label>
+                  <JFXButton fx:id="retryConnectOBSButton" onAction="#obsSetup" prefHeight="38.0" prefWidth="63.0" text="Retry" textFill="#3dc33b">
+                     <font>
+                        <Font name="Roboto Regular" size="13.0" />
+                     </font></JFXButton>
+               </children>
+            </HBox>
+         </children></AnchorPane>
       <VBox fx:id="notConnectedPane" alignment="CENTER" spacing="30.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <ImageView fitHeight="157.0" fitWidth="146.0" pickOnBounds="true" preserveRatio="true">
