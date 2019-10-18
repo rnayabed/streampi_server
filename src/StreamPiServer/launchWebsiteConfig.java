@@ -106,6 +106,12 @@ public class launchWebsiteConfig extends Application implements Initializable {
                 errors.append("URLs cannot contain this '::'\n");
                 isError = true;
             }
+
+            if(websiteURLField.getText().contains("http"))
+            {
+                errors.append("Invalid URL given!\n");
+                isError = true;
+            }
         }
 
         if(!isImageFileOK)

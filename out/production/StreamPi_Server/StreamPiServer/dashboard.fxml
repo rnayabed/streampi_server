@@ -346,6 +346,11 @@
       </VBox>
       <VBox fx:id="notConnectedPane" alignment="CENTER" spacing="30.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
+            <ImageView fitHeight="157.0" fitWidth="146.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/streampi_logo_big.png" />
+               </image>
+            </ImageView>
             <Label fx:id="statusLabelNotConnectedPane" text="Setting Up..." textFill="WHITE">
                <font>
                   <Font name="Roboto Regular" size="25.0" />

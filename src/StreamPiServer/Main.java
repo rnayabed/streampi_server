@@ -6,17 +6,19 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+
+import java.io.File;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("dashboard.fxml"));
+        primaryStage.getIcons().add(new Image("icons/app_icon.png"));
         primaryStage.setTitle("StreamPi Server");
-        //JFXDecorator decorator = new JFXDecorator(primaryStage, root);
-        //decorator.setCustomMaximize(true);
         Scene x = new Scene(root);
         primaryStage.setMinWidth(1160);
         primaryStage.setMinHeight(650);

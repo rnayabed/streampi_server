@@ -131,7 +131,7 @@ public class dashboardController extends Application implements Initializable {
 
     static OBSRemoteController obsController;
     private boolean isOBSSetup = false;
-    final String SERVER_VERSION = "0.0.5";
+    final String SERVER_VERSION = "0.0.6";
 
     //Global Hashmap where config will be stored (taken from the config file)
     private HashMap<String, String> config = new HashMap<>();
@@ -149,10 +149,11 @@ public class dashboardController extends Application implements Initializable {
 
     @Override
     public void start(Stage primaryStage) {
-
+        //Empty because the program uses getHostServices() method from Application Class, which is necessary to load websites (especially the Elgato StreamDeck Icon Creator)
     }
 
-    boolean portFail = false;
+    //
+    boolean connectionFail = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -163,10 +164,7 @@ public class dashboardController extends Application implements Initializable {
         try {
             //Global variable to store the Computer's (Server) IP of the local network
             if(config.get("server_ip").equals("NULL"))
-            {
                 serverIP = Inet4Address.getLocalHost().getHostAddress();
-                updateConfig("server_ip",serverIP);
-            }
             else
                 serverIP = config.get("server_ip");
             //Global Socket Variable, which is mainly used here to just open and close comms
@@ -177,6 +175,11 @@ public class dashboardController extends Application implements Initializable {
             server.setReceiveBufferSize(950000000);
             server.setSoTimeout(0);
             server.setReceiveBufferSize(370923);
+
+            //In settings, set server IP field as the Host IP address (for the local network)
+            serverIPField.setText(serverIP);
+            //Set the Port Filed as the port no written in config
+            serverPortField.setText(config.get("server_port"));
 
             if (!isConnectedToClient) {
                 //Server not started? Then Start it
@@ -194,14 +197,6 @@ public class dashboardController extends Application implements Initializable {
             stackTrace1 = error;
             showConnectionErrorPane();
         }
-
-        //In settings, set server IP field as the Host IP address (for the local network)
-        serverIPField.setText(serverIP);
-        //Set the Port Filed as the port no written in config
-        serverPortField.setText(config.get("server_port"));
-        //Set Twitter Api Keys
-        twitterConsumerSecretField.setText(config.get("twitter_oauth_consumer_secret"));
-        twitterConsumerKeyField.setText(config.get("twitter_oauth_consumer_key"));
 
         //Start new background thread to handle server connections
         Thread t = new Thread(serverCommTask);
@@ -292,6 +287,9 @@ public class dashboardController extends Application implements Initializable {
                     if(config.get("twitter_oauth_consumer_key").equals("NULL") || config.get("twitter_oauth_consumer_secret").equals("NULL") || config.get("twitter_oauth_access_token").equals("NULL") || config.get("twitter_oauth_access_token_secret").equals("NULL"))
                     {
                         isTwitterSetup = false;
+
+                        twitterConsumerKeyField.setText("");
+                        twitterConsumerSecretField.setText("");
                     }
                     else
                     {
@@ -311,6 +309,9 @@ public class dashboardController extends Application implements Initializable {
                         twitter = tf.getInstance();
                         twitter.verifyCredentials();
                         isTwitterSetup = true;
+
+                        twitterConsumerKeyField.setText(config.get("twitter_oauth_consumer_key"));
+                        twitterConsumerSecretField.setText(config.get("twitter_oauth_consumer_secret"));
                     }
                 }
                 catch (Exception e)
@@ -341,7 +342,7 @@ public class dashboardController extends Application implements Initializable {
     @FXML
     private void showConnectionErrorPane()
     {
-        portFail = true;
+        connectionFail = true;
         Platform.runLater(() -> {
             retryButton.setDisable(false);
             connectionErrorPane.toFront();
@@ -352,10 +353,16 @@ public class dashboardController extends Application implements Initializable {
     }
 
     //Shows About
+    Image appIcon = new Image("icons/streampi_logo_big.png");
+    ImageView x = new ImageView(appIcon);
     @FXML
     public void aboutStreamPiButtonClicked()
     {
-        showErrorAlert("About StreamPi","Programmed By Debayan Sutradhar (github.com/ladiesman6969) (twitter.com/ladiesman36069)\nThis entire project was the idea of Samuel Quinones (twitter.com/SamuelQuinones1)\n\nServer Version : "+SERVER_VERSION);
+        Label l = new Label("Programmed By Debayan Sutradhar (twitter.com/ladiesman360420)\nOriginally Thought of Samuel Quinones (twitter.com/SamuelQuinones1)\nIcons were made by Trideb Dhar (https://www.instagram.com/_.tai.naki._)\nServer Version : "+SERVER_VERSION);
+        l.setTextFill(WHITE_PAINT);
+        VBox v = new VBox(l,x);
+        v.setAlignment(Pos.CENTER);
+        showCustomError("About StreamPi",v);
     }
 
     //Hides that server was unable to start
@@ -457,17 +464,21 @@ public class dashboardController extends Application implements Initializable {
             }
         }
 
-        if(twitterConsumerKeyField.getText().length() ==0)
+        if(isTwitterSetup)
         {
-            errs += "*Invalid Twitter Consumer Key Field, It cannot be left empty!\n";
-            error = true;
+            if(twitterConsumerKeyField.getText().length() ==0)
+            {
+                errs += "*Invalid Twitter Consumer Key Field, It cannot be left empty!\n";
+                error = true;
+            }
+
+            if(twitterConsumerSecretField.getText().length() == 0)
+            {
+                errs += "*Invalid Twitter Consumer Secret Key Field, It cannot be left empty!\n";
+                error = true;
+            }
         }
 
-        if(twitterConsumerSecretField.getText().length() == 0)
-        {
-            errs += "*Invalid Twitter Consumer Secret Key Field, It cannot be left empty!\n";
-            error = true;
-        }
 
 
         String paddingTextFieldText = eachActionPaddingField.getText();
@@ -613,7 +624,9 @@ public class dashboardController extends Application implements Initializable {
                 notConnectedPane.toFront();
             }
             eachActionSizeField.setDisable(true);
+            eachActionSizeField.setText("");
             eachActionPaddingField.setDisable(true);
+            eachActionPaddingField.setText("");
         });
     }
 
@@ -723,10 +736,10 @@ public class dashboardController extends Application implements Initializable {
                         }
                     });
 
-                    if(portFail)
+                    if(connectionFail)
                     {
                         server = new ServerSocket(Integer.parseInt(config.get("server_port")), 0, InetAddress.getByName(serverIP));
-                        portFail = false;
+                        connectionFail = false;
                     }
 
                     socket = server.accept();
@@ -1296,6 +1309,7 @@ public class dashboardController extends Application implements Initializable {
                     aPane.getChildren().add(icon);
                     aPane.setPrefSize(eachActionSize,eachActionSize);
                     aPane.setId("allocatedaction_"+actions[i][5]+"_"+actions[i][6]+"_"+actions[i][0]);
+                    aPane.getStyleClass().remove("action_box");
                 }
             }
         } catch (IndexOutOfBoundsException e)
@@ -1613,6 +1627,52 @@ public class dashboardController extends Application implements Initializable {
     }
 
     @FXML
+    public void showCustomError(String heading, Node customChildren)
+    {
+        JFXDialogLayout l = new JFXDialogLayout();
+        l.getStyleClass().add("dialog_style");
+        Label headingLabel = new Label(heading);
+        headingLabel.setTextFill(WHITE_PAINT);
+        headingLabel.setFont(Font.font("Roboto Regular",25));
+        l.setHeading(headingLabel);
+        l.setBody(customChildren);
+        JFXButton okButton = new JFXButton("OK");
+        okButton.setTextFill(WHITE_PAINT);
+        l.setActions(okButton);
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                alertStackPane.getChildren().clear();
+            }
+        });
+        JFXDialog alertDialog = new JFXDialog(alertStackPane,l, JFXDialog.DialogTransition.CENTER);
+        alertDialog.setOverlayClose(false);
+        alertDialog.getStyleClass().add("dialog_box");
+        okButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                alertDialog.close();
+                alertDialog.setOnDialogClosed(new EventHandler<JFXDialogEvent>() {
+                    @Override
+                    public void handle(JFXDialogEvent event) {
+                        alertStackPane.toBack();
+                    }
+                });
+            }
+        });
+
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                alertStackPane.toFront();
+                alertDialog.show();
+            }
+        });
+    }
+
+    @FXML
     public void loginButtonTwitterClicked()
     {
         loginButtonTwitter.setDisable(true);
@@ -1709,7 +1769,7 @@ public class dashboardController extends Application implements Initializable {
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
-                                        showErrorAlert(":(","Unable to Proceed! Check StackTrace!");
+                                        showErrorAlert(":(","Unable to Proceed! Make sure you have provided correct API Keys.\nCheck Stack trace for more info.");
                                     }
                                     return null;
                                 }
@@ -1737,7 +1797,7 @@ public class dashboardController extends Application implements Initializable {
                 }
                 catch (Exception e)
                 {
-                    showErrorAlert(":(","Unable to Proceed! Check StackTrace!");
+                    showErrorAlert(":(","Unable to Proceed! Make sure you have provided correct API Keys.\nCheck Stack trace for more info.");
                     loginButtonTwitter.setDisable(false);
                     e.printStackTrace();
                 }
