@@ -1,5 +1,7 @@
 # StreamPi Server
 
+![](https://raw.githubusercontent.com/ladiesman6969/streampi_server/master/app_icon.png)
+
 This repository has the source code for StreamPi Server, which runs on the Computer, to communicate and talk to [StreamPi Client](https://github.com/ladiesman6969/streampi_client)
 
 #### What is StreamPi?
