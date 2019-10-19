@@ -11,6 +11,7 @@ import com.jfoenix.controls.events.JFXDialogEvent;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +22,7 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -40,6 +42,8 @@ import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -316,7 +320,7 @@ public class dashboardController extends Application implements Initializable {
                 }
                 catch (Exception e)
                 {
-                    showErrorAlert(":(","Unable to Verify Twitter Login. Check stacktrace, or perhaps try relogging in.\nIt might be a network connection error as well");
+                    //showErrorAlert(":(","Unable to Verify Twitter Login. Check stacktrace, or perhaps try relogging in.\nIt might be a network connection error as well");
                     isTwitterSetup = false;
                     e.printStackTrace();
                 }
@@ -1176,6 +1180,36 @@ public class dashboardController extends Application implements Initializable {
             {
                 System.out.println("12112");
                 writeToOS("action_success_response::"+uniqueID+"::0::");
+                if(Main.ps.isIconified())
+                {
+                    for(int x =0;x<actions.length;x++)
+                    {
+                        if(actions[x][0].equals(uniqueID))
+                        {
+                            String text = "";
+                            if(actions[x][2].equals("launch_app"))
+                                text = "Unable to launch app!";
+                            else if(actions[x][2].equals("launch_website"))
+                                text = "Unable to launch website";
+                            else if(actions[x][2].equals("obs_set_scene"))
+                                text = "Unable to set scene";
+                            else if(actions[x][2].equals("obs_set_source_visibility"))
+                                text = "Unable to set source visibility";
+                            else if(actions[x][2].equals("obs_set_transition"))
+                                text = "Unable to set transition";
+                            else if(actions[x][2].equals("obs_start_stop_streaming"))
+                                text = "Unable to start/stop streaming";
+                            else if(actions[x][2].equals("hotkey"))
+                                text = "Unable to run hotkey";
+                            else if(actions[x][2].equals("script"))
+                                text = "Unable to run script";
+                            else if(actions[x][2].equals("tweet"))
+                                text = "Unable to tweet";
+                            showPushNotification(text, TrayIcon.MessageType.WARNING);
+                            break;
+                        }
+                    }
+                }
             }
 
         }
@@ -1679,6 +1713,8 @@ public class dashboardController extends Application implements Initializable {
             @Override
             protected Void call() {
                 try {
+                    updateConfig("twitter_oauth_consumer_key",twitterConsumerKeyField.getText());
+                    updateConfig("twitter_oauth_consumer_secret",twitterConsumerSecretField.getText());
                     ConfigurationBuilder cb2 = new ConfigurationBuilder();
                     cb2.setDebugEnabled(true);
                     cb2.setOAuthConsumerKey(config.get("twitter_oauth_consumer_key"));
@@ -1871,5 +1907,22 @@ public class dashboardController extends Application implements Initializable {
             e.printStackTrace();
             showErrorAlert("Error!","Check Stacktrace!");
         }
+    }
+
+    public void showPushNotification(String title, TrayIcon.MessageType msgType){
+        Platform.runLater(()->{
+            try
+            {
+                SystemTray tray = SystemTray.getSystemTray();
+                TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().createImage("icons/app_icon.png"));
+                trayIcon.setImageAutoSize(true);
+                tray.add(trayIcon);
+                trayIcon.displayMessage("StreamPi", title, msgType);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        });
     }
 }

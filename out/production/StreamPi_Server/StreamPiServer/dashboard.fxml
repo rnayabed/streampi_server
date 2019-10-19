@@ -221,32 +221,60 @@
               <panes>
                 <TitledPane animated="false" text="System " textFill="WHITE">
                      <content>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
+                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                            <children>
-                              <JFXButton alignment="TOP_LEFT" onAction="#newHotkeyAction" prefHeight="25.0" prefWidth="268.0" text="Hotkey" textFill="WHITE">
+                              <JFXButton alignment="TOP_LEFT" onAction="#newHotkeyAction" prefHeight="25.0" prefWidth="268.0" text="  Hotkey" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
+                                 <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/hotkey.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
                               </JFXButton>
                               <JFXButton alignment="TOP_LEFT" onAction="#newScriptAction" prefHeight="25.0" prefWidth="268.0" text="Script" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
                               </JFXButton>
-                              <JFXButton alignment="TOP_LEFT" onAction="#newFolderAction" prefHeight="25.0" prefWidth="268.0" text="Folder" textFill="WHITE">
+                              <JFXButton alignment="TOP_LEFT" onAction="#newFolderAction" prefHeight="25.0" prefWidth="268.0" text="  Folder" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
+                                 <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/folder.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
                               </JFXButton>
-                              <JFXButton alignment="TOP_LEFT" onAction="#newLaunchAppAction" prefHeight="25.0" prefWidth="268.0" text="Launch App" textFill="WHITE">
+                              <JFXButton alignment="TOP_LEFT" onAction="#newLaunchAppAction" prefHeight="25.0" prefWidth="268.0" text="  Launch App" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
+                                 <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/launch.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
                               </JFXButton>
-                              <JFXButton alignment="TOP_LEFT" onAction="#newLaunchWebsiteAction" prefHeight="25.0" prefWidth="268.0" text="Launch Website" textFill="WHITE">
+                              <JFXButton alignment="TOP_LEFT" onAction="#newLaunchWebsiteAction" prefHeight="25.0" prefWidth="268.0" text="  Launch Website" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
+                                 <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/website.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
                               </JFXButton>
                            </children>
                         </VBox>
@@ -254,7 +282,7 @@
                 </TitledPane>
                   <TitledPane animated="false" text="OBS Studio" textFill="WHITE">
                      <content>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
+                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                            <children>
                               <JFXButton alignment="TOP_LEFT" onAction="#newOBSStudioSetSceneAction" prefHeight="25.0" prefWidth="268.0" text="Set Scene" textFill="WHITE">
                                  <font>
@@ -282,7 +310,7 @@
                   </TitledPane>
                   <TitledPane animated="false" text="Social Media" textFill="WHITE">
                      <content>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
+                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                            <children>
                               <JFXButton alignment="TOP_LEFT" onAction="#newTweetAction" prefHeight="25.0" prefWidth="268.0" text="  Twitter" textFill="WHITE">
                                  <font>
