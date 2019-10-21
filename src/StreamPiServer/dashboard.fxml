@@ -350,7 +350,7 @@
                   </TitledPane>
               </panes>
             </Accordion>
-            <ScrollPane cache="true" cacheHint="SPEED" layoutX="43.0" layoutY="93.0" prefHeight="434.0" prefWidth="791.0" style="-fx-background-color: black;" styleClass="edge-to-edge" AnchorPane.bottomAnchor="123.0" AnchorPane.leftAnchor="43.0" AnchorPane.topAnchor="93.0">
+            <ScrollPane cache="true" cacheHint="SPEED" layoutX="43.0" layoutY="93.0" prefHeight="434.0" prefWidth="791.0" style="-fx-background-color: black;" styleClass="edge-to-edge" AnchorPane.bottomAnchor="123.0" AnchorPane.leftAnchor="43.0" AnchorPane.rightAnchor="326.0" AnchorPane.topAnchor="93.0">
                <content>
                   <VBox fx:id="controlVBox" alignment="TOP_CENTER" cache="true" cacheHint="SPEED">
                      <padding>
