@@ -173,8 +173,8 @@ public class launchAppConfig extends Application implements Initializable {
 
                         ImageView icon = new ImageView();
                         icon.setImage(Main.dc.icons.get(Main.dc.actions[i][4]));
-                        icon.setFitHeight(dashboardController.eachActionSize);
-                        icon.setFitWidth(dashboardController.eachActionSize);
+                        icon.setFitHeight(100);
+                        icon.setFitWidth(100);
 
 
                         HBox row = (HBox) Main.dc.controlVBox.getChildren().get(Main.dc.selectedRow);
@@ -243,8 +243,8 @@ public class launchAppConfig extends Application implements Initializable {
 
                         ImageView icon = new ImageView();
                         icon.setImage(dashboardController.icons.get(dashboardController.actions[i][4]));
-                        icon.setFitHeight(dashboardController.eachActionSize);
-                        icon.setFitWidth(dashboardController.eachActionSize);
+                        icon.setFitHeight(100);
+                        icon.setFitWidth(100);
 
 
                         HBox row = (HBox) Main.dc.controlVBox.getChildren().get(dashboardController.selectedRow);

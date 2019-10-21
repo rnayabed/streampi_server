@@ -1059,7 +1059,7 @@ public class dashboardController extends Application implements Initializable {
                         eachActionPaddingField.setText(eachActionPadding+"");
                     });
 
-                    controlVBox.setSpacing(eachActionPadding);
+                    controlVBox.setSpacing(10);
                 } else if (msgHeader.equals("action_icon")) {
                     String iconName = msgArr[1];
 
@@ -1227,14 +1227,14 @@ public class dashboardController extends Application implements Initializable {
         for(int i = 0;i<streamPIMaxNoOfRows;i++)
         {
             rows[i] = new HBox();
-            rows[i].setSpacing(eachActionPadding);
+            rows[i].setSpacing(10);
             rows[i].setAlignment(Pos.CENTER);
 
             Pane[] actionPane = new Pane[streamPIMaxActionsPerRow];
             for(int k = 0;k<streamPIMaxActionsPerRow;k++)
             {
                 actionPane[k] = new Pane();
-                actionPane[k].setPrefSize(eachActionSize,eachActionSize);
+                actionPane[k].setPrefSize(100,100);
                 actionPane[k].setId("freeAction_"+i+"_"+k);
                 actionPane[k].setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
@@ -1335,12 +1335,12 @@ public class dashboardController extends Application implements Initializable {
                     ImageView icon = new ImageView();
                     icon.setImage(icons.get(actions[i][4]));
                     icon.setPreserveRatio(false);
-                    icon.setFitHeight(eachActionSize);
-                    icon.setFitWidth(eachActionSize);
+                    icon.setFitHeight(100);
+                    icon.setFitWidth(100);
 
                     Pane aPane = (Pane) rows[Integer.parseInt(actions[i][5])].getChildren().get(Integer.parseInt(actions[i][6]));
                     aPane.getChildren().add(icon);
-                    aPane.setPrefSize(eachActionSize,eachActionSize);
+                    aPane.setPrefSize(100,100);
                     aPane.setId("allocatedaction_"+actions[i][5]+"_"+actions[i][6]+"_"+actions[i][0]);
                     aPane.getStyleClass().remove("action_box");
                 }

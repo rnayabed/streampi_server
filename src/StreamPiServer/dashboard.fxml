@@ -215,6 +215,26 @@
             <Label text="This is a terrible way of showing connection error. Will get a facelift in the future." />
          </children>
       </VBox>
+      <VBox fx:id="notConnectedPane" alignment="CENTER" spacing="30.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ImageView fitHeight="157.0" fitWidth="146.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/streampi_logo_big.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="statusLabelNotConnectedPane" text="Setting Up..." textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="25.0" />
+               </font>
+            </Label>
+            <Label fx:id="serverStatsLabel" layoutX="601.0" layoutY="395.0" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </Label>
+            <JFXButton fx:id="notConnectedPaneSettingsButton" onAction="#showSettingsPane" style="-fx-background-color: #484848;" text="Open Settings" textFill="WHITE" />
+         </children>
+      </VBox>
       <AnchorPane fx:id="deviceConfigPane" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Accordion fx:id="actionsAccordion" layoutX="1098.0" layoutY="84.0" prefHeight="490.0" prefWidth="289.0" AnchorPane.bottomAnchor="76.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="84.0">
@@ -332,7 +352,7 @@
             </Accordion>
             <ScrollPane cache="true" cacheHint="SPEED" layoutX="43.0" layoutY="93.0" prefHeight="434.0" prefWidth="791.0" style="-fx-background-color: black;" styleClass="edge-to-edge" AnchorPane.bottomAnchor="123.0" AnchorPane.leftAnchor="43.0" AnchorPane.topAnchor="93.0">
                <content>
-                  <VBox fx:id="controlVBox" alignment="TOP_CENTER" cache="true" cacheHint="SPEED" spacing="20.0">
+                  <VBox fx:id="controlVBox" alignment="TOP_CENTER" cache="true" cacheHint="SPEED">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
@@ -379,25 +399,5 @@
                </children>
             </HBox>
          </children></AnchorPane>
-      <VBox fx:id="notConnectedPane" alignment="CENTER" spacing="30.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <ImageView fitHeight="157.0" fitWidth="146.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../icons/streampi_logo_big.png" />
-               </image>
-            </ImageView>
-            <Label fx:id="statusLabelNotConnectedPane" text="Setting Up..." textFill="WHITE">
-               <font>
-                  <Font name="Roboto Regular" size="25.0" />
-               </font>
-            </Label>
-            <Label fx:id="serverStatsLabel" layoutX="601.0" layoutY="395.0" textFill="WHITE">
-               <font>
-                  <Font name="Roboto Regular" size="15.0" />
-               </font>
-            </Label>
-            <JFXButton fx:id="notConnectedPaneSettingsButton" onAction="#showSettingsPane" style="-fx-background-color: #484848;" text="Open Settings" textFill="WHITE" />
-         </children>
-      </VBox>
    </children>
 </AnchorPane>
