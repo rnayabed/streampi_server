@@ -109,6 +109,8 @@ public class dashboardController extends Application implements Initializable {
     public JFXTextField obsWebsocketAddressField;
     @FXML
     public JFXButton notConnectedPaneSettingsButton;
+    @FXML
+    public JFXComboBox<String> languageComboBox;
 
     //currentSelectionMode is used to distinguish between the type of action user wants to add...
     private int currentSelectionMode = 0;
@@ -138,7 +140,7 @@ public class dashboardController extends Application implements Initializable {
     final String SERVER_VERSION = "0.0.6";
 
     //Global Hashmap where config will be stored (taken from the config file)
-    private HashMap<String, String> config = new HashMap<>();
+    
     //Global Variable to store whether Server is connected to the client
     private boolean isConnectedToClient = false;
     //First Run variable, used especially to avoid init server animations on startup
@@ -159,20 +161,26 @@ public class dashboardController extends Application implements Initializable {
     //
     boolean connectionFail = false;
 
+    ResourceBundle rb;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        readConfig();
+        rb = resources;
         twitterSetup();
         obsSetup();
 
+        languageComboBox.getItems().addAll("English","Russian");
+
+        if(Main.config.get("language").equals("en")) languageComboBox.getSelectionModel().select(0);
+        else if(Main.config.get("language").equals("ru")) languageComboBox.getSelectionModel().select(1);
         try {
             //Global variable to store the Computer's (Server) IP of the local network
-            if(config.get("server_ip").equals("NULL"))
+            if(Main.config.get("server_ip").equals("NULL"))
                 serverIP = Inet4Address.getLocalHost().getHostAddress();
             else
-                serverIP = config.get("server_ip");
+                serverIP = Main.config.get("server_ip");
             //Global Socket Variable, which is mainly used here to just open and close comms
-            server = new ServerSocket(Integer.parseInt(config.get("server_port")),0, InetAddress.getByName(serverIP));
+            server = new ServerSocket(Integer.parseInt(Main.config.get("server_port")),0, InetAddress.getByName(serverIP));
             //Reuse address, if the previous thing goes haywire
             server.setReuseAddress(true);
             //Set Buffersize to 9.5 X 10^8 Bytes to accommodate for the
@@ -183,7 +191,7 @@ public class dashboardController extends Application implements Initializable {
             //In settings, set server IP field as the Host IP address (for the local network)
             serverIPField.setText(serverIP);
             //Set the Port Filed as the port no written in config
-            serverPortField.setText(config.get("server_port"));
+            serverPortField.setText(Main.config.get("server_port"));
 
             if (!isConnectedToClient) {
                 //Server not started? Then Start it
@@ -222,11 +230,11 @@ public class dashboardController extends Application implements Initializable {
             {
                 Platform.runLater(() -> {
                     retryConnectOBSButton.setDisable(true);
-                    obsWebsocketAddressField.setText(config.get("obs_websocket_address"));
+                    obsWebsocketAddressField.setText(Main.config.get("obs_websocket_address"));
                 });
                 try
                 {
-                    if(config.get("is_obs_setup").equals("0"))
+                    if(Main.config.get("is_obs_setup").equals("0"))
                     {
                         obsToggleButton.setSelected(false);
                         isOBSSetup = false;
@@ -237,7 +245,7 @@ public class dashboardController extends Application implements Initializable {
                     {
                         obsToggleButton.setSelected(true);
                         obsWebsocketAddressField.setDisable(false);
-                        obsController = new OBSRemoteController(config.get("obs_websocket_address"),false);
+                        obsController = new OBSRemoteController(Main.config.get("obs_websocket_address"),false);
                         if(obsController.isFailed())
                         {
                             unableToConnectOBSHBox.setVisible(true);
@@ -288,7 +296,7 @@ public class dashboardController extends Application implements Initializable {
                 try
                 {
                     //Checks whether Twitter OAuth Keys are present or not ...
-                    if(config.get("twitter_oauth_consumer_key").equals("NULL") || config.get("twitter_oauth_consumer_secret").equals("NULL") || config.get("twitter_oauth_access_token").equals("NULL") || config.get("twitter_oauth_access_token_secret").equals("NULL"))
+                    if(Main.config.get("twitter_oauth_consumer_key").equals("NULL") || Main.config.get("twitter_oauth_consumer_secret").equals("NULL") || Main.config.get("twitter_oauth_access_token").equals("NULL") || Main.config.get("twitter_oauth_access_token_secret").equals("NULL"))
                     {
                         isTwitterSetup = false;
 
@@ -304,18 +312,18 @@ public class dashboardController extends Application implements Initializable {
                         System.setProperty("twitter4j.http.useSSL", "true");
                         ConfigurationBuilder cb = new ConfigurationBuilder();
                         cb.setDebugEnabled(true)
-                                .setOAuthConsumerKey(config.get("twitter_oauth_consumer_key"))
-                                .setOAuthConsumerSecret(config.get("twitter_oauth_consumer_secret"))
-                                .setOAuthAccessToken(config.get("twitter_oauth_access_token"))
-                                .setOAuthAccessTokenSecret(config.get("twitter_oauth_access_token_secret"));
+                                .setOAuthConsumerKey(Main.config.get("twitter_oauth_consumer_key"))
+                                .setOAuthConsumerSecret(Main.config.get("twitter_oauth_consumer_secret"))
+                                .setOAuthAccessToken(Main.config.get("twitter_oauth_access_token"))
+                                .setOAuthAccessTokenSecret(Main.config.get("twitter_oauth_access_token_secret"));
 
                         TwitterFactory tf = new TwitterFactory(cb.build());
                         twitter = tf.getInstance();
                         twitter.verifyCredentials();
                         isTwitterSetup = true;
 
-                        twitterConsumerKeyField.setText(config.get("twitter_oauth_consumer_key"));
-                        twitterConsumerSecretField.setText(config.get("twitter_oauth_consumer_secret"));
+                        twitterConsumerKeyField.setText(Main.config.get("twitter_oauth_consumer_key"));
+                        twitterConsumerSecretField.setText(Main.config.get("twitter_oauth_consumer_secret"));
                     }
                 }
                 catch (Exception e)
@@ -388,11 +396,11 @@ public class dashboardController extends Application implements Initializable {
     public void showSettingsPane()
     {
         Platform.runLater(() -> {
-            if(config.get("is_obs_setup").equals("0"))
+            if(Main.config.get("is_obs_setup").equals("0"))
             {
                 obsToggleButton.setSelected(false);
             }
-            else if(config.get("is_obs_setup").equals("1"))
+            else if(Main.config.get("is_obs_setup").equals("1"))
             {
                 obsToggleButton.setSelected(true);
             }
@@ -457,7 +465,7 @@ public class dashboardController extends Application implements Initializable {
         {
             try {
                 Integer.parseInt(serverPortField.getText());
-                if(!(serverPortField.getText()+"").equals(config.get("server_port")))
+                if(!(serverPortField.getText()+"").equals(Main.config.get("server_port")))
                     isRestartableSettingChanged = true;
             }
             catch (Exception e)
@@ -465,6 +473,15 @@ public class dashboardController extends Application implements Initializable {
                 errs += "*Invalid Server Port Value, Only Numbers are accepted!\n";
                 error = true;
             }
+        }
+
+        String loc = "";
+        if(languageComboBox.getSelectionModel().getSelectedItem().equals("English")) loc="en";
+        else if(languageComboBox.getSelectionModel().getSelectedItem().equals("Russian")) loc="ru";
+
+        if(!loc.equals(Main.config.get("language")))
+        {
+            isRestartableSettingChanged=true;
         }
 
         if(isTwitterSetup)
@@ -558,9 +575,10 @@ public class dashboardController extends Application implements Initializable {
             updateConfig("twitter_oauth_consumer_key", twitterConsumerKeyField.getText());
             updateConfig("twitter_oauth_consumer_secret",twitterConsumerSecretField.getText());
             updateConfig("server_ip",serverIPField.getText());
+            updateConfig("language",loc);
 
             String newObsWebSocketAddress = obsWebsocketAddressField.getText();
-            if(!newObsWebSocketAddress.equals(config.get("obs_websocket_address")))
+            if(!newObsWebSocketAddress.equals(Main.config.get("obs_websocket_address")))
             {
                 updateConfig("obs_websocket_address",newObsWebSocketAddress);
                 obsSetup();
@@ -605,8 +623,8 @@ public class dashboardController extends Application implements Initializable {
     //Used to update the "config" file
     private void updateConfig(String keyName, String newValue)
     {
-        config.put(keyName,newValue);
-        io.writeToFile(config.get("server_port")+"::"+config.get("twitter_oauth_consumer_key")+"::"+config.get("twitter_oauth_consumer_secret")+"::"+config.get("twitter_oauth_access_token")+"::"+config.get("twitter_oauth_access_token_secret")+"::"+config.get("is_obs_setup")+"::"+config.get("obs_websocket_address")+"::"+config.get("server_ip")+"::","config");
+        Main.config.put(keyName,newValue);
+        io.writeToFile(Main.config.get("server_port")+"::"+Main.config.get("twitter_oauth_consumer_key")+"::"+Main.config.get("twitter_oauth_consumer_secret")+"::"+Main.config.get("twitter_oauth_access_token")+"::"+Main.config.get("twitter_oauth_access_token_secret")+"::"+Main.config.get("is_obs_setup")+"::"+Main.config.get("obs_websocket_address")+"::"+Main.config.get("server_ip")+"::"+Main.config.get("language")+"::","config");
     }
 
     //Shows "Listening For StreamPi" pane, indicating user that no Pi is connected to the server
@@ -720,8 +738,14 @@ public class dashboardController extends Application implements Initializable {
                     Platform.runLater(() -> showNotConnectedPane());
 
                     Platform.runLater(() -> {
-                        statusLabelNotConnectedPane.setText("Listening for StreamPi");
-                        serverStatsLabel.setText("Server Running on "+serverIP+", Port "+config.get("server_port"));
+                        statusLabelNotConnectedPane.setText(rb.getString("dashboard.listeningForStreamPi"));
+
+                        if(Main.config.get("language").equals("en"))
+                            serverStatsLabel.setText("Server Running on "+serverIP+", Port "+Main.config.get("server_port"));
+                        else if(Main.config.get("language").equals("ru"))
+                            //TODO : Replace with Russian
+                            serverStatsLabel.setText("Server Running on "+serverIP+", Port "+Main.config.get("server_port"));
+
                         if(notConnectedPaneSettingsButton.getOpacity()<1)
                         {
                             new FadeInUp(notConnectedPaneSettingsButton).play();
@@ -730,18 +754,26 @@ public class dashboardController extends Application implements Initializable {
                         {
                             if(systemOS.toLowerCase().contains("unix") || systemOS.toLowerCase().contains("linux"))
                             {
-                                showErrorAlert("Warning!","Your IP Address is "+serverIP+", which cannot be used to connect from the client.\nCheck whether you are connected to a real network.\nSince you are running on a Linux System, please edit /etc/hosts and comment out lines starting with 127.0.X.X");
+                                if(Main.config.get("language").equals("en"))
+                                    showErrorAlert("Warning!","Your IP Address is "+serverIP+", which cannot be used to connect from the client.\nCheck whether you are connected to a real network.\nSince you are running on a Linux System, please edit /etc/hosts and comment out lines starting with 127.0.X.X");
+                                else if(Main.config.get("language").equals("ru"))
+                                    //TODO : Replace with Russian
+                                    showErrorAlert("Warning!","Your IP Address is "+serverIP+", which cannot be used to connect from the client.\nCheck whether you are connected to a real network.\nSince you are running on a Linux System, please edit /etc/hosts and comment out lines starting with 127.0.X.X");
                             }
                             else
                             {
-                                showErrorAlert("Warning!","Your IP Address is "+serverIP+", which cannot be used to connect from the client.\nCheck whether you are connected to a real network.\n");
+                                if(Main.config.get("language").equals("en"))
+                                    showErrorAlert("Warning!","Your IP Address is "+serverIP+", which cannot be used to connect from the client.\nCheck whether you are connected to a real network.\n");
+                                else if(Main.config.get("language").equals("ru"))
+                                    //TODO : Replace with Russian
+                                    showErrorAlert("Warning!","Your IP Address is "+serverIP+", which cannot be used to connect from the client.\nCheck whether you are connected to a real network.\n");
                             }
                         }
                     });
 
                     if(connectionFail)
                     {
-                        server = new ServerSocket(Integer.parseInt(config.get("server_port")), 0, InetAddress.getByName(serverIP));
+                        server = new ServerSocket(Integer.parseInt(Main.config.get("server_port")), 0, InetAddress.getByName(serverIP));
                         connectionFail = false;
                     }
 
@@ -757,8 +789,17 @@ public class dashboardController extends Application implements Initializable {
                     fou4.play();
                     fou2.setOnFinished(event -> {
                         Platform.runLater(() -> {
-                            statusLabelNotConnectedPane.setText("Connected to "+socket.getRemoteSocketAddress().toString().replace("/",""));
-                            serverStatsLabel.setText("Getting Things Ready...");
+                            if(Main.config.get("language").equals("en"))
+                            {
+                                statusLabelNotConnectedPane.setText("Connected to "+socket.getRemoteSocketAddress().toString().replace("/",""));
+                                serverStatsLabel.setText("Getting Things Ready...");
+                            }
+                            else if(Main.config.get("language").equals("ru"))
+                            {
+                                //TODO : Replace with Russian
+                                statusLabelNotConnectedPane.setText("Connected to "+socket.getRemoteSocketAddress().toString().replace("/",""));
+                                serverStatsLabel.setText("Getting Things Ready...");
+                            }
                             eachActionSizeField.setDisable(false);
                             eachActionPaddingField.setDisable(false);
                         });
@@ -806,7 +847,11 @@ public class dashboardController extends Application implements Initializable {
     @FXML
     private void showStackTraceOfConnectionError()
     {
-        showErrorAlert("Stack Trace",stackTrace1);
+        if(Main.config.get("language").equals("en"))
+            showErrorAlert("Stack Trace",stackTrace1);
+        else if(Main.config.get("language").equals("ru"))
+            //TODO : Replace with Russian
+            showErrorAlert("Stack Trace",stackTrace1);
     }
 
     private String stackTrace1 = "";
@@ -1258,16 +1303,16 @@ public class dashboardController extends Application implements Initializable {
                                     if(eachAction[0].equals(selectedActionUniqueID))
                                     {
                                         if(eachAction[2].equals("hotkey"))
-                                            loadPopupFXML("hotkeyConfig.fxml", 2);
+                                            loadPopupFXML("hotkeyMain.config.fxml", 2);
                                         else if(eachAction[2].equals("script"))
-                                            loadPopupFXML("scriptConfig.fxml",2);
+                                            loadPopupFXML("scriptMain.config.fxml",2);
                                         else if(eachAction[2].equals("tweet"))
-                                            loadPopupFXML("tweetConfig.fxml",2);
+                                            loadPopupFXML("tweetMain.config.fxml",2);
                                         else if(eachAction[2].equals("folder"))
                                             {
                                                 if(event.getButton() == MouseButton.SECONDARY)
                                                 {
-                                                    loadPopupFXML("folderConfig.fxml",2);
+                                                    loadPopupFXML("folderMain.config.fxml",2);
                                                 }
                                                 else if(event.getButton() == MouseButton.PRIMARY)
                                                 {
@@ -1276,18 +1321,18 @@ public class dashboardController extends Application implements Initializable {
                                             }
                                         else if(eachAction[2].equals("obs_set_scene"))
                                         {
-                                            loadPopupFXML("OBSSetSceneConfig.fxml",2);
+                                            loadPopupFXML("OBSSetSceneMain.config.fxml",2);
                                         }
                                         else if(eachAction[2].equals("obs_set_transition"))
-                                            loadPopupFXML("OBSSetTransitionConfig.fxml",2);
+                                            loadPopupFXML("OBSSetTransitionMain.config.fxml",2);
                                         else if(eachAction[2].equals("obs_start_stop_streaming"))
-                                            loadPopupFXML("OBSStartStopStreamingConfig.fxml",2);
+                                            loadPopupFXML("OBSStartStopStreamingMain.config.fxml",2);
                                         else if(eachAction[2].equals("obs_set_source_visibility"))
-                                            loadPopupFXML("OBSSetSourceVisibilityConfig.fxml",2);
+                                            loadPopupFXML("OBSSetSourceVisibilityMain.config.fxml",2);
                                         else if(eachAction[2].equals("launch_app"))
-                                            loadPopupFXML("launchAppConfig.fxml",2);
+                                            loadPopupFXML("launchAppMain.config.fxml",2);
                                         else if(eachAction[2].equals("launch_website"))
-                                            loadPopupFXML("launchWebsiteConfig.fxml",2);
+                                            loadPopupFXML("launchWebsiteMain.config.fxml",2);
                                         break;
                                     }
                                 }
@@ -1296,25 +1341,25 @@ public class dashboardController extends Application implements Initializable {
                         else
                         {
                             if(currentSelectionMode == 1)
-                                loadPopupFXML("hotkeyConfig.fxml",1);
+                                loadPopupFXML("hotkeyMain.config.fxml",1);
                             else if(currentSelectionMode == 2)
-                                loadPopupFXML("scriptConfig.fxml",1);
+                                loadPopupFXML("scriptMain.config.fxml",1);
                             else if(currentSelectionMode == 3)
-                                loadPopupFXML("tweetConfig.fxml",1);
+                                loadPopupFXML("tweetMain.config.fxml",1);
                             else if(currentSelectionMode == 4)
-                                loadPopupFXML("folderConfig.fxml",1);
+                                loadPopupFXML("folderMain.config.fxml",1);
                             else if(currentSelectionMode == 5)
-                                loadPopupFXML("OBSSetSceneConfig.fxml",1);
+                                loadPopupFXML("OBSSetSceneMain.config.fxml",1);
                             else if(currentSelectionMode == 6)
-                                loadPopupFXML("OBSSetTransitionConfig.fxml",1);
+                                loadPopupFXML("OBSSetTransitionMain.config.fxml",1);
                             else if(currentSelectionMode == 7)
-                                loadPopupFXML("OBSStartStopStreamingConfig.fxml",1);
+                                loadPopupFXML("OBSStartStopStreamingMain.config.fxml",1);
                             else if(currentSelectionMode == 8)
-                                loadPopupFXML("OBSSetSourceVisibilityConfig.fxml",1);
+                                loadPopupFXML("OBSSetSourceVisibilityMain.config.fxml",1);
                             else if(currentSelectionMode == 9)
-                                loadPopupFXML("launchAppConfig.fxml",1);
+                                loadPopupFXML("launchAppMain.config.fxml",1);
                             else if(currentSelectionMode == 10)
-                                loadPopupFXML("launchWebsiteConfig.fxml",1);
+                                loadPopupFXML("launchWebsiteMain.config.fxml",1);
                         }
                     }
                 });
@@ -1419,19 +1464,7 @@ public class dashboardController extends Application implements Initializable {
         }
     }
 
-    private void readConfig()
-    {
-        String[] configArray = io.readFileArranged("config","::");
-        config.put("server_port",configArray[0]);
-        config.put("twitter_oauth_consumer_key",configArray[1]);
-        config.put("twitter_oauth_consumer_secret",configArray[2]);
-        config.put("twitter_oauth_access_token",configArray[3]);
-        config.put("twitter_oauth_access_token_secret",configArray[4]);
-        config.put("is_obs_setup",configArray[5]);
-        config.put("obs_websocket_address",configArray[6]);
-        config.put("server_ip",configArray[7]);
-    }
-
+    
     @FXML
     public void newHotkeyAction()
     {
@@ -1717,8 +1750,8 @@ public class dashboardController extends Application implements Initializable {
                     updateConfig("twitter_oauth_consumer_secret",twitterConsumerSecretField.getText());
                     ConfigurationBuilder cb2 = new ConfigurationBuilder();
                     cb2.setDebugEnabled(true);
-                    cb2.setOAuthConsumerKey(config.get("twitter_oauth_consumer_key"));
-                    cb2.setOAuthConsumerSecret(config.get("twitter_oauth_consumer_secret"));
+                    cb2.setOAuthConsumerKey(Main.config.get("twitter_oauth_consumer_key"));
+                    cb2.setOAuthConsumerSecret(Main.config.get("twitter_oauth_consumer_secret"));
 
                     TwitterFactory tf2 = new TwitterFactory(cb2.build());
                     Twitter t2 = tf2.getInstance();

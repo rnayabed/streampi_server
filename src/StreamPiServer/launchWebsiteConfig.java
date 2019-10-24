@@ -107,7 +107,7 @@ public class launchWebsiteConfig extends Application implements Initializable {
                 isError = true;
             }
 
-            if(websiteURLField.getText().contains("http"))
+            if(!websiteURLField.getText().contains("http"))
             {
                 errors.append("Invalid URL given!\n");
                 isError = true;
@@ -195,7 +195,7 @@ public class launchWebsiteConfig extends Application implements Initializable {
                             @Override
                             public void run() {
                                 ac.getStyleClass().remove("action_box_highlight");
-                                ac.getChildren().add(icon);
+                                ac.getChildren().clear();
                                 //actionPane.setStyle("-fx-effect: dropshadow(three-pass-box, "+actions[i][4]+", 5, 0, 0, 0);-fx-background-color:#212121");
                                 ac.setId("allocatedaction_"+oldActions[i][5]+"_"+oldActions[i][6]+"_"+oldActions[i][0]);
                             }
@@ -264,6 +264,7 @@ public class launchWebsiteConfig extends Application implements Initializable {
                             @Override
                             public void run() {
                                 ac.getStyleClass().remove("action_box_highlight");
+                                ac.getChildren().clear();
                                 ac.getChildren().add(icon);
                                 //actionPane.setStyle("-fx-effect: dropshadow(three-pass-box, "+actions[i][4]+", 5, 0, 0, 0);-fx-background-color:#212121");
                                 ac.setId("allocatedaction_"+oldActions[i][5]+"_"+oldActions[i][6]+"_"+oldActions[i][0]);

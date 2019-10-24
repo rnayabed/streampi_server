@@ -104,29 +104,30 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1570503739751" />
     <property name="dynamic.classpath" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/icons" />
-    <property name="project.structure.last.edited" value="SDKs" />
+    <property name="last_opened_file_path" value="C:/Program Files/SceneBuilder/SceneBuilder.exe" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="recentsLimit" value="5" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="File.Encoding" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\Coding\Java Projects\streampi_server\src\icons" />
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Coding\Java Projects\streampi_server\src\StreamPiServer" />
-      <recent name="D:\Coding\Java Projects\streampi_server\java_lib" />
-      <recent name="C:\Users\Debayan Sutradhar\IdeaProjects\romankh3_version\StreamPi_Server\devices" />
+      <recent name="C:\Users\Debayan Sutradhar\IdeaProjects\romankh3_version\StreamPi_Server\src" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="StreamPiServer" />
       <recent name="" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Coding\Java Projects\streampi_server\src\StreamPiServer\languageBundles" />
+      <recent name="D:\Coding\Java Projects\streampi_server\src\icons" />
       <recent name="D:\Coding\Java Projects\streampi_server\src\StreamPiServer" />
-      <recent name="C:\Users\Debayan Sutradhar\IdeaProjects\romankh3_version\StreamPi_Server\src" />
+      <recent name="D:\Coding\Java Projects\streampi_server\java_lib" />
+      <recent name="C:\Users\Debayan Sutradhar\IdeaProjects\romankh3_version\StreamPi_Server\devices" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -214,6 +215,9 @@
       </method>
     </configuration>
   </component>
+  <component name="StructureViewFactory">
+    <option name="ACTIVE_ACTIONS" value=",GROUP_BY_PREFIXES" />
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -259,7 +263,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/StreamPiServer/tweetConfig.java</url>
-          <line>423</line>
+          <line>424</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

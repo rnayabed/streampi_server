@@ -369,6 +369,7 @@ public class scriptConfig extends Application implements Initializable{
                             @Override
                             public void run() {
                                 ac.getStyleClass().remove("action_box_highlight");
+                                ac.getChildren().clear();
                                 ac.getChildren().add(icon);
                                 //actionPane.setStyle("-fx-effect: dropshadow(three-pass-box, "+actions[i][4]+", 5, 0, 0, 0);-fx-background-color:#212121");
                                 ac.setId("allocatedaction_"+oldActions[i][5]+"_"+oldActions[i][6]+"_"+oldActions[i][0]);

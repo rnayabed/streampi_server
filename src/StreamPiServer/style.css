@@ -76,6 +76,15 @@
     -fx-cursor: hand;
 }
 
+.jfx-combo-box {
+    -fx-text-inner-color: white;
+    -fx-prompt-text-fill: white;
+}
+
+.jfx-combo-box .cell {
+    -fx-text-fill: white;
+}
+
 /*.list-view .label {
     -fx-text-fill: white;
 }*/
