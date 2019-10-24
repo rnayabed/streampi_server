@@ -128,6 +128,7 @@ public class dashboardController extends Application implements Initializable {
     8  - OBS Studio - Set Source Visibility
     9  - Launch Application
     10 - Launch Website
+    11 - Control GPIO
 
     This isn't final and will go on increasing in the future.
      */
@@ -883,7 +884,7 @@ public class dashboardController extends Application implements Initializable {
                     continue;
                 }
                 String message = readFromIS();
-                System.out.println(message);
+                System.out.println(message+"df");
 
                 String[] msgArr = message.split("::");
                 String msgHeader = msgArr[0];
@@ -1303,16 +1304,16 @@ public class dashboardController extends Application implements Initializable {
                                     if(eachAction[0].equals(selectedActionUniqueID))
                                     {
                                         if(eachAction[2].equals("hotkey"))
-                                            loadPopupFXML("hotkeyMain.config.fxml", 2);
+                                            loadPopupFXML("hotkeyConfig.fxml", 2);
                                         else if(eachAction[2].equals("script"))
-                                            loadPopupFXML("scriptMain.config.fxml",2);
+                                            loadPopupFXML("scriptConfig.fxml",2);
                                         else if(eachAction[2].equals("tweet"))
-                                            loadPopupFXML("tweetMain.config.fxml",2);
+                                            loadPopupFXML("tweetConfig.fxml",2);
                                         else if(eachAction[2].equals("folder"))
                                             {
                                                 if(event.getButton() == MouseButton.SECONDARY)
                                                 {
-                                                    loadPopupFXML("folderMain.config.fxml",2);
+                                                    loadPopupFXML("folderConfig.fxml",2);
                                                 }
                                                 else if(event.getButton() == MouseButton.PRIMARY)
                                                 {
@@ -1321,18 +1322,20 @@ public class dashboardController extends Application implements Initializable {
                                             }
                                         else if(eachAction[2].equals("obs_set_scene"))
                                         {
-                                            loadPopupFXML("OBSSetSceneMain.config.fxml",2);
+                                            loadPopupFXML("OBSSetSceneConfig.fxml",2);
                                         }
                                         else if(eachAction[2].equals("obs_set_transition"))
-                                            loadPopupFXML("OBSSetTransitionMain.config.fxml",2);
+                                            loadPopupFXML("OBSSetTransitionConfig.fxml",2);
                                         else if(eachAction[2].equals("obs_start_stop_streaming"))
-                                            loadPopupFXML("OBSStartStopStreamingMain.config.fxml",2);
+                                            loadPopupFXML("OBSStartStopStreamingConfig.fxml",2);
                                         else if(eachAction[2].equals("obs_set_source_visibility"))
-                                            loadPopupFXML("OBSSetSourceVisibilityMain.config.fxml",2);
+                                            loadPopupFXML("OBSSetSourceVisibilityConfig.fxml",2);
                                         else if(eachAction[2].equals("launch_app"))
-                                            loadPopupFXML("launchAppMain.config.fxml",2);
+                                            loadPopupFXML("launchAppConfig.fxml",2);
                                         else if(eachAction[2].equals("launch_website"))
-                                            loadPopupFXML("launchWebsiteMain.config.fxml",2);
+                                            loadPopupFXML("launchWebsiteConfig.fxml",2);
+                                        else if(eachAction[2].equals("set_gpio_out"))
+                                            loadPopupFXML("setGPIOHLConfig.fxml",2);
                                         break;
                                     }
                                 }
@@ -1341,25 +1344,27 @@ public class dashboardController extends Application implements Initializable {
                         else
                         {
                             if(currentSelectionMode == 1)
-                                loadPopupFXML("hotkeyMain.config.fxml",1);
+                                loadPopupFXML("hotkeyConfig.fxml",1);
                             else if(currentSelectionMode == 2)
-                                loadPopupFXML("scriptMain.config.fxml",1);
+                                loadPopupFXML("scriptConfig.fxml",1);
                             else if(currentSelectionMode == 3)
-                                loadPopupFXML("tweetMain.config.fxml",1);
+                                loadPopupFXML("tweetConfig.fxml",1);
                             else if(currentSelectionMode == 4)
-                                loadPopupFXML("folderMain.config.fxml",1);
+                                loadPopupFXML("folderConfig.fxml",1);
                             else if(currentSelectionMode == 5)
-                                loadPopupFXML("OBSSetSceneMain.config.fxml",1);
+                                loadPopupFXML("OBSSetSceneConfig.fxml",1);
                             else if(currentSelectionMode == 6)
-                                loadPopupFXML("OBSSetTransitionMain.config.fxml",1);
+                                loadPopupFXML("OBSSetTransitionConfig.fxml",1);
                             else if(currentSelectionMode == 7)
-                                loadPopupFXML("OBSStartStopStreamingMain.config.fxml",1);
+                                loadPopupFXML("OBSStartStopStreamingConfig.fxml",1);
                             else if(currentSelectionMode == 8)
-                                loadPopupFXML("OBSSetSourceVisibilityMain.config.fxml",1);
+                                loadPopupFXML("OBSSetSourceVisibilityConfig.fxml",1);
                             else if(currentSelectionMode == 9)
-                                loadPopupFXML("launchAppMain.config.fxml",1);
+                                loadPopupFXML("launchAppConfig.fxml",1);
                             else if(currentSelectionMode == 10)
-                                loadPopupFXML("launchWebsiteMain.config.fxml",1);
+                                loadPopupFXML("launchWebsiteConfig.fxml",1);
+                            else if(currentSelectionMode == 11)
+                                loadPopupFXML("setGPIOHLConfig.fxml",1);
                         }
                     }
                 });
@@ -1451,7 +1456,7 @@ public class dashboardController extends Application implements Initializable {
         {
             JFXDialogLayout newActionDialogLayout = new JFXDialogLayout();
             newActionDialogLayout.getStyleClass().add("dialog_style");
-            Node actionConfig = FXMLLoader.load(getClass().getResource(fxmlFileName));
+            Node actionConfig = Main.fxmlLoader.load(getClass().getResource(fxmlFileName));
             newActionDialogLayout.setBody(actionConfig);
             newActionConfigDialog = new JFXDialog(popupStackPane, newActionDialogLayout, JFXDialog.DialogTransition.CENTER);
             newActionConfigDialog.setOverlayClose(false);
@@ -1468,19 +1473,19 @@ public class dashboardController extends Application implements Initializable {
     @FXML
     public void newHotkeyAction()
     {
-        showNewActionHint("Hotkey");
+        showNewActionHint(1);
     }
 
     @FXML
     public void newScriptAction()
     {
-        showNewActionHint("Script");
+        showNewActionHint(2);
     }
 
     @FXML
     public void newFolderAction()
     {
-        showNewActionHint("Folder");
+        showNewActionHint(4);
     }
 
     @FXML
@@ -1491,7 +1496,7 @@ public class dashboardController extends Application implements Initializable {
         }
         else
         {
-            showNewActionHint("OBS Studio (Set Scene)");
+            showNewActionHint(5);
         }
     }
 
@@ -1503,7 +1508,7 @@ public class dashboardController extends Application implements Initializable {
         }
         else
         {
-            showNewActionHint("OBS Studio (Set Transition)");
+            showNewActionHint(6);
         }
     }
 
@@ -1515,7 +1520,7 @@ public class dashboardController extends Application implements Initializable {
         }
         else
         {
-            showNewActionHint("OBS Studio (Start/Stop Streaming)");
+            showNewActionHint(7);
         }
     }
 
@@ -1527,7 +1532,7 @@ public class dashboardController extends Application implements Initializable {
         }
         else
         {
-            showNewActionHint("OBS Studio (Set Source Visibility)");
+            showNewActionHint(8);
         }
     }
 
@@ -1540,57 +1545,69 @@ public class dashboardController extends Application implements Initializable {
         }
         else
         {
-            showNewActionHint("Tweet");
+            showNewActionHint(3);
         }
     }
 
     @FXML
     public void newLaunchAppAction()
     {
-        showNewActionHint("New Application Launcher Action");
+        showNewActionHint(9);
     }
 
     @FXML
     public void newLaunchWebsiteAction()
     {
-        showNewActionHint("New Website Launcher Action");
+        showNewActionHint(10);
+    }
+
+    @FXML
+    public void newGPIOStatusSetAction()
+    {
+        showNewActionHint(11);
     }
 
     @FXML
     public JFXButton returnToParentLayerButton;
 
-    private void showNewActionHint(String actionName)
+    private void showNewActionHint(int mode)
     {
-        switch (actionName) {
-            case "Hotkey":
-                currentSelectionMode = 1;
+        currentSelectionMode = mode;
+        String actionName = "";
+
+        switch (mode) {
+            case 1:
+                actionName = "Hotkey";
                 break;
-            case "Script":
-                currentSelectionMode = 2;
+            case 2:
+                actionName = "Script";
                 break;
-            case "Tweet":
-                currentSelectionMode = 3;
+            case 3:
+                actionName = "Tweet";
                 break;
-            case "Folder":
-                currentSelectionMode = 4;
+            case 4:
+                actionName = "Folder";
                 break;
-            case "OBS Studio (Set Scene)":
-                currentSelectionMode = 5;
+            case 5:
+                actionName = "OBS Studio (Set Scene)";
                 break;
-            case "OBS Studio (Set Transition)":
-                currentSelectionMode = 6;
+            case 6:
+                actionName = "OBS Studio (Set Transition)";
                 break;
-            case "OBS Studio (Start/Stop Streaming)":
-                currentSelectionMode = 7;
+            case 7:
+                actionName = "OBS Studio (Start/Stop Streaming)";
                 break;
-            case "OBS Studio (Set Source Visibility)":
-                currentSelectionMode = 8;
+            case 8:
+                actionName = "OBS Studio (Set Source Visibility)";
                 break;
-            case "New Application Launcher Action":
-                currentSelectionMode = 9;
+            case 9:
+                actionName = "Application Launcher";
                 break;
-            case "New Website Launcher Action":
-                currentSelectionMode = 10;
+            case 10:
+                actionName = "Website Launcher";
+                break;
+            case 11:
+                actionName = "GPIO Status Set";
                 break;
         }
 

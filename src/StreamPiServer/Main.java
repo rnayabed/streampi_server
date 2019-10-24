@@ -18,11 +18,13 @@ import java.util.ResourceBundle;
 
 public class Main extends Application {
 
+    static FXMLLoader fxmlLoader = new FXMLLoader();
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         readConfig();
         ResourceBundle rb = ResourceBundle.getBundle("StreamPiServer.languageBundles.lang",new Locale(config.get("language")));
-        Parent root = FXMLLoader.load(getClass().getResource("dashboard.fxml"),rb);
+        Parent root = fxmlLoader.load(getClass().getResource("dashboard.fxml"),rb);
         primaryStage.getIcons().add(new Image("icons/app_icon.png"));
         primaryStage.setTitle("StreamPi Server");
         Scene x = new Scene(root);
