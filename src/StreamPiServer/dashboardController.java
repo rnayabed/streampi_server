@@ -390,7 +390,7 @@ public class dashboardController extends Application implements Initializable {
     @FXML
     public void aboutStreamPiButtonClicked()
     {
-        Label l = new Label("Programmed By Debayan Sutradhar (twitter.com/ladiesman360420)\nOriginally Thought of Samuel Quinones (twitter.com/SamuelQuinones1)\nIcons were made by Trideb Dhar (https://www.instagram.com/_.tai.naki._)\nServer Version : "+SERVER_VERSION);
+        Label l = new Label("Programmed By Debayan Sutradhar (twitter.com/ladiesman360420)\nProgrammed By Samuel Quinones (twitter.com/SamuelQuinones1)\nIcons were made by Trideb Dhar (https://www.instagram.com/_.tai.naki._)\nServer Version : "+SERVER_VERSION);
         l.setTextFill(WHITE_PAINT);
         VBox v = new VBox(l,x);
         v.setAlignment(Pos.CENTER);
