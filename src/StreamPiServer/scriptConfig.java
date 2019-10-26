@@ -419,7 +419,7 @@ public class scriptConfig extends Application implements Initializable{
     public void iconPathBrowseButtonClicked()
     {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG","*.png"));
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PNG","*.png"), new FileChooser.ExtensionFilter("GIF","*.gif"));
         selectedIconFile = fileChooser.showOpenDialog(Main.ps);
 
         if(selectedIconFile == null)
@@ -432,20 +432,9 @@ public class scriptConfig extends Application implements Initializable{
         try
         {
             previewIcon = new Image(selectedIconFile.toURI().toString());
-            if(selectedIconFile.length() <= 32000)
-            {
-                iconPreviewImg.setImage(previewIcon);
-                iconPathField.setText(selectedIconFile.getAbsolutePath());
-                isImageFileOK = true;
-            }
-            else
-            {
-                System.out.println(previewIcon.getHeight() + ", "+previewIcon.getWidth()+", "+selectedIconFile.length());
-                Main.dc.showErrorAlert("Uh Oh!","The Icon you provided doesnt meet the StreamPi Criteria. Max size : 32 KB");
-                isImageFileOK = false;
-                iconPreviewImg.setImage(previewImageDefault);
-                iconPathField.setText("");
-            }
+            iconPreviewImg.setImage(previewIcon);
+            iconPathField.setText(selectedIconFile.getAbsolutePath());
+            isImageFileOK = true;
         }
         catch (Exception e)
         {

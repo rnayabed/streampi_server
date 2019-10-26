@@ -46,6 +46,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class dashboardController extends Application implements Initializable {
@@ -185,9 +187,9 @@ public class dashboardController extends Application implements Initializable {
             //Reuse address, if the previous thing goes haywire
             server.setReuseAddress(true);
             //Set Buffersize to 9.5 X 10^8 Bytes to accommodate for the
-            server.setReceiveBufferSize(950000000);
-            server.setSoTimeout(0);
-            server.setReceiveBufferSize(370923);
+            //server.setReceiveBufferSize(950000000);
+            //server.setSoTimeout(0);
+            //server.setReceiveBufferSize(370923);
 
             //In settings, set server IP field as the Host IP address (for the local network)
             serverIPField.setText(serverIP);
@@ -693,18 +695,38 @@ public class dashboardController extends Application implements Initializable {
     //Writes to the Output Stream of the Socket connection between pi and pc
     public void writeToOS(String txt) throws Exception
     {
-        os.writeUTF(txt);
+        byte[] by = txt.getBytes(StandardCharsets.UTF_8);
+        os.writeUTF("buff_length::"+by.length+"::");
         os.flush();
+        Thread.sleep(500);
+        os.write(by);
+        os.flush();
+        System.out.println("SENT @ "+by.length);
     }
 
     //Writes from the Input Stream of the Socket connection between pi and pc
+    int uniByteLen = 0;
     public String readFromIS()
     {
         try {
-            return is.readUTF();
+            String bg = is.readUTF();
+            byte[] str = new byte[uniByteLen];
+            if(bg.startsWith("buff_length"))
+            {
+                uniByteLen = Integer.parseInt(bg.split("::")[1]);
+                System.out.println("GOT @ "+uniByteLen);
+                str = is.readNBytes(uniByteLen);
+            }
+
+            if(uniByteLen>0)
+            {
+                uniByteLen = 0;
+            }
+            return new String(str);
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return null;
         }
     }
@@ -805,6 +827,7 @@ public class dashboardController extends Application implements Initializable {
                             eachActionPaddingField.setDisable(false);
                         });
                         isConnectedToClient = true;
+                        uniByteLen = 0;
                         FadeInUp fiu3 = new FadeInUp(statusLabelNotConnectedPane);
                         FadeInUp fiu4 = new FadeInUp(serverStatsLabel);
                         fiu3.play();
