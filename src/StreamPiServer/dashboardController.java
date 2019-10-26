@@ -50,6 +50,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import updaterPKG.*;
+
 public class dashboardController extends Application implements Initializable {
 
     // Importing all neccessary nodes from dashboard.fxml via respective FXML IDs
@@ -143,13 +145,22 @@ public class dashboardController extends Application implements Initializable {
     final String SERVER_VERSION = "0.0.6";
 
     //Global Hashmap where config will be stored (taken from the config file)
-    
+
     //Global Variable to store whether Server is connected to the client
     private boolean isConnectedToClient = false;
     //First Run variable, used especially to avoid init server animations on startup
     private boolean firstRun = true;
     //Global Paint Constant for white font in Alert Boxes (They are generated from code, and not hardcoded FXML)
     private final Paint WHITE_PAINT = Paint.valueOf("#ffffff");
+
+    //updater server
+    private streamPiUpdater updaterController;
+    private softwareTag serverTag;
+    private gitRepo serverRepo;
+
+    //updater client
+    private softwareTag clientTag;
+    private gitRepo clientRepo;
 
     //Get OS Name for Platform related issues
     String systemOS = System.getProperty("os.name").toLowerCase();
@@ -168,6 +179,13 @@ public class dashboardController extends Application implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //updater
+        serverTag = new softwareTag(SERVER_VERSION, "Server");
+        serverRepo = new gitRepo("https://api.github.com/repos/ladiesman6969/streampi_server/releases");
+        serverRepo.repoRequest();
+        updaterController = new streamPiUpdater();
+        updaterController.versionCompare(serverTag.getVersionNum(), serverRepo.getRepoVer());
+
         rb = resources;
         twitterSetup();
         obsSetup();
@@ -346,7 +364,7 @@ public class dashboardController extends Application implements Initializable {
         //IMPORTANT : Twitter does not allow same tweet to be sent over and over again so here is workaround.
         //This trick adds few blank characters after the original text, so that twitter thinks it to be a new text tweet, and goes on to publish it!
 
-        txtMsg = txtMsg + ("⠀".repeat(Math.max(0, r.nextInt(150)))); // U+2800 Blank code to avoid twitter
+        txtMsg = txtMsg + ("?".repeat(Math.max(0, r.nextInt(150)))); // U+2800 Blank code to avoid twitter
 
         //Uses the Twitter4J Instance to finally send the tweet
         twitter.updateStatus(txtMsg);
@@ -891,6 +909,8 @@ public class dashboardController extends Application implements Initializable {
     static int eachActionSize;
     private int eachActionPadding;
 
+    private String clientVersion;
+
     //listens to any replies or queries from the pi. Runs in a background Thread
     private Task<Void> serverCommTask = new Task<>() {
         @Override
@@ -1122,6 +1142,23 @@ public class dashboardController extends Application implements Initializable {
                     streamPIMaxNoOfRows = Integer.parseInt(msgArr[6]);
                     eachActionSize = Integer.parseInt(msgArr[7]);
                     eachActionPadding = Integer.parseInt(msgArr[8]);
+                    clientVersion = msgArr[9];
+                    new Thread(new Task<Void>() {
+                        @Override
+                        protected Void call() {
+                            try {
+                                //updater
+                                clientTag = new softwareTag(clientVersion, "Client");
+                                clientRepo = new gitRepo("https://api.github.com/repos/ladiesman6969/streampi_client/releases");
+                                clientRepo.repoRequest();
+                                updaterController.versionCompare(clientTag.getVersionNum(), clientRepo.getRepoVer());
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }
+                    }).start();
 
                     Platform.runLater(()-> {
                         eachActionSizeField.setText(eachActionSize+"");
@@ -1129,6 +1166,7 @@ public class dashboardController extends Application implements Initializable {
                     });
 
                     controlVBox.setSpacing(10);
+                    System.out.println("Client is running on : "+clientVersion);
                 } else if (msgHeader.equals("action_icon")) {
                     String iconName = msgArr[1];
 
@@ -1333,16 +1371,16 @@ public class dashboardController extends Application implements Initializable {
                                         else if(eachAction[2].equals("tweet"))
                                             loadPopupFXML("tweetConfig.fxml",2);
                                         else if(eachAction[2].equals("folder"))
+                                        {
+                                            if(event.getButton() == MouseButton.SECONDARY)
                                             {
-                                                if(event.getButton() == MouseButton.SECONDARY)
-                                                {
-                                                    loadPopupFXML("folderConfig.fxml",2);
-                                                }
-                                                else if(event.getButton() == MouseButton.PRIMARY)
-                                                {
-                                                    drawLayer(Integer.parseInt(eachAction[3]));
-                                                }
+                                                loadPopupFXML("folderConfig.fxml",2);
                                             }
+                                            else if(event.getButton() == MouseButton.PRIMARY)
+                                            {
+                                                drawLayer(Integer.parseInt(eachAction[3]));
+                                            }
+                                        }
                                         else if(eachAction[2].equals("obs_set_scene"))
                                         {
                                             loadPopupFXML("OBSSetSceneConfig.fxml",2);
@@ -1492,7 +1530,7 @@ public class dashboardController extends Application implements Initializable {
         }
     }
 
-    
+
     @FXML
     public void newHotkeyAction()
     {

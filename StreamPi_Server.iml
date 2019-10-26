@@ -11,5 +11,7 @@
     <orderEntry type="library" name="io.github.typhon0:AnimateFX:1.2.1" level="project" />
     <orderEntry type="library" name="org.twitter4j:twitter4j-core:[4.0,)" level="project" />
     <orderEntry type="library" name="obs-remote-java" level="project" />
+    <orderEntry type="library" name="com.google.code.gson:gson:2.8.6" level="project" />
+    <orderEntry type="library" name="org.apache.httpcomponents:httpclient:4.5" level="project" />
   </component>
 </module>
