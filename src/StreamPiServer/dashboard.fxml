@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane cache="true" cacheHint="SPEED" prefHeight="725.0" prefWidth="1208.0" styleClass="basePane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="StreamPiServer.dashboardController">
+<AnchorPane cache="true" cacheHint="SPEED" prefHeight="725.0" prefWidth="1208.0" styleClass="basePane" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="StreamPiServer.dashboardController">
    <children>
       <StackPane fx:id="loginTwitterStackPane" cache="true" cacheHint="SPEED" layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="0.0" />
       <StackPane fx:id="alertStackPane" cache="true" cacheHint="SPEED" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />

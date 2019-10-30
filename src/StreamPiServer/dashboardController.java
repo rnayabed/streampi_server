@@ -142,7 +142,7 @@ public class dashboardController extends Application implements Initializable {
 
     static OBSRemoteController obsController;
     private boolean isOBSSetup = false;
-    final String SERVER_VERSION = "0.0.6";
+    final String SERVER_VERSION = "0.0.1";
 
     //Global Hashmap where config will be stored (taken from the config file)
 
@@ -154,7 +154,7 @@ public class dashboardController extends Application implements Initializable {
     private final Paint WHITE_PAINT = Paint.valueOf("#ffffff");
 
     //updater server
-    private streamPiUpdater updaterController;
+    private streamPiUpdater streamPiUpdater;
     private softwareTag serverTag;
     private gitRepo serverRepo;
 
@@ -183,8 +183,6 @@ public class dashboardController extends Application implements Initializable {
         serverTag = new softwareTag(SERVER_VERSION, "Server");
         serverRepo = new gitRepo("https://api.github.com/repos/ladiesman6969/streampi_server/releases");
         serverRepo.repoRequest();
-        updaterController = new streamPiUpdater();
-        updaterController.versionCompare(serverTag.getVersionNum(), serverRepo.getRepoVer());
 
         rb = resources;
         twitterSetup();
@@ -276,7 +274,9 @@ public class dashboardController extends Application implements Initializable {
                             @Override
                             public void run(ResponseBase responseBase) {
                                 isOBSSetup = false;
-                                showErrorAlert("Uh Oh!","OBS is no more running!");
+                                showErrorAlert("Uh Oh!","OBS is no longer running!");
+                                if(Main.ps.isIconified())
+                                    showPushNotification("OBS is no longer running!", TrayIcon.MessageType.WARNING);
                                 unableToConnectOBSHBox.setVisible(true);
                             }
                         });
@@ -364,7 +364,7 @@ public class dashboardController extends Application implements Initializable {
         //IMPORTANT : Twitter does not allow same tweet to be sent over and over again so here is workaround.
         //This trick adds few blank characters after the original text, so that twitter thinks it to be a new text tweet, and goes on to publish it!
 
-        txtMsg = txtMsg + ("?".repeat(Math.max(0, r.nextInt(150)))); // U+2800 Blank code to avoid twitter
+        txtMsg = txtMsg + ("⠀".repeat(Math.max(0, r.nextInt(150)))); // U+2800 Blank code to avoid twitter
 
         //Uses the Twitter4J Instance to finally send the tweet
         twitter.updateStatus(txtMsg);
@@ -683,29 +683,15 @@ public class dashboardController extends Application implements Initializable {
     }
 
     @FXML
-    private void showDeviceConfigPane()
+    private void showDeviceConfigPane() throws Exception
     {
-        //Retrieve actions from the pi, in a background Thread to avoid UI Freeze
-        new Thread(new Task<Void>() {
-            @Override
-            protected Void call() {
-                try
-                {
-                    hideConnectionErrorPane();
-                    if(isConnectedToClient)
-                    {
-                        writeToOS("client_details::");
-                        Thread.sleep(300);
-                        writeToOS("get_actions::");
-                    }
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        }).start();
+        hideConnectionErrorPane();
+        if(isConnectedToClient)
+        {
+            writeToOS("client_details::");
+            Thread.sleep(300);
+            writeToOS("get_actions::");
+        }
     }
 
     private boolean currentlyReading = false;
@@ -716,7 +702,7 @@ public class dashboardController extends Application implements Initializable {
         byte[] by = txt.getBytes(StandardCharsets.UTF_8);
         os.writeUTF("buff_length::"+by.length+"::");
         os.flush();
-        Thread.sleep(500);
+
         os.write(by);
         os.flush();
         System.out.println("SENT @ "+by.length);
@@ -757,6 +743,10 @@ public class dashboardController extends Application implements Initializable {
 
     //Stores the Server IP (Host's IP)
     private String serverIP;
+
+
+    boolean isServerUpdateAvailable = false;
+
 
     //Starts the Server, listening for the Pi on the Host
     @FXML
@@ -845,6 +835,11 @@ public class dashboardController extends Application implements Initializable {
                             eachActionPaddingField.setDisable(false);
                         });
                         isConnectedToClient = true;
+
+                        streamPiUpdater = new streamPiUpdater();
+                        isServerUpdateAvailable = streamPiUpdater.versionCompare(serverTag.getVersionNum(), serverRepo.getRepoVer());
+
+
                         uniByteLen = 0;
                         FadeInUp fiu3 = new FadeInUp(statusLabelNotConnectedPane);
                         FadeInUp fiu4 = new FadeInUp(serverStatsLabel);
@@ -1148,11 +1143,18 @@ public class dashboardController extends Application implements Initializable {
                         protected Void call() {
                             try {
                                 //updater
-                                clientTag = new softwareTag(clientVersion, "Client");
-                                clientRepo = new gitRepo("https://api.github.com/repos/ladiesman6969/streampi_client/releases");
-                                clientRepo.repoRequest();
-                                updaterController.versionCompare(clientTag.getVersionNum(), clientRepo.getRepoVer());
+                                if(!isServerUpdateAvailable)
+                                {
+                                    clientTag = new softwareTag(clientVersion, "Client");
+                                    clientRepo = new gitRepo("https://api.github.com/repos/ladiesman6969/streampi_client/releases");
+                                    clientRepo.repoRequest();
+                                    boolean isClientUpdateAvailable = streamPiUpdater.versionCompare(clientTag.getVersionNum(), clientRepo.getRepoVer());
 
+                                    if(isClientUpdateAvailable)
+                                    {
+                                        loadPopupFXML("../updaterPKG/updater.fxml",2);
+                                    }
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -1195,6 +1197,12 @@ public class dashboardController extends Application implements Initializable {
                                 x.setSpeed(3.0);
                                 x.play();
                                 deviceConfigPane.toFront();
+                                x.setOnFinished(event -> {
+                                    if(isServerUpdateAvailable)
+                                    {
+                                        loadPopupFXML("../updaterPKG/updater.fxml",1);
+                                    }
+                                });
                             }
                         });
                     }
@@ -1493,7 +1501,7 @@ public class dashboardController extends Application implements Initializable {
         }
     }
 
-    JFXDialog newActionConfigDialog;
+    public JFXDialog newActionConfigDialog;
     private String streamPIIP;
     private String streamPINickName;
     private int streamPIWidth;
@@ -1502,7 +1510,7 @@ public class dashboardController extends Application implements Initializable {
     private int streamPIMaxNoOfRows;
     private boolean isDrawn = false;
 
-    static int actionConfigType;
+    public static int actionConfigType;
 
     /*
     1 = New
@@ -1512,6 +1520,7 @@ public class dashboardController extends Application implements Initializable {
     public void loadPopupFXML(String fxmlFileName, int actionConfigTypeHere)
     {
         actionConfigType = actionConfigTypeHere;
+        popupStackPane.getChildren().clear();
         popupStackPane.toFront();
         try
         {

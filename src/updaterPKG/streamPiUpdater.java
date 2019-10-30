@@ -39,7 +39,7 @@ public class streamPiUpdater {
     /*
     This actually does a check on the whole version
      */
-    public void versionCompare(String softVersion, String updateVersion){
+    public boolean versionCompare(String softVersion, String updateVersion){
         //STEP 1: turn each version number into an array for comparision
         String[] softArr = makeNums(softVersion);
         String[] updateArr = makeNums(updateVersion);
@@ -49,19 +49,23 @@ public class streamPiUpdater {
         String secondNum = numCompare(softArr[1], updateArr[1]);
         String thirdNum = numCompare(softArr[2], updateArr[2]);
 
+        boolean toBeReturned = false;
         //STEP 3: determine if update is necessary
         if (firstNum.equals("Update")){
             System.out.println("FIRST DIGIT IS BIGGER, AUTOMATIC UPDATE");
+            toBeReturned = true;
             //updateLabel.setVisible(true);
         } else if (firstNum.equals("same")){
             System.out.println("FIRST DIGIT MATCH TRYING SECOND DIGIT");
             if (secondNum.equals("Update")){
                 System.out.println("SECOND NUMBER IS BIGGER, UPDATING");
                 //updateLabel.setVisible(true);
+                toBeReturned = true;
             } else if (secondNum.equals("same")){
                 System.out.println("SECOND DIGIT MATCH TRYING THIRD DIGIT");
                 if (thirdNum.equals("Update")){
                     System.out.println("THIRD DIGIT IS BIGGER, UPDATING");
+                    toBeReturned = true;
                     //updateLabel.setVisible(true);
                 } else if (thirdNum.equals("same")){
                     System.out.println("YOU ARE ON THE MOST UP TO DATE VERSION");
@@ -74,6 +78,8 @@ public class streamPiUpdater {
         } else {
             System.out.println("USE CURRENT VERSION YOUR 1 IS BIGGER");
         }
+
+        return toBeReturned;
     }
 
     /*
