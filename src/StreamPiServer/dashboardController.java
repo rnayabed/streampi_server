@@ -184,6 +184,11 @@ public class dashboardController extends Application implements Initializable {
         serverRepo = new gitRepo("https://api.github.com/repos/ladiesman6969/streampi_server/releases");
         serverRepo.repoRequest();
 
+        //UPDATES FOR SERVER FOR SERVER SOFTWARE SHOULD BE CHECKED FOR ON LAUNCH
+        //PUTTING THEM HERE DOESNT APPEAR TO BREAK ANYTHING
+        //streamPiUpdater = new streamPiUpdater();
+        //isServerUpdateAvailable = streamPiUpdater.versionCompare(serverTag.getVersionNum(), serverRepo.getRepoVer());
+
         rb = resources;
         twitterSetup();
         obsSetup();
