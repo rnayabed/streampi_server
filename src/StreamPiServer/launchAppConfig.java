@@ -125,7 +125,7 @@ public class launchAppConfig extends Application implements Initializable {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            Main.dc.showProgress("Updating StreamPi Client","Updating actions... ");
+                            Main.dc.showProgress("Updating actions... ");
                         }
                     });
 
@@ -323,7 +323,7 @@ public class launchAppConfig extends Application implements Initializable {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            Main.dc.showProgress("Updating StreamPi Client","Removing requested Action ");
+                            Main.dc.showProgress("Removing requested Action ");
                         }
                     });
 

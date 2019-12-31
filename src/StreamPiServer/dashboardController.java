@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
@@ -114,6 +115,10 @@ public class dashboardController extends Application implements Initializable {
     @FXML
     public JFXButton notConnectedPaneSettingsButton;
     @FXML
+    public HBox serverUpdateAvailableHBox1;
+    @FXML
+    public HBox serverUpdateAvailableHBox2;
+    @FXML
     public JFXComboBox<String> languageComboBox;
 
     //currentSelectionMode is used to distinguish between the type of action user wants to add...
@@ -133,7 +138,6 @@ public class dashboardController extends Application implements Initializable {
     9  - Launch Application
     10 - Launch Website
     11 - Control GPIO
-
     This isn't final and will go on increasing in the future.
      */
 
@@ -142,7 +146,7 @@ public class dashboardController extends Application implements Initializable {
 
     static OBSRemoteController obsController;
     private boolean isOBSSetup = false;
-    final String SERVER_VERSION = "0.0.6";
+    final String SERVER_VERSION = "0.0.1";
 
     //Global Hashmap where config will be stored (taken from the config file)
 
@@ -155,8 +159,6 @@ public class dashboardController extends Application implements Initializable {
 
     //updater server
     private streamPiUpdater streamPiUpdater;
-    private softwareTag serverTag;
-    private gitRepo serverRepo;
 
     //updater client
     private softwareTag clientTag;
@@ -177,17 +179,28 @@ public class dashboardController extends Application implements Initializable {
 
     ResourceBundle rb;
 
+    @FXML
+    public void openUpdatePopup()
+    {
+        loadPopupFXML("../updaterPKG/updater.fxml",1);
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //updater
-        serverTag = new softwareTag(SERVER_VERSION, "Server");
-        serverRepo = new gitRepo("https://api.github.com/repos/ladiesman6969/streampi_server/releases");
-        serverRepo.repoRequest();
 
         //UPDATES FOR SERVER FOR SERVER SOFTWARE SHOULD BE CHECKED FOR ON LAUNCH
         //PUTTING THEM HERE DOESNT APPEAR TO BREAK ANYTHING
-        //streamPiUpdater = new streamPiUpdater();
-        //isServerUpdateAvailable = streamPiUpdater.versionCompare(serverTag.getVersionNum(), serverRepo.getRepoVer());
+
+        streamPiUpdater = new streamPiUpdater(SERVER_VERSION, true);
+        isServerUpdateAvailable = streamPiUpdater.isUpdateAvailable();
+        if(isServerUpdateAvailable)
+        {
+            Main.config.put("update_type","server");
+            Main.config.put("server_update_version",streamPiUpdater.getNewVersion());
+            Main.config.put("server_update_changelog",streamPiUpdater.getChangelogRaw());
+            Main.config.put("server_update_download_url",streamPiUpdater.getDownloadLink());
+        }
+
 
         rb = resources;
         twitterSetup();
@@ -665,11 +678,16 @@ public class dashboardController extends Application implements Initializable {
             }
             else
             {
-                new ZoomIn(notConnectedPane).play();
+                ZoomIn x = new ZoomIn(notConnectedPane);
                 if(newActionHintHBox.getOpacity()==1)
                     hideNewActionHint();
                 notConnectedPane.toFront();
+                x.play();
             }
+
+            if(serverUpdateAvailableHBox1.getOpacity() == 0 && isServerUpdateAvailable)
+                new FadeInUp(serverUpdateAvailableHBox1).play();
+
             eachActionSizeField.setDisable(true);
             eachActionSizeField.setText("");
             eachActionPaddingField.setDisable(true);
@@ -697,6 +715,7 @@ public class dashboardController extends Application implements Initializable {
             Thread.sleep(300);
             writeToOS("get_actions::");
         }
+        if(isServerUpdateAvailable) serverUpdateAvailableHBox2.setOpacity(1);
     }
 
     private boolean currentlyReading = false;
@@ -840,10 +859,6 @@ public class dashboardController extends Application implements Initializable {
                             eachActionPaddingField.setDisable(false);
                         });
                         isConnectedToClient = true;
-
-                        streamPiUpdater = new streamPiUpdater();
-                        isServerUpdateAvailable = streamPiUpdater.versionCompare(serverTag.getVersionNum(), serverRepo.getRepoVer());
-
 
                         uniByteLen = 0;
                         FadeInUp fiu3 = new FadeInUp(statusLabelNotConnectedPane);
@@ -1148,18 +1163,13 @@ public class dashboardController extends Application implements Initializable {
                         protected Void call() {
                             try {
                                 //updater
-                                if(!isServerUpdateAvailable)
+                               /* if(!isServerUpdateAvailable)
                                 {
                                     clientTag = new softwareTag(clientVersion, "Client");
                                     clientRepo = new gitRepo("https://api.github.com/repos/ladiesman6969/streampi_client/releases");
                                     clientRepo.repoRequest();
                                     boolean isClientUpdateAvailable = streamPiUpdater.versionCompare(clientTag.getVersionNum(), clientRepo.getRepoVer());
-
-                                    if(isClientUpdateAvailable)
-                                    {
-                                        loadPopupFXML("../updaterPKG/updater.fxml",2);
-                                    }
-                                }
+                                }*/
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -1531,7 +1541,7 @@ public class dashboardController extends Application implements Initializable {
         {
             JFXDialogLayout newActionDialogLayout = new JFXDialogLayout();
             newActionDialogLayout.getStyleClass().add("dialog_style");
-            Node actionConfig = Main.fxmlLoader.load(getClass().getResource(fxmlFileName));
+            Node actionConfig = FXMLLoader.load(getClass().getResource(fxmlFileName));
             newActionDialogLayout.setBody(actionConfig);
             newActionConfigDialog = new JFXDialog(popupStackPane, newActionDialogLayout, JFXDialog.DialogTransition.CENTER);
             newActionConfigDialog.setOverlayClose(false);
@@ -1971,22 +1981,23 @@ public class dashboardController extends Application implements Initializable {
         }).start();
     }
 
-    public void showProgress(String heading, String text)
+    public void showProgress(String text)
     {
         JFXDialogLayout l = new JFXDialogLayout();
         l.getStyleClass().add("dialog_style");
-        Label headingLabel = new Label(heading);
-        headingLabel.setTextFill(WHITE_PAINT);
-        headingLabel.setFont(Font.font("Roboto Regular",25));
-        l.setHeading(headingLabel);
+
         Label textLabel = new Label(text);
         textLabel.setFont(Font.font("Roboto Regular",15));
         textLabel.setTextFill(WHITE_PAINT);
         textLabel.setWrapText(true);
 
-        //TODO : Add Transparent Indeterminate Progress loading gif
+        JFXSpinner spinner = new JFXSpinner(-1);
+        spinner.setCache(true);
+        spinner.setCacheHint(CacheHint.SPEED);
 
-        HBox content = new HBox(textLabel);
+        HBox content = new HBox(spinner,textLabel);
+        content.setSpacing(10);
+        content.setAlignment(Pos.CENTER_LEFT);
         l.setBody(content);
 
         progressDialog = new JFXDialog(progressStackPane,l, JFXDialog.DialogTransition.CENTER);

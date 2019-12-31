@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -17,12 +18,10 @@ import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.net.URL;
 import java.nio.file.Files;
-import java.util.Base64;
-import java.util.List;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import javafx.stage.Stage;
 import net.twasi.obsremotejava.Callback;
@@ -165,6 +164,7 @@ public class OBSSetTransitionConfig extends Application implements Initializable
 
     Random r = new Random();
 
+
     @FXML
     public void deleteButtonClicked()
     {
@@ -176,7 +176,7 @@ public class OBSSetTransitionConfig extends Application implements Initializable
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            Main.dc.showProgress("Updating StreamPi Client","Removing requested Action ");
+                            Main.dc.showProgress("Removing requested Action ");
                         }
                     });
 
@@ -302,7 +302,7 @@ public class OBSSetTransitionConfig extends Application implements Initializable
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            Main.dc.showProgress("Updating StreamPi Client","Updating actions... ");
+                            Main.dc.showProgress("Updating actions... ");
                         }
                     });
 

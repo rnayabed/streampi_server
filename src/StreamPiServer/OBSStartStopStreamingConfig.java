@@ -123,7 +123,7 @@ public class OBSStartStopStreamingConfig extends Application implements Initiali
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            Main.dc.showProgress("Updating StreamPi Client","Removing requested Action ");
+                            Main.dc.showProgress("Removing requested Action ");
                         }
                     });
 
@@ -239,7 +239,7 @@ public class OBSStartStopStreamingConfig extends Application implements Initiali
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            Main.dc.showProgress("Updating StreamPi Client","Updating actions... ");
+                            Main.dc.showProgress("Updating actions... ");
                         }
                     });
 

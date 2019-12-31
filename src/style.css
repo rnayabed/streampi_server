@@ -73,6 +73,7 @@
 }
 
 .hyperlink_label {
+    -fx-text-fill : #50a4ff;
     -fx-cursor: hand;
 }
 
@@ -83,6 +84,19 @@
 
 .jfx-combo-box .cell {
     -fx-text-fill: white;
+}
+
+Label{
+    -fx-text-fill : white;
+}
+
+.Label{
+    -fx-text-fill : white;
+}
+
+.jfx-button {
+     -fx-background-color: #484848;
+     -fx-text-fill: white;
 }
 
 /*.list-view .label {

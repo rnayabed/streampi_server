@@ -3,6 +3,7 @@ package updaterPKG;
 import java.io.IOException;
 import java.util.Arrays;
 
+import StreamPiServer.Main;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -16,33 +17,46 @@ import com.google.gson.JsonParser;
 public class gitRepo {
     private String repoURL;
     private String repoVer;
+    private String downloadLink;
 
-    public gitRepo(String urlIn){
+    String changelogRaw;
+
+    public gitRepo(String urlIn) throws Exception{
         this.repoURL = urlIn;
-    }
 
-    public void repoRequest(){
-        try{
-            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            HttpGet request = new HttpGet(repoURL);
-            request.addHeader("content-type", "application/json");
-            HttpResponse result = httpClient.execute(request);
-            String json = EntityUtils.toString(result.getEntity(), "UTF-8");
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        HttpGet request = new HttpGet(repoURL);
+        request.addHeader("content-type", "application/json");
+        HttpResponse result = httpClient.execute(request);
+        String json = EntityUtils.toString(result.getEntity(), "UTF-8");
 
-            //System.out.println(json);
-            JsonElement jelement = new JsonParser().parse(json);
-            JsonArray jarr = jelement.getAsJsonArray();
-            JsonObject jo = (JsonObject) jarr.get(0);
-            String tagName = jo.get("tag_name").toString();
+        //System.out.println(json);
+        JsonElement jelement = new JsonParser().parse(json);
+        JsonArray jarr = jelement.getAsJsonArray();
+        JsonObject jo = (JsonObject) jarr.get(0);
 
-            //sets the version number of the repo it pulls and fixes the problem of the JSON returning quotes
-            repoVer = tagName.substring(1, tagName.length() - 1);;
-        } catch (IOException ex){
-            System.out.println(Arrays.toString(ex.getStackTrace()));
+
+        repoVer = jo.get("tag_name").getAsString();
+
+        changelogRaw = jo.get("body").getAsString();
+        changelogRaw = changelogRaw.substring(changelogRaw.indexOf("*"),changelogRaw.indexOf("## Note"));
+
+        int arrIndex = -1;
+        if(Main.config.get("system_os").equals("linux"))
+            arrIndex = 0;
+        else if(Main.config.get("system_os").equals("windows"))
+            arrIndex = 1;
+        else
+            downloadLink = "unavailable";
+
+        if(arrIndex > -1)
+        {
+            JsonObject downloadObj = jo.get("assets").getAsJsonArray().get(arrIndex).getAsJsonObject();
+            downloadLink = downloadObj.get("browser_download_url").getAsString();
         }
     }
 
-    public String getRepoVer() {
-        return repoVer;
-    }
+    public String getRepoVer() { return repoVer; }
+    public String getChangelog() { return changelogRaw; }
+    public String getDownloadLink() { return downloadLink; }
 }

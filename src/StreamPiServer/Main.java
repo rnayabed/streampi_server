@@ -32,13 +32,7 @@ public class Main extends Application {
         primaryStage.setMinHeight(650);
         primaryStage.setScene(x);
         primaryStage.show();
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                System.out.println("Quitting ...");
-                System.exit(0);
-            }
-        });
+
         ps = primaryStage;
         xs = x;
     }
@@ -61,6 +55,12 @@ public class Main extends Application {
         config.put("obs_websocket_address",configArray[6]);
         config.put("server_ip",configArray[7]);
         config.put("language",configArray[8]);
+
+        String osName = System.getProperty("os.name").toLowerCase();
+        if(osName.contains("windows")) config.put("system_os","windows");
+        else if(osName.contains("linux")) config.put("system_os","linux");
+        else if(osName.contains("mac")) config.put("system_os","macos");
+        else config.put("system_os","unknown");
     }
 
     public static void main(String[] args) {
