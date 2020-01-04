@@ -2,6 +2,7 @@ package updaterPKG;
 
 import StreamPiServer.Main;
 import StreamPiServer.dashboardController;
+import StreamPiServer.io;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -33,8 +34,14 @@ public class updaterController implements Initializable {
         if(Main.config.get("update_type").equals("server"))
         {
             headingLabel.setText("Server Update Available!");
-            subHeadingLabel.setText("Version :"+Main.config.get("server_update_version"));
+            subHeadingLabel.setText("Version : "+Main.config.get("server_update_version"));
             changelogLabel.setText(Main.config.get("server_update_changelog"));
+        }
+        else if(Main.config.get("update_type").equals("client"))
+        {
+            headingLabel.setText("Client Update Available!");
+            subHeadingLabel.setText("Version : "+Main.config.get("client_update_version"));
+            changelogLabel.setText(Main.config.get("client_update_changelog"));
         }
     }
 
@@ -57,6 +64,8 @@ public class updaterController implements Initializable {
             protected Void call() {
                 try
                 {
+                    io.writeToFile(Main.config.get("server_update_download_url"),"updater/update_header");
+
                     Platform.runLater(()->Main.dc.showProgress("Downloading Update ..."));
 
                     if(Main.config.get("server_update_download_url").equals("unavailable"))
@@ -70,15 +79,26 @@ public class updaterController implements Initializable {
                     {
                         FileUtils.copyURLToFile(new URL(Main.config.get("server_update_download_url")),new File("update.zip"));
                         System.out.println("Downloaded!");
+
+                        if(Main.config.get("update_type").equals("server"))
+                        {
+
+                        }
+                        else if(Main.config.get("update_type").equals("client"))
+                        {
+                            Main.dc.showErrorAlert("Later","Will be shown later!");
+                        }
                     }
                 }
                 catch (Exception e)
                 {
                     Platform.runLater(()->{
-                        Main.dc.hideProgress();
                         Main.dc.showErrorAlert("Uh Oh!","Unable to download! Check connection and try again");
                     });
                     e.printStackTrace();
+                }
+                finally {
+                    Platform.runLater(()-> Main.dc.hideProgress());
                 }
                 return null;
             }

@@ -449,7 +449,7 @@
                      </font></JFXButton>
                </children>
             </HBox>
-            <HBox fx:id="serverUpdateAvailableHBox2" alignment="CENTER" layoutX="510.0" layoutY="692.0" opacity="0.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="510.0" AnchorPane.rightAnchor="425.0">
+            <HBox fx:id="updateAvailableHBox" alignment="CENTER" layoutX="510.0" layoutY="692.0" opacity="0.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="510.0" AnchorPane.rightAnchor="425.0">
                <children>
                   <Label text="A new update is available. Click " />
                   <Label onMouseClicked="#openUpdatePopup" styleClass="hyperlink_label" text="here" />

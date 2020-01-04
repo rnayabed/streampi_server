@@ -28,6 +28,9 @@ public class io {
     {
         try
         {
+            File f = new File(fileName);
+            if(!f.exists())
+                f.createNewFile();
             BufferedWriter bf = new BufferedWriter(new FileWriter(fileName));
             bf.write(content);
             bf.close();

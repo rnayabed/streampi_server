@@ -13,6 +13,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import twitter4j.JSONArray;
+import twitter4j.JSONObject;
 
 public class gitRepo {
     private String repoURL;
@@ -39,20 +41,18 @@ public class gitRepo {
         repoVer = jo.get("tag_name").getAsString();
 
         changelogRaw = jo.get("body").getAsString();
-        changelogRaw = changelogRaw.substring(changelogRaw.indexOf("*"),changelogRaw.indexOf("## Note"));
+        changelogRaw = changelogRaw.substring(changelogRaw.indexOf("*"),changelogRaw.indexOf("## Installation Instructions"));
 
-        int arrIndex = -1;
-        if(Main.config.get("system_os").equals("linux"))
-            arrIndex = 0;
-        else if(Main.config.get("system_os").equals("windows"))
-            arrIndex = 1;
-        else
-            downloadLink = "unavailable";
-
-        if(arrIndex > -1)
+        JsonArray assetsArray = jo.get("assets").getAsJsonArray();
+        downloadLink = "unavailable";
+        for(int i = 0;i<assetsArray.size();i++)
         {
-            JsonObject downloadObj = jo.get("assets").getAsJsonArray().get(arrIndex).getAsJsonObject();
-            downloadLink = downloadObj.get("browser_download_url").getAsString();
+            String assetLink = assetsArray.get(i).getAsJsonObject().get("browser_download_url").getAsString();
+            if(assetLink.contains(Main.config.get("system_os")))
+            {
+                downloadLink = assetLink;
+                break;
+            }
         }
     }
 

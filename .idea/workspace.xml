@@ -118,22 +118,23 @@
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\Coding\Java Projects\streampi_server\actions" />
-      <recent name="D:\Coding\Java Projects\streampi_server\src" />
-      <recent name="D:\Coding\Java Projects\streampi_server\src\StreamPiServer" />
-      <recent name="C:\Users\Debayan Sutradhar\IdeaProjects\romankh3_version\StreamPi_Server\src" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="StreamPiServer" />
-      <recent name="" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Coding\Java Projects\streampi_server\actions" />
       <recent name="D:\Coding\Java Projects\streampi_server\installer\Mac" />
       <recent name="D:\Coding\Java Projects\streampi_server\src\StreamPiServer" />
       <recent name="D:\Coding\Java Projects\streampi_server\src\StreamPiServer\languageBundles" />
       <recent name="D:\Coding\Java Projects\streampi_server\src\icons" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="StreamPiServer" />
+      <recent name="" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Coding\Java Projects\streampi_server\updater" />
+      <recent name="D:\Coding\Java Projects\streampi_server\actions" />
+      <recent name="D:\Coding\Java Projects\streampi_server\src" />
+      <recent name="D:\Coding\Java Projects\streampi_server\src\StreamPiServer" />
+      <recent name="C:\Users\Debayan Sutradhar\IdeaProjects\romankh3_version\StreamPi_Server\src" />
     </key>
   </component>
   <component name="RunManager">
@@ -158,7 +159,7 @@
     <configuration name="Main" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="StreamPiServer.Main" />
       <module name="StreamPi_Server" />
-      <option name="VM_PARAMETERS" value="-Djdk.gtk.version=2" />
+      <option name="VM_PARAMETERS" value="-client -Djdk.gtk.version=2" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value=".*" />
@@ -265,6 +266,10 @@
     </ignored-roots>
   </component>
   <component name="WindowStateProjectService">
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1577952621067">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1577952621067" />
     <state x="765" y="228" key="#com.intellij.ide.util.MemberChooser" timestamp="1577808327097">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -273,34 +278,34 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="274" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1575460776974" />
-    <state width="1877" height="276" key="GridCell.Tab.0.bottom" timestamp="1577810554460">
+    <state width="1877" height="276" key="GridCell.Tab.0.bottom" timestamp="1577956057715">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="276" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1577810554460" />
-    <state width="1877" height="276" key="GridCell.Tab.0.center" timestamp="1577810554459">
+    <state width="1877" height="276" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1577956057715" />
+    <state width="1877" height="276" key="GridCell.Tab.0.center" timestamp="1577956057715">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="276" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1577810554459" />
-    <state width="1877" height="276" key="GridCell.Tab.0.left" timestamp="1577810554459">
+    <state width="1877" height="276" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1577956057715" />
+    <state width="1877" height="276" key="GridCell.Tab.0.left" timestamp="1577956057715">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="276" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1577810554459" />
-    <state width="1877" height="276" key="GridCell.Tab.0.right" timestamp="1577810554460">
+    <state width="1877" height="276" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1577956057715" />
+    <state width="1877" height="276" key="GridCell.Tab.0.right" timestamp="1577956057715">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="276" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1577810554460" />
-    <state x="440" y="93" key="SettingsEditor" timestamp="1577808303801">
+    <state width="1877" height="276" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1577956057715" />
+    <state x="440" y="93" key="SettingsEditor" timestamp="1578052571676">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="440" y="93" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1577808303801" />
+    <state x="440" y="93" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1578052571676" />
     <state x="664" y="412" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1577808296549">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="664" y="412" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/0.0.1920.1040@0.0.1920.1040" timestamp="1577808296549" />
-    <state x="342" y="221" key="new project wizard" timestamp="1576828888167">
+    <state x="342" y="221" key="new project wizard" timestamp="1578051652117">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="342" y="221" key="new project wizard/0.0.1920.1040@0.0.1920.1040" timestamp="1576828888167" />
+    <state x="342" y="221" key="new project wizard/0.0.1920.1040@0.0.1920.1040" timestamp="1578051652117" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1577605082792">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

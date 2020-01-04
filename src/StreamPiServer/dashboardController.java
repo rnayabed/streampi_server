@@ -117,7 +117,7 @@ public class dashboardController extends Application implements Initializable {
     @FXML
     public HBox serverUpdateAvailableHBox1;
     @FXML
-    public HBox serverUpdateAvailableHBox2;
+    public HBox updateAvailableHBox;
     @FXML
     public JFXComboBox<String> languageComboBox;
 
@@ -146,7 +146,7 @@ public class dashboardController extends Application implements Initializable {
 
     static OBSRemoteController obsController;
     private boolean isOBSSetup = false;
-    final String SERVER_VERSION = "0.0.1";
+    final String SERVER_VERSION = "0.0.4";
 
     //Global Hashmap where config will be stored (taken from the config file)
 
@@ -158,7 +158,8 @@ public class dashboardController extends Application implements Initializable {
     private final Paint WHITE_PAINT = Paint.valueOf("#ffffff");
 
     //updater server
-    private streamPiUpdater streamPiUpdater;
+    private streamPiUpdater streamPiServerUpdater;
+    private streamPiUpdater streamPiClientUpdater;
 
     //updater client
     private softwareTag clientTag;
@@ -176,6 +177,7 @@ public class dashboardController extends Application implements Initializable {
 
     //
     boolean connectionFail = false;
+    boolean isClientUpdateAvailable = false;
 
     ResourceBundle rb;
 
@@ -191,14 +193,14 @@ public class dashboardController extends Application implements Initializable {
         //UPDATES FOR SERVER FOR SERVER SOFTWARE SHOULD BE CHECKED FOR ON LAUNCH
         //PUTTING THEM HERE DOESNT APPEAR TO BREAK ANYTHING
 
-        streamPiUpdater = new streamPiUpdater(SERVER_VERSION, true);
-        isServerUpdateAvailable = streamPiUpdater.isUpdateAvailable();
+        streamPiServerUpdater = new streamPiUpdater(SERVER_VERSION, true);
+        isServerUpdateAvailable = streamPiServerUpdater.isUpdateAvailable();
         if(isServerUpdateAvailable)
         {
             Main.config.put("update_type","server");
-            Main.config.put("server_update_version",streamPiUpdater.getNewVersion());
-            Main.config.put("server_update_changelog",streamPiUpdater.getChangelogRaw());
-            Main.config.put("server_update_download_url",streamPiUpdater.getDownloadLink());
+            Main.config.put("server_update_version",streamPiServerUpdater.getNewVersion());
+            Main.config.put("server_update_changelog",streamPiServerUpdater.getChangelogRaw());
+            Main.config.put("server_update_download_url",streamPiServerUpdater.getDownloadLink());
         }
 
 
@@ -685,8 +687,10 @@ public class dashboardController extends Application implements Initializable {
                 x.play();
             }
 
-            if(serverUpdateAvailableHBox1.getOpacity() == 0 && isServerUpdateAvailable)
-                new FadeInUp(serverUpdateAvailableHBox1).play();
+            if(serverUpdateAvailableHBox1.getOpacity() == 0)
+                if(isServerUpdateAvailable) new FadeInUp(serverUpdateAvailableHBox1).play();
+
+
 
             eachActionSizeField.setDisable(true);
             eachActionSizeField.setText("");
@@ -715,7 +719,7 @@ public class dashboardController extends Application implements Initializable {
             Thread.sleep(300);
             writeToOS("get_actions::");
         }
-        if(isServerUpdateAvailable) serverUpdateAvailableHBox2.setOpacity(1);
+        if(isServerUpdateAvailable) updateAvailableHBox.setOpacity(1);
     }
 
     private boolean currentlyReading = false;
@@ -1162,14 +1166,19 @@ public class dashboardController extends Application implements Initializable {
                         @Override
                         protected Void call() {
                             try {
-                                //updater
-                               /* if(!isServerUpdateAvailable)
+                                streamPiClientUpdater = new streamPiUpdater(clientVersion, false);
+                                isClientUpdateAvailable = streamPiClientUpdater.isUpdateAvailable();
+                                if(isClientUpdateAvailable)
                                 {
-                                    clientTag = new softwareTag(clientVersion, "Client");
-                                    clientRepo = new gitRepo("https://api.github.com/repos/ladiesman6969/streampi_client/releases");
-                                    clientRepo.repoRequest();
-                                    boolean isClientUpdateAvailable = streamPiUpdater.versionCompare(clientTag.getVersionNum(), clientRepo.getRepoVer());
-                                }*/
+                                    Platform.runLater(()->updateAvailableHBox.setOpacity(1));
+                                    Main.config.put("client_update_version",streamPiClientUpdater.getNewVersion());
+                                    Main.config.put("server_update_changelog",streamPiClientUpdater.getChangelogRaw());
+                                    Main.config.put("server_update_download_url",streamPiClientUpdater.getDownloadLink());
+                                    if(!isServerUpdateAvailable)
+                                    {
+                                        Main.config.put("update_type","client");
+                                    }
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -1184,6 +1193,7 @@ public class dashboardController extends Application implements Initializable {
 
                     controlVBox.setSpacing(10);
                     System.out.println("Client is running on : "+clientVersion);
+
                 } else if (msgHeader.equals("action_icon")) {
                     String iconName = msgArr[1];
 
@@ -1214,6 +1224,14 @@ public class dashboardController extends Application implements Initializable {
                                 deviceConfigPane.toFront();
                                 x.setOnFinished(event -> {
                                     if(isServerUpdateAvailable)
+                                    {
+                                        if(isClientUpdateAvailable)
+                                        {
+                                            showErrorAlert("Warning!","A client update is available as well. ("+Main.config.get("client_update_version")+"). Please update server to latest version ("+Main.config.get("server_update_version")+") in order to update client.");
+                                        }
+                                        loadPopupFXML("../updaterPKG/updater.fxml",1);
+                                    }
+                                    else if(isClientUpdateAvailable)
                                     {
                                         loadPopupFXML("../updaterPKG/updater.fxml",1);
                                     }
