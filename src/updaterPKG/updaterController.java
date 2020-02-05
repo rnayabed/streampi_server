@@ -82,7 +82,7 @@ public class updaterController implements Initializable {
 
                         if(Main.config.get("update_type").equals("server"))
                         {
-
+                            Process p = Runtime.getRuntime().exec("python3 updater.py");
                         }
                         else if(Main.config.get("update_type").equals("client"))
                         {

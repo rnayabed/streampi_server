@@ -267,14 +267,19 @@
     </ignored-roots>
   </component>
   <component name="WindowStateProjectService">
+    <state x="455" y="134" width="1000" height="846" key="#Inspections" timestamp="1580885461810">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="455" y="134" width="1000" height="846" key="#Inspections/0.27.1920.1053@0.27.1920.1053" timestamp="1580885461810" />
     <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1577952621067">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1577952621067" />
-    <state x="765" y="228" key="#com.intellij.ide.util.MemberChooser" timestamp="1577808327097">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="765" y="258" width="462" height="713" key="#com.intellij.ide.util.MemberChooser" timestamp="1580885523291">
+      <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="765" y="228" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1577808327097" />
+    <state x="765" y="258" width="462" height="713" key="#com.intellij.ide.util.MemberChooser/0.27.1920.1053@0.27.1920.1053" timestamp="1580885523291" />
     <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1575460776974">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -295,11 +300,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="276" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1577956057715" />
-    <state x="440" y="27" width="1280" height="1053" key="SettingsEditor" timestamp="1580885204008">
+    <state x="440" y="27" width="1280" height="1053" key="SettingsEditor" timestamp="1580885917497">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="440" y="93" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1578052571676" />
-    <state x="440" y="27" width="1280" height="1053" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1580885204008" />
+    <state x="440" y="27" width="1280" height="1053" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1580885917497" />
     <state x="664" y="444" width="678" height="247" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1580885200597">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>

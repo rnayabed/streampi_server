@@ -1,8 +1,5 @@
 package updaterPKG;
 
-import java.io.IOException;
-import java.util.Arrays;
-
 import StreamPiServer.Main;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
