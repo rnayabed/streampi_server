@@ -146,7 +146,7 @@ public class dashboardController extends Application implements Initializable {
 
     static OBSRemoteController obsController;
     private boolean isOBSSetup = false;
-    final String SERVER_VERSION = "0.0.4";
+    final String SERVER_VERSION = "0.0.6";
 
     //Global Hashmap where config will be stored (taken from the config file)
 
