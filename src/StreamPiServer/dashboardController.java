@@ -45,8 +45,6 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import updaterPKG.*;
-
 public class dashboardController extends Application implements Initializable {
 
     // Importing all neccessary nodes from dashboard.fxml via respective FXML IDs
@@ -156,8 +154,8 @@ public class dashboardController extends Application implements Initializable {
     //private streamPiUpdater streamPiClientUpdater;
 
     //updater client
-    private softwareTag clientTag;
-    private gitRepo clientRepo;
+    //private softwareTag clientTag;
+    //private gitRepo clientRepo;
 
     //Get OS Name for Platform related issues
     String systemOS = System.getProperty("os.name").toLowerCase();

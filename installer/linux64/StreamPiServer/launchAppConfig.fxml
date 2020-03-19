@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="600.0" spacing="10.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="StreamPiServer.launchAppConfig">
+   <children>
+      <Label fx:id="headingLabel" alignment="TOP_LEFT" prefHeight="58.0" prefWidth="557.0" text="New Application Launcher Action" textFill="WHITE">
+         <font>
+            <Font name="Roboto Regular" size="25.0" />
+         </font>
+         <VBox.margin>
+            <Insets bottom="5.0" />
+         </VBox.margin>
+      </Label>
+      <HBox alignment="CENTER_LEFT" spacing="10.0">
+         <children>
+            <Label text="Action Name" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="17.0" />
+               </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <JFXTextField fx:id="actionNameField" prefHeight="25.0" prefWidth="264.0" style="-fx-text-inner-color: white;" unFocusColor="WHITE" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" spacing="10.0">
+         <children>
+            <Label text="Path To Application" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="17.0" />
+               </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <JFXTextField fx:id="appPathField" disable="true" prefHeight="25.0" prefWidth="192.0" style="-fx-text-inner-color: white;" unFocusColor="WHITE" />
+            <JFXButton fx:id="appBrowseButton" buttonType="RAISED" onAction="#appPathBrowseButtonClicked" style="-fx-background-color: #484848;" text="Browse..." textFill="WHITE" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" spacing="10.0">
+         <children>
+            <Label text="Icon" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="17.0" />
+               </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <JFXTextField fx:id="iconPathField" disable="true" prefHeight="25.0" prefWidth="192.0" style="-fx-text-inner-color: white;" unFocusColor="WHITE" />
+            <JFXButton fx:id="iconBrowseButton" buttonType="RAISED" onAction="#iconPathBrowseButtonClicked" style="-fx-background-color: #484848;" text="Browse..." textFill="WHITE" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="147.0" prefWidth="565.0">
+         <children>
+            <ImageView fx:id="iconPreviewImg" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@icons/icon_preview.png" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER">
+         <children>
+            <Label prefHeight="9.0" prefWidth="225.0" text="To Create your own icons, head over to" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Regular" size="13.0" />
+               </font>
+            </Label>
+            <Label onMouseClicked="#openElgatoStreamDeckKeyCreator" prefHeight="9.0" prefWidth="225.0" styleClass="hyperlink_label" text=" The Elgato Stream Deck Key Creator" textFill="#4eb9d3">
+               <font>
+                  <Font name="Roboto Regular" size="13.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <HBox prefHeight="41.0" prefWidth="565.0" spacing="10.0">
+         <children>
+            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <JFXButton fx:id="deleteButton" buttonType="RAISED" disable="true" onAction="#deleteButtonClicked" style="-fx-background-color: #484848;" text="Delete " textFill="#db0f0f" visible="false">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="addButton" buttonType="RAISED" onAction="#addButtonClicked" style="-fx-background-color: #484848;" text="Add" textFill="#38e835">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="cancelButton" buttonType="RAISED" onAction="#cancelButtonClicked" style="-fx-background-color: #484848;" text="Cancel" textFill="#db0f0f">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </JFXButton>
+         </children>
+      </HBox>
+   </children>
+</VBox>

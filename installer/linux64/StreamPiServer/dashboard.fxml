@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="725.0" prefWidth="1208.0" styleClass="basePane" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="StreamPiServer.dashboardController">
+   <children>
+      <StackPane fx:id="loginTwitterStackPane" cache="true" cacheHint="SPEED" layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="0.0" />
+      <StackPane fx:id="alertStackPane" cache="true" cacheHint="SPEED" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <StackPane fx:id="progressStackPane" cache="true" cacheHint="SPEED" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <StackPane fx:id="popupStackPane" cache="true" cacheHint="SPEED" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <VBox fx:id="connectionErrorPane" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label text="Unable To Start Server">
+               <font>
+                  <Font name="Roboto Regular" size="30.0" />
+               </font>
+            </Label>
+            <Label text="Check your network settings and try again">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER" spacing="50.0">
+               <children>
+                  <JFXButton onAction="#showSettingsPane" text="Open Settings" />
+                  <JFXButton fx:id="retryButton" onAction="#retryButtonClicked" text="Retry" />
+                  <JFXButton onAction="#showStackTraceOfConnectionError" text="Show StackTrace" />
+               </children>
+            </HBox>
+            <Label text="This is a terrible way of showing connection error. Will get a facelift in the future." />
+         </children>
+      </VBox>
+      <VBox fx:id="settingsPane" prefHeight="700.0" prefWidth="1166.0" spacing="10.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox>
+               <children>
+                  <Label text="Settings">
+                     <font>
+                        <Font name="Roboto Regular" size="38.0" />
+                     </font>
+                  </Label>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <JFXButton onAction="#hideSettingsPane" text=" ">
+                     <graphic>
+                        <ImageView fitHeight="48.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@icons/cancel.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+               <padding>
+                  <Insets bottom="15.0" />
+               </padding>
+            </HBox>
+            <ScrollPane prefWidth="1130.0" style="-fx-background-color: black;">
+               <content>
+                  <VBox spacing="10.0">
+                     <children>
+                        <Label text="System">
+                           <font>
+                              <Font name="Roboto Regular" size="24.0" />
+                           </font>
+                        </Label>
+                        <HBox spacing="50.0">
+                           <children>
+                              <Label prefHeight="21.0" prefWidth="92.0" text="Language">
+                                 <font>
+                                    <Font name="Roboto Regular" size="15.0" />
+                                 </font>
+                              </Label>
+                              <JFXComboBox fx:id="languageComboBox" prefHeight="25.0" prefWidth="134.0" />
+                           </children>
+                        </HBox>
+                        <Label text="Server">
+                           <font>
+                              <Font name="Roboto Regular" size="24.0" />
+                           </font>
+                        </Label>
+                        <HBox spacing="50.0">
+                           <children>
+                              <Label prefHeight="21.0" prefWidth="92.0" text="Server IP">
+                                 <font>
+                                    <Font name="Roboto Regular" size="15.0" />
+                                 </font>
+                              </Label>
+                              <JFXTextField fx:id="serverIPField" style="-fx-text-inner-color: white;">
+                                 <font>
+                                    <Font name="Roboto Regular" size="15.0" />
+                                 </font>
+                              </JFXTextField>
+                              <JFXButton buttonType="RAISED" onAction="#setServerIPFieldHostAddress" text="Get Host Address" />
+                           </children>
+                        </HBox>
+                        <HBox spacing="50.0">
+                           <children>
+                              <Label prefHeight="21.0" prefWidth="89.0" text="Port">
+                                 <font>
+                                    <Font name="Roboto Regular" size="15.0" />
+                                 </font>
+                              </Label>
+                              <JFXTextField fx:id="serverPortField" style="-fx-text-inner-color: white;">
+                                 <font>
+                                    <Font name="Roboto Regular" size="15.0" />
+                                 </font>
+                              </JFXTextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <Label text="Twitter">
+                                 <font>
+                                    <Font name="Roboto Regular" size="24.0" />
+                                 </font>
+                              </Label>
+                              <Region prefHeight="29.0" prefWidth="72.0" />
+                              <JFXButton fx:id="loginButtonTwitter" buttonType="RAISED" onAction="#loginButtonTwitterClicked" text="Login" />
+                           </children>
+                        </HBox>
+                        <HBox spacing="50.0">
+                           <children>
+                              <Label prefHeight="19.0" prefWidth="211.0" text="OAuth Consumer Key">
+                                 <font>
+                                    <Font name="Roboto Regular" size="15.0" />
+                                 </font>
+                              </Label>
+                              <JFXTextField fx:id="twitterConsumerKeyField" prefHeight="29.0" prefWidth="365.0" style="-fx-text-inner-color: white;">
+                                 <font>
+                                    <Font name="Roboto Regular" size="15.0" />
+                                 </font>
+                              </JFXTextField>
+                           </children>
+                        </HBox>
+                        <HBox spacing="50.0">
+                           <children>
+                              <Label prefHeight="19.0" prefWidth="211.0" text="OAuth Consumer Secret">
+                                 <font>
+                                    <Font name="Roboto Regular" size="15.0" />
+                                 </font>
+                              </Label>
+                              <JFXTextField fx:id="twitterConsumerSecretField" prefHeight="29.0" prefWidth="361.0" style="-fx-text-inner-color: white;">
+                                 <font>
+                                    <Font name="Roboto Regular" size="15.0" />
+                                 </font>
+                              </JFXTextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <Label text="Client Settings">
+                                 <font>
+                                    <Font name="Roboto Regular" size="24.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox spacing="50.0">
+                           <children>
+                              <Label prefHeight="19.0" prefWidth="211.0" text="Each Action Size">
+                                 <font>
+                                    <Font name="Roboto Regular" size="15.0" />
+                                 </font>
+                              </Label>
+                              <JFXTextField fx:id="eachActionSizeField" prefHeight="29.0" prefWidth="361.0" style="-fx-text-inner-color: white;">
+                                 <font>
+                                    <Font name="Roboto Regular" size="15.0" />
+                                 </font>
+                              </JFXTextField>
+                           </children>
+                        </HBox>
+                        <HBox spacing="50.0">
+                           <children>
+                              <Label prefHeight="19.0" prefWidth="211.0" text="Each Action Padding">
+                                 <font>
+                                    <Font name="Roboto Regular" size="15.0" />
+                                 </font>
+                              </Label>
+                              <JFXTextField fx:id="eachActionPaddingField" prefHeight="29.0" prefWidth="361.0" style="-fx-text-inner-color: white;">
+                                 <font>
+                                    <Font name="Roboto Regular" size="15.0" />
+                                 </font>
+                              </JFXTextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <Label text="OBS Studio ">
+                                 <font>
+                                    <Font name="Roboto Regular" size="24.0" />
+                                 </font>
+                              </Label>
+                              <Region prefHeight="29.0" prefWidth="80.0" />
+                              <JFXToggleButton fx:id="obsToggleButton" text=" " />
+                           </children>
+                        </HBox>
+                        <HBox spacing="50.0">
+                           <children>
+                              <Label prefHeight="54.0" prefWidth="514.0" text="Websocket Address (Requires the OBS Web Socket Plugin to be installed) Auth doesn't work, will fix later" wrapText="true">
+                                 <font>
+                                    <Font name="Roboto Regular" size="15.0" />
+                                 </font>
+                              </Label>
+                              <JFXTextField fx:id="obsWebsocketAddressField" prefHeight="29.0" prefWidth="362.0" style="-fx-text-inner-color: white;">
+                                 <font>
+                                    <Font name="Roboto Regular" size="15.0" />
+                                 </font>
+                              </JFXTextField>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+            <HBox alignment="CENTER" spacing="50.0">
+               <children>
+                  <JFXButton fx:id="applyButton" onAction="#applySettings" text="Apply" />
+                  <JFXButton onAction="#aboutStreamPiButtonClicked" text="About StreamPi" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+         </padding>
+      </VBox>
+      <VBox fx:id="notConnectedPane" alignment="CENTER" spacing="30.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ImageView fitHeight="157.0" fitWidth="146.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@icons/streampi_logo_big.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="statusLabelNotConnectedPane" text="%dashboard.statusLabelNotConnectedPane">
+               <font>
+                  <Font name="Roboto Regular" size="25.0" />
+               </font>
+            </Label>
+            <Label fx:id="serverStatsLabel" layoutX="601.0" layoutY="395.0">
+               <font>
+                  <Font name="Roboto Regular" size="15.0" />
+               </font>
+            </Label>
+            <JFXButton fx:id="notConnectedPaneSettingsButton" onAction="#showSettingsPane" text="Open Settings" />
+            <HBox fx:id="serverUpdateAvailableHBox1" alignment="CENTER" opacity="0.0">
+               <children>
+                  <Label text="A new update is available. Click " />
+                  <Label onMouseClicked="#openUpdatePopup" styleClass="hyperlink_label" text="here" />
+                  <Label text=" to know more." />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <AnchorPane fx:id="deviceConfigPane" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Accordion fx:id="actionsAccordion" layoutX="1098.0" layoutY="84.0" prefHeight="490.0" prefWidth="289.0" AnchorPane.bottomAnchor="76.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="84.0">
+              <panes>
+                <TitledPane animated="false" styleClass="Label" text="System ">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                           <children>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newHotkeyAction" prefHeight="25.0" prefWidth="268.0" text="  Hotkey">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@icons/hotkey.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newScriptAction" prefHeight="25.0" prefWidth="268.0" text="Script">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newFolderAction" prefHeight="25.0" prefWidth="268.0" text="  Folder">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@icons/folder.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newLaunchAppAction" prefHeight="25.0" prefWidth="268.0" text="  Launch App">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@icons/launch.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newLaunchWebsiteAction" prefHeight="25.0" prefWidth="268.0" text="  Launch Website">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@icons/website.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </JFXButton>
+                           </children>
+                        </VBox>
+                     </content>
+                </TitledPane>
+                  <TitledPane animated="false" styleClass="Label" text="OBS Studio">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                           <children>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newOBSStudioSetSceneAction" prefHeight="25.0" prefWidth="268.0" text="Set Scene">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newOBSStudioSetTransitionAction" prefHeight="25.0" prefWidth="268.0" text="Set Transition">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newOBSStudioStartStopStreamingAction" prefHeight="25.0" prefWidth="268.0" text="Start/Stop Streaming">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newOBSStudioSetSourceVisibilityAction" prefHeight="25.0" prefWidth="268.0" text="Set Source Visibility">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </JFXButton>
+                           </children>
+                        </VBox>
+                     </content>
+                  </TitledPane>
+                  <TitledPane animated="false" styleClass="Label" text="Social Media">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                           <children>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newTweetAction" prefHeight="25.0" prefWidth="268.0" text="  Twitter">
+                                 <font>
+                                    <Font name="Roboto Regular" size="16.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@icons/twitter.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </JFXButton>
+                           </children>
+                        </VBox>
+                     </content>
+                  </TitledPane>
+                  <TitledPane animated="false" styleClass="Label" text="Client System">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                           <children>
+                              <JFXButton alignment="TOP_LEFT" onAction="#newGPIOStatusSetAction" prefHeight="25.0" prefWidth="268.0" text="Set GPIO Status (HIGH/LOW)">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@icons/website.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </JFXButton>
+                           </children>
+                        </VBox>
+                     </content>
+                  </TitledPane>
+              </panes>
+            </Accordion>
+            <ScrollPane cache="true" cacheHint="SPEED" layoutX="43.0" layoutY="93.0" prefHeight="434.0" prefWidth="791.0" style="-fx-background-color: black;" styleClass="edge-to-edge" AnchorPane.bottomAnchor="123.0" AnchorPane.leftAnchor="43.0" AnchorPane.rightAnchor="326.0" AnchorPane.topAnchor="93.0">
+               <content>
+                  <VBox fx:id="controlVBox" alignment="TOP_CENTER" cache="true" cacheHint="SPEED">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+               </content>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </ScrollPane>
+            <HBox fx:id="newActionHintHBox" alignment="CENTER" layoutX="30.0" layoutY="14.0" opacity="0.0" prefHeight="52.0" prefWidth="1098.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="32.0">
+               <children>
+                  <Label fx:id="addNewButtonHintLabel" alignment="CENTER" prefHeight="29.0" prefWidth="959.0" text="To add a new &lt;type&gt; click on the desired green Action Box">
+                  <font>
+                     <Font name="Roboto Regular" size="23.0" />
+                  </font>
+                  </Label>
+                  <JFXButton fx:id="cancelNewActionButton" disable="true" onAction="#hideNewActionHint" ripplerFill="#d72b2b" text="Cancel" textFill="RED">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </HBox>
+            <JFXButton contentDisplay="CENTER" layoutX="1093.0" layoutY="543.0" onAction="#showSettingsPane" text=" " AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="24.0">
+               <graphic>
+                  <ImageView fitHeight="31.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/baseline_settings_white_18dp.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="returnToParentLayerButton" layoutX="30.0" layoutY="551.0" onAction="#returnToParentLayerButtonClicked" text="%dashboard.returnToParentLayer" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="30.0" />
+            <HBox fx:id="unableToConnectOBSHBox" layoutX="235.0" layoutY="544.0" prefHeight="38.0" prefWidth="289.0" spacing="25.0" visible="false" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="235.0">
+               <children>
+                  <Label prefHeight="38.0" prefWidth="178.0" text="Unable To Connect to OBS.">
+                     <font>
+                        <Font name="Roboto Regular" size="13.0" />
+                     </font></Label>
+                  <JFXButton fx:id="retryConnectOBSButton" onAction="#obsSetup" prefHeight="38.0" prefWidth="63.0" text="Retry" textFill="#3dc33b">
+                     <font>
+                        <Font name="Roboto Regular" size="13.0" />
+                     </font></JFXButton>
+               </children>
+            </HBox>
+            <HBox fx:id="updateAvailableHBox" alignment="CENTER" layoutX="510.0" layoutY="692.0" opacity="0.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="510.0" AnchorPane.rightAnchor="425.0">
+               <children>
+                  <Label text="A new update is available. Click " />
+                  <Label onMouseClicked="#openUpdatePopup" styleClass="hyperlink_label" text="here" />
+                  <Label text=" to know more." />
+               </children>
+            </HBox>
+         </children></AnchorPane>
+   </children>
+</AnchorPane>
