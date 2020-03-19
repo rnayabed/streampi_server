@@ -60,7 +60,7 @@
                      <graphic>
                         <ImageView fitHeight="48.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../icons/cancel.png" />
+                              <Image url="@icons/cancel.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -243,7 +243,7 @@
          <children>
             <ImageView fitHeight="157.0" fitWidth="146.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../icons/streampi_logo_big.png" />
+                  <Image url="@icons/streampi_logo_big.png" />
                </image>
             </ImageView>
             <Label fx:id="statusLabelNotConnectedPane" text="%dashboard.statusLabelNotConnectedPane">
@@ -281,7 +281,7 @@
                                  <graphic>
                                     <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../icons/hotkey.png" />
+                                          <Image url="@icons/hotkey.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -298,7 +298,7 @@
                                  <graphic>
                                     <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../icons/folder.png" />
+                                          <Image url="@icons/folder.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -310,7 +310,7 @@
                                  <graphic>
                                     <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../icons/launch.png" />
+                                          <Image url="@icons/launch.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -322,7 +322,7 @@
                                  <graphic>
                                     <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../icons/website.png" />
+                                          <Image url="@icons/website.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -370,7 +370,7 @@
                                  <graphic>
                                     <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../icons/twitter.png" />
+                                          <Image url="@icons/twitter.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -390,7 +390,7 @@
                                  <graphic>
                                     <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../icons/website.png" />
+                                          <Image url="@icons/website.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -431,7 +431,7 @@
                <graphic>
                   <ImageView fitHeight="31.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../icons/baseline_settings_white_18dp.png" />
+                        <Image url="@icons/baseline_settings_white_18dp.png" />
                      </image>
                   </ImageView>
                </graphic>

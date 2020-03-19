@@ -1,31 +1,24 @@
 package StreamPiServer;
 
-import com.jfoenix.controls.JFXDecorator;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import org.eclipse.jetty.util.resource.Resource;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class Main extends Application {
 
-    static FXMLLoader fxmlLoader = new FXMLLoader();
-
     @Override
     public void start(Stage primaryStage) throws Exception{
         readConfig();
         ResourceBundle rb = ResourceBundle.getBundle("StreamPiServer.languageBundles.lang",new Locale(config.get("language")));
-        Parent root = fxmlLoader.load(getClass().getResource("dashboard.fxml"),rb);
-        primaryStage.getIcons().add(new Image("icons/app_icon.png"));
+        Parent root = FXMLLoader.load(getClass().getResource("dashboard.fxml"),rb);
+        primaryStage.getIcons().add(new Image(getClass().getResource("icons/app_icon.png").toExternalForm()));
         primaryStage.setTitle("StreamPi Server");
         Scene x = new Scene(root);
         primaryStage.setMinWidth(1160);

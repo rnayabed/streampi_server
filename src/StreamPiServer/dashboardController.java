@@ -11,7 +11,6 @@ import com.jfoenix.controls.events.JFXDialogEvent;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,7 +22,6 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -32,11 +30,9 @@ import javafx.scene.paint.Paint;
 import javafx.scene.robot.Robot;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import net.twasi.obsremotejava.Callback;
 import net.twasi.obsremotejava.OBSRemoteController;
 import net.twasi.obsremotejava.requests.ResponseBase;
-import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
@@ -44,10 +40,8 @@ import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -158,8 +152,8 @@ public class dashboardController extends Application implements Initializable {
     private final Paint WHITE_PAINT = Paint.valueOf("#ffffff");
 
     //updater server
-    private streamPiUpdater streamPiServerUpdater;
-    private streamPiUpdater streamPiClientUpdater;
+    //private streamPiUpdater streamPiServerUpdater;
+    //private streamPiUpdater streamPiClientUpdater;
 
     //updater client
     private softwareTag clientTag;
@@ -193,7 +187,7 @@ public class dashboardController extends Application implements Initializable {
         //UPDATES FOR SERVER FOR SERVER SOFTWARE SHOULD BE CHECKED FOR ON LAUNCH
         //PUTTING THEM HERE DOESNT APPEAR TO BREAK ANYTHING
 
-        streamPiServerUpdater = new streamPiUpdater(SERVER_VERSION, true);
+        /*streamPiServerUpdater = new streamPiUpdater(SERVER_VERSION, true);
         isServerUpdateAvailable = streamPiServerUpdater.isUpdateAvailable();
         if(isServerUpdateAvailable)
         {
@@ -201,7 +195,7 @@ public class dashboardController extends Application implements Initializable {
             Main.config.put("server_update_version",streamPiServerUpdater.getNewVersion());
             Main.config.put("server_update_changelog",streamPiServerUpdater.getChangelogRaw());
             Main.config.put("server_update_download_url",streamPiServerUpdater.getDownloadLink());
-        }
+        }*/
 
 
         rb = resources;
@@ -405,7 +399,7 @@ public class dashboardController extends Application implements Initializable {
     }
 
     //Shows About
-    Image appIcon = new Image("icons/streampi_logo_big.png");
+    Image appIcon = new Image("StreamPiServer/icons/streampi_logo_big.png");
     ImageView x = new ImageView(appIcon);
     @FXML
     public void aboutStreamPiButtonClicked()
@@ -1162,7 +1156,7 @@ public class dashboardController extends Application implements Initializable {
                     eachActionSize = Integer.parseInt(msgArr[7]);
                     eachActionPadding = Integer.parseInt(msgArr[8]);
                     clientVersion = msgArr[9];
-                    new Thread(new Task<Void>() {
+                    /*new Thread(new Task<Void>() {
                         @Override
                         protected Void call() {
                             try {
@@ -1184,7 +1178,7 @@ public class dashboardController extends Application implements Initializable {
                             }
                             return null;
                         }
-                    }).start();
+                    }).start();*/
 
                     Platform.runLater(()-> {
                         eachActionSizeField.setText(eachActionSize+"");
@@ -2068,7 +2062,7 @@ public class dashboardController extends Application implements Initializable {
             try
             {
                 SystemTray tray = SystemTray.getSystemTray();
-                TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().createImage("icons/app_icon.png"));
+                TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().createImage("StreamPiServer/icons/app_icon.png"));
                 trayIcon.setImageAutoSize(true);
                 tray.add(trayIcon);
                 trayIcon.displayMessage("StreamPi", title, msgType);

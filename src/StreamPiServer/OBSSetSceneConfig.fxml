@@ -60,7 +60,7 @@
          <children>
             <ImageView fx:id="iconPreviewImg" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../icons/icon_preview.png" />
+                  <Image url="@icons/icon_preview.png" />
                </image>
             </ImageView>
          </children>

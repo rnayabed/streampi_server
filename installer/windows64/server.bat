@@ -1,1 +1,1 @@
-jdk\bin\java.exe StreamPiServer.Main
+jre\bin\java.exe -jar StreamPi_Server.jar

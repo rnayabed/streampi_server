@@ -57,7 +57,7 @@ public class OBSSetTransitionConfig extends Application implements Initializable
     private Label headingLabel;
 
 
-    Image previewImageDefault = new Image(getClass().getResourceAsStream("../icons/icon_preview.png"));
+    Image previewImageDefault = new Image(getClass().getResourceAsStream("icons/icon_preview.png"));
     String txt;
 
     @Override
@@ -446,7 +446,7 @@ public class OBSSetTransitionConfig extends Application implements Initializable
 
                     for(String[] eachAction : dashboardController.actions)
                     {
-                        //FileInputStream fs = new FileInputStream("actions/../icons/"+eachAction[3]);
+                        //FileInputStream fs = new FileInputStream("actions/icons/"+eachAction[3]);
                         //byte[] imageB = fs.readAllBytes();
                         //fs.close();
                         //String base64Image = Base64.getEncoder().encodeToString(imageB);
