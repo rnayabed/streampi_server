@@ -1390,7 +1390,6 @@ public class dashboardController extends Application implements Initializable {
                         {
                             if(currentSelectionMode == 0)
                             {
-                                System.out.println("GAY");
                                 System.out.println("SETTING");
                                 selectedActionUniqueID = ar[3]+"_"+ar[4];
 
