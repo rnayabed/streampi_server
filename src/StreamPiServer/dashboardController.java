@@ -207,10 +207,11 @@ public class dashboardController extends Application implements Initializable {
         try {
             //Global variable to store the Computer's (Server) IP of the local network
             if(Main.config.get("server_ip").equals("NULL"))
-                serverIP = Inet4Address.getLocalHost().getHostAddress();
+                serverIP = InetAddress.getLocalHost().getHostAddress();
             else
                 serverIP = Main.config.get("server_ip");
             //Global Socket Variable, which is mainly used here to just open and close comms
+            System.out.println(Main.config.get("server_port")+"\n"+serverIP);
             server = new ServerSocket(Integer.parseInt(Main.config.get("server_port")),0, InetAddress.getByName(serverIP));
             //Reuse address, if the previous thing goes haywire
             server.setReuseAddress(true);
@@ -402,7 +403,7 @@ public class dashboardController extends Application implements Initializable {
     @FXML
     public void aboutStreamPiButtonClicked()
     {
-        Label l = new Label("Programmed By Debayan Sutradhar (twitter.com/ladiesman360420)\nProgrammed By Samuel Quinones (twitter.com/SamuelQuinones1)\nIcons were made by Trideb Dhar (https://www.instagram.com/_.tai.naki._)\nServer Version : "+SERVER_VERSION);
+        Label l = new Label("Programmed By Debayan Sutradhar (twitter.com/dubbadhar)\nProgrammed By Samuel Quinones (twitter.com/SamuelQuinones1)\nIcons were made by Trideb Dhar\nServer Version : "+SERVER_VERSION);
         l.setTextFill(WHITE_PAINT);
         VBox v = new VBox(l,x);
         v.setAlignment(Pos.CENTER);
